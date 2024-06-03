@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  cafe-balu-back
+  Sample SAM Template for cafe-balu-back
+
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaBasicExecution
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:*:*:*
+  CafeApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Name: CafeApi
+
+  UpdateCategoryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: update_category/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        UpdateCategory:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CafeApi
+            Path: /update-category/{id}/{name}
+            Method: put
+
+Outputs:
+  UpdateCategoryApi:
+    Description: "API Gateway endpoint URL for Prod stage for UpdateCategory function"
+    Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update-category/{id}/{name}"
+  UpdateCategoryFunctionArn:
+    Description: "UpdateCategory Lambda Function ARN"
+    Value: !GetAtt UpdateCategoryFunction.Arn
+  LambdaExecutionRoleArn:
+    Description: "Lambda Execution Role ARN"
+    Value: !GetAtt LambdaExecutionRole.Arn

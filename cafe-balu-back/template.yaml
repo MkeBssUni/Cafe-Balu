@@ -6,7 +6,8 @@ Description: >
 
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 25
+    MemorySize: 128
 
 Resources:
   LambdaExecutionRole:
@@ -50,13 +51,13 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref CafeApi
-            Path: /update-category/{id}/{name}
+            Path: /update_category/{id}/{name}
             Method: put
 
 Outputs:
   UpdateCategoryApi:
     Description: "API Gateway endpoint URL for Prod stage for UpdateCategory function"
-    Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update-category/{id}/{name}"
+    Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/uspdate_category/{id}/{name}"
   UpdateCategoryFunctionArn:
     Description: "UpdateCategory Lambda Function ARN"
     Value: !GetAtt UpdateCategoryFunction.Arn

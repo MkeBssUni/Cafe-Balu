@@ -2,7 +2,7 @@ import json
 import pymysql
 import logging
 
-rds_host = "cafe-balu-database.cfk0gawqspc8.ca-central-1.rds.amazonaws.com"
+rds_host = "database-cafe-balu.cziym6ii4nn7.us-east-2.rds.amazonaws.com"
 rds_user = "baluroot"
 rds_password = "baluroot"
 rds_db = "cafe_balu"
@@ -10,15 +10,14 @@ rds_db = "cafe_balu"
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-def lambda_handler(event, context):
-    logger.info("Received event: %s", json.dumps(event))
 
+def lambda_handler(event, __):
     try:
         if 'pathParameters' not in event:
             logger.error("pathParameters not found in the event")
             raise KeyError('pathParameters')
 
-        newName = event['pathParameters'].get('name')
+        newName = event['pathParameters'].get('newName')
         id = event['pathParameters'].get('id')
 
         if newName is None or id is None:
@@ -59,13 +58,14 @@ def lambda_handler(event, context):
             }),
         }
 
+
 def update_category(id, newName):
-    global connection
+    connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
+    print(connection)
     try:
-        connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
         try:
             cursor = connection.cursor()
-            cursor.execute("UPDATE category SET name = %s WHERE id = %s", (newName, id))
+            cursor.execute("UPDATE categories SET name = %s WHERE id = %s", (newName, id))
             connection.commit()
             logger.info("Database updated successfully for id=%s", id)
         except Exception as e:

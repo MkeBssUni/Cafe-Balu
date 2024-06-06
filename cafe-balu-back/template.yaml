@@ -69,6 +69,22 @@ Resources:
             RestApiId: !Ref CafeApi
             Path: /get_products/{status}
             Method: post
+  ChangeStatusCategoryOrProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: change_status_category_or_product/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetProducts:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CafeApi
+            Path: /change_status_category_or_product/{status}/{id}/{type}
+            Method: patch
 
 Outputs:
   UpdateCategoryApi:
@@ -82,7 +98,13 @@ Outputs:
       Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_products/{status}"
   GetProductApiFunctionArn:
       Description: "Get Products Lambda Function ARN"
-      Value: !GetAtt UpdateCategoryFunction.Arn
+      Value: !GetAtt GetProductsFunction.Arn
+  ChangeStatusCategoryOrProductApi:
+    Description: "API Gateway endpoint URL of Prod stage for ChangeStatusCategoryOrProduct function"
+    Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/change_status_category_or_product/{status}/{id}/{type}"
+  ChangeStatusCategoryOrProductApiFunctionArn:
+    Description: "Change Status Category Or Product Lambda Function ARN"
+    Value: !GetAtt ChangeStatusCategoryOrProductFunction.Arn
   LambdaExecutionRoleArn:
     Description: "Lambda Execution Role ARN"
     Value: !GetAtt LambdaExecutionRole.Arn

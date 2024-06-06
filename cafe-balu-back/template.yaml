@@ -53,14 +53,36 @@ Resources:
             RestApiId: !Ref CafeApi
             Path: /update_category/{id}/{name}
             Method: put
+  GetProductsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get_products/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetProducts:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CafeApi
+            Path: /get_products/{status}
+            Method: post
 
 Outputs:
   UpdateCategoryApi:
     Description: "API Gateway endpoint URL for Prod stage for UpdateCategory function"
-    Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/uspdate_category/{id}/{name}"
+    Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_category/{id}/{name}"
   UpdateCategoryFunctionArn:
     Description: "UpdateCategory Lambda Function ARN"
     Value: !GetAtt UpdateCategoryFunction.Arn
+  GetProductsApi:
+      Description: "API Gateway endpoint URL of Prod stage for GetProducts function"
+      Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_products/{status}"
+  GetProductApiFunctionArn:
+      Description: "Get Products Lambda Function ARN"
+      Value: !GetAtt UpdateCategoryFunction.Arn
   LambdaExecutionRoleArn:
     Description: "Lambda Execution Role ARN"
     Value: !GetAtt LambdaExecutionRole.Arn

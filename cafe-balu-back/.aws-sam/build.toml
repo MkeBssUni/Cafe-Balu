@@ -19,4 +19,13 @@ manifest_hash = "645bb72eb0a9740cf4a02755ed1d6772"
 packagetype = "Zip"
 functions = ["GetProductsFunction"]
 
+[function_build_definitions.cc4c3b84-73a2-425c-a3d9-2b630676fb5b]
+codeuri = "D:\\School\\Desarrollo Web Integral\\Cafe-Balu\\cafe-balu-back\\change_status_category_or_product"
+runtime = "python3.12"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "645bb72eb0a9740cf4a02755ed1d6772"
+packagetype = "Zip"
+functions = ["ChangeStatusCategoryOrProductFunction"]
+
 [layer_build_definitions]

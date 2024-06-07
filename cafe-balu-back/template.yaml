@@ -85,6 +85,22 @@ Resources:
             RestApiId: !Ref CafeApi
             Path: /change_status_category_or_product/{status}/{id}/{type}
             Method: patch
+  SaveCategoryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: save_category/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetProducts:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CafeApi
+            Path: /save_category/{name}
+            Method: post
 
 Outputs:
   UpdateCategoryApi:
@@ -105,6 +121,9 @@ Outputs:
   ChangeStatusCategoryOrProductApiFunctionArn:
     Description: "Change Status Category Or Product Lambda Function ARN"
     Value: !GetAtt ChangeStatusCategoryOrProductFunction.Arn
+  SaveCategoryApi:
+    Description: "ASAve category API"
+    Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/save_category/{name}"
   LambdaExecutionRoleArn:
     Description: "Lambda Execution Role ARN"
     Value: !GetAtt LambdaExecutionRole.Arn

@@ -10,18 +10,16 @@ rds_db = "cafe_balu"
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-
 def lambda_handler(event, __):
     try:
         if 'pathParameters' not in event:
             logger.error("pathParameters not found in the event")
             raise KeyError('pathParameters')
 
-        newName = event['pathParameters'].get('newName')
-        id = event['pathParameters'].get('id')
+        name = event['pathParameters'].get('name')
 
-        if newName is None or id is None:
-            logger.warning("Missing fields: id or newName")
+        if name is None:
+            logger.warning("Missing fields: name")
             return {
                 "statusCode": 400,
                 "body": json.dumps({
@@ -29,18 +27,14 @@ def lambda_handler(event, __):
                 }),
             }
 
-        update_category(id, newName)
-
-        logger.info("Category updated successfully: id=%s, newName=%s", id, newName)
-
+        save_category(name)
         return {
             "statusCode": 200,
             "body": json.dumps({
-                "message": "CATEGORY_UPDATED",
+                "message": "CATEGORY_SAVE",
             }),
         }
     except KeyError as e:
-        logger.error("Missing key in event: %s", str(e))
         return {
             "statusCode": 400,
             "body": json.dumps({
@@ -49,7 +43,6 @@ def lambda_handler(event, __):
             }),
         }
     except Exception as e:
-        logger.error("Internal server error: %s", str(e))
         return {
             "statusCode": 500,
             "body": json.dumps({
@@ -58,30 +51,20 @@ def lambda_handler(event, __):
             }),
         }
 
-
-def update_category(id, newName):
+def save_category(name):
     connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
     print(connection)
     try:
-        try:
-            cursor = connection.cursor()
-            cursor.execute("UPDATE categories SET name = %s WHERE id = %s", (newName, id))
-            connection.commit()
-            logger.info("Database updated successfully for id=%s", id)
-        except Exception as e:
-            logger.error("Database update error: %s", str(e))
-            return {
-                "statusCode": 500,
-                "body": json.dumps({
-                    "message": "DATABASE_ERROR"
-                }),
-            }
+        cursor = connection.cursor()
+        cursor.execute("INSERT INTO categories (name, status) VALUES (%s, true)", (name,))
+        connection.commit()
+        logger.info("Database Create successfully for name=%s", name)
     except Exception as e:
-        logger.error("Database connection error: %s", str(e))
+        logger.error("Database update error: %s", str(e))
         return {
             "statusCode": 500,
             "body": json.dumps({
-                "message": "CONNECTION_ERROR"
+                "message": "DATABASE_ERROR"
             }),
         }
     finally:

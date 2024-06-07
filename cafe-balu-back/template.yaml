@@ -31,11 +31,11 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: arn:aws:logs:*:*:*
-  CafeApi:
+  CafeBaluApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Prod
-      Name: CafeApi
+      Name: CafeBaluApi
 
   UpdateCategoryFunction:
     Type: AWS::Serverless::Function
@@ -50,7 +50,7 @@ Resources:
         UpdateCategory:
           Type: Api
           Properties:
-            RestApiId: !Ref CafeApi
+            RestApiId: !Ref CafeBaluApi
             Path: /update_category/{id}/{name}
             Method: put
   GetProductsFunction:
@@ -66,7 +66,7 @@ Resources:
         GetProducts:
           Type: Api
           Properties:
-            RestApiId: !Ref CafeApi
+            RestApiId: !Ref CafeBaluApi
             Path: /get_products/{status}
             Method: post
   ChangeStatusCategoryOrProductFunction:
@@ -82,7 +82,7 @@ Resources:
         GetProducts:
           Type: Api
           Properties:
-            RestApiId: !Ref CafeApi
+            RestApiId: !Ref CafeBaluApi
             Path: /change_status_category_or_product/{status}/{id}/{type}
             Method: patch
   SaveCategoryFunction:
@@ -98,7 +98,7 @@ Resources:
         GetProducts:
           Type: Api
           Properties:
-            RestApiId: !Ref CafeApi
+            RestApiId: !Ref CafeBaluApi
             Path: /save_category/{name}
             Method: post
   CancelSaleFunction:
@@ -114,35 +114,79 @@ Resources:
         GetProducts:
           Type: Api
           Properties:
-            RestApiId: !Ref CafeApi
+            RestApiId: !Ref CafeBaluApi
             Path: /cancel_sale/{id}
             Method: patch
+  AddProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: save_product/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        AddProduct:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CafeBaluApi
+            Path: /add_product
+            Method: post
+  GetCategoriesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get_category/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetCategories:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CafeBaluApi
+            Path: /get_categories/{status}
+            Method: get
 
 Outputs:
   UpdateCategoryApi:
     Description: "API Gateway endpoint URL for Prod stage for UpdateCategory function"
-    Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_category/{id}/{name}"
+    Value: !Sub "https://${CafeBaluApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_category/{id}/{name}"
   UpdateCategoryFunctionArn:
     Description: "UpdateCategory Lambda Function ARN"
     Value: !GetAtt UpdateCategoryFunction.Arn
   GetProductsApi:
       Description: "API Gateway endpoint URL of Prod stage for GetProducts function"
-      Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_products/{status}"
+      Value: !Sub "https://${CafeBaluApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_products/{status}"
   GetProductApiFunctionArn:
       Description: "Get Products Lambda Function ARN"
       Value: !GetAtt GetProductsFunction.Arn
   ChangeStatusCategoryOrProductApi:
     Description: "API Gateway endpoint URL of Prod stage for ChangeStatusCategoryOrProduct function"
-    Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/change_status_category_or_product/{status}/{id}/{type}"
+    Value: !Sub "https://${CafeBaluApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/change_status_category_or_product/{status}/{id}/{type}"
   ChangeStatusCategoryOrProductApiFunctionArn:
     Description: "Change Status Category Or Product Lambda Function ARN"
     Value: !GetAtt ChangeStatusCategoryOrProductFunction.Arn
   SaveCategoryApi:
     Description: "Save category API"
-    Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/save_category/{name}"
+    Value: !Sub "https://${CafeBaluApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/save_category/{name}"
   CancelSaleApi:
     Description: "Cancel sale API"
-    Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/cancel_sale/{id}"
+    Value: !Sub "https://${CafeBaluApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/cancel_sale/{id}"
+  AddProductApi:
+    Description: "API Gateway endpoint URL for Prod stage for AddProduct function"
+    Value: !Sub "https://${CafeBaluApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/add_product"
+  AddProductFunctionArn:
+    Description: "AddProduct Lambda Function ARN"
+    Value: !GetAtt AddProductFunction.Arn
+  GetCategoriesApi:
+    Description: "API Gateway endpoint URL for Prod stage for GetCategories function"
+    Value: !Sub "https://${CafeBaluApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_categories/{status}"
+  GetCategoriesFunctionArn:
+    Description: "GetCategories Lambda Function ARN"
+    Value: !GetAtt GetCategoriesFunction.Arn
   LambdaExecutionRoleArn:
     Description: "Lambda Execution Role ARN"
     Value: !GetAtt LambdaExecutionRole.Arn

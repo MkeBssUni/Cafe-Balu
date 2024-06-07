@@ -17,10 +17,11 @@ lint = true
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 resolve_s3 = true
-stack_name = "services"
-s3_prefix = "services"
+stack_name = "GetCategory"
+s3_prefix = "GetCategory"
 region = "us-east-2"
 image_repositories = []
+disable_rollback = true
 
 [default.package.parameters]
 resolve_s3 = true

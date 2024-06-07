@@ -37,4 +37,13 @@ manifest_hash = "645bb72eb0a9740cf4a02755ed1d6772"
 packagetype = "Zip"
 functions = ["SaveCategoryFunction"]
 
+[function_build_definitions.c8991ce6-61d1-4ec9-ab5f-fede7cb729ed]
+codeuri = "D:\\Noveno cuatrimestre\\Web integral\\Cafe-Balu\\cafe-balu-back\\cancel_sales"
+runtime = "python3.12"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "645bb72eb0a9740cf4a02755ed1d6772"
+packagetype = "Zip"
+functions = ["CancelSaleFunction"]
+
 [layer_build_definitions]

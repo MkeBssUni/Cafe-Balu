@@ -117,6 +117,22 @@ Resources:
             RestApiId: !Ref CafeApi
             Path: /cancel_sale/{id}
             Method: patch
+  HistorySalesPerDayFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: view_sales_history_per_day
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetProducts:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CafeApi
+            Path: /history_per_day/{startDate}/{endDate}
+            Method: get
 
 Outputs:
   UpdateCategoryApi:
@@ -143,6 +159,9 @@ Outputs:
   CancelSaleApi:
     Description: "Cancel sale API"
     Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/cancel_sale/{id}"
+  HistoryPerDayApi:
+    Description: "View of sales history per day API"
+    Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/history_per_day/{startDate}/{endDate}"
   LambdaExecutionRoleArn:
     Description: "Lambda Execution Role ARN"
     Value: !GetAtt LambdaExecutionRole.Arn

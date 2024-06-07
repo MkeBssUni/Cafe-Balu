@@ -118,24 +118,6 @@ Resources:
             Path: /cancel_sale/{id}
             Method: patch
 
-  GetCategoriesFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: get_category/
-      Handler: app.lambda_handler
-      Runtime: python3.12
-      Role: !GetAtt LambdaExecutionRole.Arn
-      Architectures:
-        - x86_64
-      Events:
-        GetCategories:
-          Type: Api
-          Properties:
-            RestApiId: !Ref CafeApi
-            Path: /get_categories/{name}
-            Method: get
-
-
 Outputs:
   UpdateCategoryApi:
     Description: "API Gateway endpoint URL for Prod stage for UpdateCategory function"
@@ -161,12 +143,6 @@ Outputs:
   CancelSaleApi:
     Description: "Cancel sale API"
     Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/cancel_sale/{id}"
-  GetCategoriesApi:
-    Description: "API Gateway endpoint URL for Prod stage for GetCategories function"
-    Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_categories/{name}"
-  GetCategoriesFunctionArn:
-    Description: "GetCategories Lambda Function ARN"
-    Value: !GetAtt GetCategoriesFunction.Arn
   LambdaExecutionRoleArn:
     Description: "Lambda Execution Role ARN"
     Value: !GetAtt LambdaExecutionRole.Arn

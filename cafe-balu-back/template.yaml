@@ -149,6 +149,39 @@ Resources:
             RestApiId: !Ref CafeBaluApi
             Path: /get_categories/{status}
             Method: get
+  SaveSaleFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: save_sale/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        SaveSale:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CafeBaluApi
+            Path: /save_sale/{id}/{status}/{total}
+            Method: post
+
+  UpdateProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: update_product/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        UpdateProduct:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CafeBaluApi
+            Path: /update_product/{id}/{name}/{stock}/{price}/{status}/{image}/{category_id}
+            Method: put
 
 Outputs:
   UpdateCategoryApi:
@@ -187,6 +220,15 @@ Outputs:
   GetCategoriesFunctionArn:
     Description: "GetCategories Lambda Function ARN"
     Value: !GetAtt GetCategoriesFunction.Arn
+  SaveSaleApi:
+    Description: "Save sale API"
+    Value: !Sub "https://${CafeBaluApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/save_sale/{id}/{status}/{total}"
+  SaveSaleFunctionArn:
+    Description: "SaveSale Lambda Function ARN"
+    Value: !GetAtt SaveSaleFunction.Arn
+  UpdateProductApi:
+    Description: "Update product API"
+    Value: !Sub "https://${CafeBaluApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_product/{id}/{name}/{stock}/{price}/{status}/{image}/{category_id}"
   LambdaExecutionRoleArn:
     Description: "Lambda Execution Role ARN"
     Value: !GetAtt LambdaExecutionRole.Arn

@@ -55,4 +55,13 @@ manifest_hash = "5ee13bccdd23c8a9d6361af186a59ec5"
 packagetype = "Zip"
 functions = ["GetCategoriesFunction"]
 
+[function_build_definitions.bad1ebab-7694-4e28-b990-a43d726acf8e]
+codeuri = "C:\\Users\\felipe\\Desktop\\Cafe-Balu\\cafe-balu-back\\save_products"
+runtime = "python3.12"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "645bb72eb0a9740cf4a02755ed1d6772"
+packagetype = "Zip"
+functions = ["AddProductFunction"]
+
 [layer_build_definitions]

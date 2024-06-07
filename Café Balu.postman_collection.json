@@ -1,0 +1,246 @@
+{
+	"info": {
+		"_postman_id": "8da478d4-fccd-4b3f-b6b4-9db2336647df",
+		"name": "Café Balu",
+		"description": "Los posibles valores de _**{status**_} son 1 o 0\n\nDonde se pide _**type**_ en el cambio de estado de categoria o producto los posibles valores son \"PRODUCT\" o \"CATEGORY\"",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27939903"
+	},
+	"item": [
+		{
+			"name": "Añadir producto",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Coffe postmane\",\r\n    \"stock\": 100,\r\n    \"price\": 5.99,\r\n    \"category_id\": 1,\r\n    \"image\": \"https://example.com/coffee.jpg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/add_product",
+					"protocol": "https",
+					"host": [
+						"h3kjqzdw2m",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"Prod",
+						"add_product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cancelar venta",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/cancel_sale/{id}",
+					"protocol": "https",
+					"host": [
+						"h3kjqzdw2m",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"Prod",
+						"cancel_sale",
+						"{id}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cambiar estado de producto o categoria",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/change_status_category_or_product/{status}/{id}/{type}",
+					"protocol": "https",
+					"host": [
+						"h3kjqzdw2m",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"Prod",
+						"change_status_category_or_product",
+						"{status}",
+						"{id}",
+						"{type}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener categorias",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/get_categories/{status}",
+					"protocol": "https",
+					"host": [
+						"h3kjqzdw2m",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"Prod",
+						"get_categories",
+						"{status}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener productos",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/get_products/{status}",
+					"protocol": "https",
+					"host": [
+						"h3kjqzdw2m",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"Prod",
+						"get_products",
+						"{status}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Nueva categoría",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/save_category/{name}",
+					"protocol": "https",
+					"host": [
+						"h3kjqzdw2m",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"Prod",
+						"save_category",
+						"{name}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Añadir venta",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/save_sale/{id}/{status}/{total}",
+					"protocol": "https",
+					"host": [
+						"h3kjqzdw2m",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"Prod",
+						"save_sale",
+						"{id}",
+						"{status}",
+						"{total}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar categoría",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/update_category/{id}/{name}",
+					"protocol": "https",
+					"host": [
+						"h3kjqzdw2m",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"Prod",
+						"update_category",
+						"{id}",
+						"{name}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar producto",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/update_product/{id}/{name}/{stock}/{price}/{status}/{image}/{category_id}",
+					"protocol": "https",
+					"host": [
+						"h3kjqzdw2m",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"Prod",
+						"update_product",
+						"{id}",
+						"{name}",
+						"{stock}",
+						"{price}",
+						"{status}",
+						"{image}",
+						"{category_id}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

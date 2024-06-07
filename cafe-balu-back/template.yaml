@@ -101,6 +101,22 @@ Resources:
             RestApiId: !Ref CafeApi
             Path: /save_category/{name}
             Method: post
+  CancelSaleFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: cancel_sales/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetProducts:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CafeApi
+            Path: /cancel_sale/{id}
+            Method: patch
 
 Outputs:
   UpdateCategoryApi:
@@ -122,8 +138,11 @@ Outputs:
     Description: "Change Status Category Or Product Lambda Function ARN"
     Value: !GetAtt ChangeStatusCategoryOrProductFunction.Arn
   SaveCategoryApi:
-    Description: "ASAve category API"
+    Description: "Save category API"
     Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/save_category/{name}"
+  CancelSaleApi:
+    Description: "Cancel sale API"
+    Value: !Sub "https://${CafeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/cancel_sale/{id}"
   LambdaExecutionRoleArn:
     Description: "Lambda Execution Role ARN"
     Value: !GetAtt LambdaExecutionRole.Arn

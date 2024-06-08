@@ -30,6 +30,30 @@ def lambda_handler(event, __):
                 }),
             }
 
+        if status != 0 and status != 1:
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "INVALID_STATUS"
+                }),
+            }
+
+        if type != 'PRODUCT' or type != 'CATEGORY':
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "INVALID_TYPE"
+                }),
+            }
+
+        if type_exists(type, id) == False:
+            return {
+                "statusCode": 404,
+                "body": json.dumps({
+                    "message": type + "_NOT_FOUND"
+                }),
+            }
+
         change_status(id, type, status)
 
         return {
@@ -69,5 +93,25 @@ def change_status(id, type, status):
                 "error": str(e)
             }),
         }
+    finally:
+        connection.close()
+def type_exists(type, id):
+    connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
+    try:
+        cursor = connection.cursor()
+        query = ""
+
+        if(type == 'PRODUCT'):
+            query = "select count(*) from products where id = %s"
+
+        if(type == 'CATEGORY'):
+            query = "select count(*) from categories where id = %s"
+
+        cursor.execute(query, (id))
+        result = cursor.fetchone()
+        return result[0] > 0
+
+    except Exception as e:
+        return False
     finally:
         connection.close()

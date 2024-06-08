@@ -1,6 +1,7 @@
 import json
 import pymysql
 import logging
+import re
 
 rds_host = "database-cafe-balu.cziym6ii4nn7.us-east-2.rds.amazonaws.com"
 rds_user = "baluroot"
@@ -12,13 +13,10 @@ logger.setLevel(logging.INFO)
 
 def lambda_handler(event, __):
     try:
-        if 'pathParameters' not in event:
-            logger.error("pathParameters not found in the event")
-            raise KeyError('pathParameters')
+        body = json.loads(event.get('body', '{}'))
+        name = body.get('name')
 
-        name = event['pathParameters'].get('name')
-
-        if name is None:
+        if not name:
             logger.warning("Missing fields: name")
             return {
                 "statusCode": 400,
@@ -27,11 +25,39 @@ def lambda_handler(event, __):
                 }),
             }
 
+        # Verificar caracteres no permitidos
+        if re.search(r'[<>/``\\{}]', name):
+            logger.warning("Invalid characters in name")
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "INVALID_CHARACTERS"
+                }),
+            }
+
+        # Verificar nombre duplicado
+        if is_name_duplicate(name):
+            logger.warning("Duplicate category name: %s", name)
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "DUPLICATE_NAME"
+                }),
+            }
+
         save_category(name)
         return {
             "statusCode": 200,
             "body": json.dumps({
-                "message": "CATEGORY_SAVE",
+                "message": "CATEGORY_SAVED",
+            }),
+        }
+    except json.JSONDecodeError:
+        logger.error("Invalid JSON format")
+        return {
+            "statusCode": 400,
+            "body": json.dumps({
+                "message": "INVALID_JSON_FORMAT"
             }),
         }
     except KeyError as e:
@@ -51,14 +77,26 @@ def lambda_handler(event, __):
             }),
         }
 
+def is_name_duplicate(name):
+    connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SELECT COUNT(*) FROM categories WHERE name = %s", (name,))
+        result = cursor.fetchone()
+        return result[0] > 0
+    except Exception as e:
+        logger.error("Database query error: %s", str(e))
+        return False
+    finally:
+        connection.close()
+
 def save_category(name):
     connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
-    print(connection)
     try:
         cursor = connection.cursor()
         cursor.execute("INSERT INTO categories (name, status) VALUES (%s, true)", (name,))
         connection.commit()
-        logger.info("Database Create successfully for name=%s", name)
+        logger.info("Database create successfully for name=%s", name)
     except Exception as e:
         logger.error("Database update error: %s", str(e))
         return {

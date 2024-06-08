@@ -22,10 +22,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/add_product",
+					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/add_product",
 					"protocol": "https",
 					"host": [
-						"h3kjqzdw2m",
+						"tb9xj2xd6l",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -45,10 +45,10 @@
 				"method": "PATCH",
 				"header": [],
 				"url": {
-					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/cancel_sale/{id}",
+					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/cancel_sale/{id}",
 					"protocol": "https",
 					"host": [
-						"h3kjqzdw2m",
+						"tb9xj2xd6l",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -69,10 +69,10 @@
 				"method": "PATCH",
 				"header": [],
 				"url": {
-					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/change_status_category_or_product/{status}/{id}/{type}",
+					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/change_status_category_or_product/{status}/{id}/{type}",
 					"protocol": "https",
 					"host": [
-						"h3kjqzdw2m",
+						"tb9xj2xd6l",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -95,10 +95,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/get_categories/{status}",
+					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/get_categories/{status}",
 					"protocol": "https",
 					"host": [
-						"h3kjqzdw2m",
+						"tb9xj2xd6l",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -119,10 +119,10 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/get_products/{status}",
+					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/get_products/{status}",
 					"protocol": "https",
 					"host": [
-						"h3kjqzdw2m",
+						"tb9xj2xd6l",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -143,10 +143,10 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/save_category/{name}",
+					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/save_category/{name}",
 					"protocol": "https",
 					"host": [
-						"h3kjqzdw2m",
+						"tb9xj2xd6l",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -167,10 +167,10 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/save_sale/{id}/{status}/{total}",
+					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/save_sale",
 					"protocol": "https",
 					"host": [
-						"h3kjqzdw2m",
+						"tb9xj2xd6l",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -178,10 +178,7 @@
 					],
 					"path": [
 						"Prod",
-						"save_sale",
-						"{id}",
-						"{status}",
-						"{total}"
+						"save_sale"
 					]
 				}
 			},
@@ -193,10 +190,10 @@
 				"method": "PUT",
 				"header": [],
 				"url": {
-					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/update_category/{id}/{name}",
+					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/update_category/{id}/{name}",
 					"protocol": "https",
 					"host": [
-						"h3kjqzdw2m",
+						"tb9xj2xd6l",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -218,10 +215,10 @@
 				"method": "PUT",
 				"header": [],
 				"url": {
-					"raw": "https://h3kjqzdw2m.execute-api.us-east-2.amazonaws.com/Prod/update_product/{id}/{name}/{stock}/{price}/{status}/{image}/{category_id}",
+					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/update_product/{id}/{name}/{stock}/{price}/{status}/{image}/{category_id}",
 					"protocol": "https",
 					"host": [
-						"h3kjqzdw2m",
+						"tb9xj2xd6l",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -237,6 +234,29 @@
 						"{status}",
 						"{image}",
 						"{category_id}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Historial de ventas por día",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/history_per_day",
+					"protocol": "https",
+					"host": [
+						"tb9xj2xd6l",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"Prod",
+						"history_per_day"
 					]
 				}
 			},

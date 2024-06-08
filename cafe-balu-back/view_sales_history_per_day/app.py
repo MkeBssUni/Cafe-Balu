@@ -1,5 +1,6 @@
 import json
 import pymysql
+from datetime import datetime
 from decimal import Decimal
 import logging
 
@@ -16,15 +17,25 @@ def decimal_to_float(obj):
         return float(obj)
     raise TypeError
 
+def validate_date(date_string):
+    try:
+        date_obj = datetime.strptime(date_string, '%Y/%m/%d')
+        if date_obj > datetime.now():
+            return False
+        return True
+    except ValueError:
+        return False
+
 def lambda_handler(event, __):
     try:
-        if 'pathParameters' not in event:
-            logger.error("pathParameters not found in the event")
-            raise KeyError('pathParameters')
+        if 'body' not in event:
+            logger.error("body not found in the event")
+            raise KeyError('body')
 
-        path_parameters = event['pathParameters']
-        start_date = path_parameters.get('startDate')
-        end_date = path_parameters.get('endDate')
+        # Decodificar el cuerpo como JSON
+        body = json.loads(event['body'])
+        start_date = body.get('startDate')
+        end_date = body.get('endDate')
 
         if not start_date or not end_date:
             logger.warning("Missing fields: startDate or endDate")
@@ -32,6 +43,15 @@ def lambda_handler(event, __):
                 "statusCode": 400,
                 "body": json.dumps({
                     "message": "MISSING_FIELDS"
+                }),
+            }
+
+        if not validate_date(start_date) or not validate_date(end_date):
+            logger.warning("Invalid date format or future date")
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "INVALID_DATE_FORMAT_OR_FUTURE_DATE"
                 }),
             }
 
@@ -55,7 +75,7 @@ def lambda_handler(event, __):
             "statusCode": 500,
             "body": json.dumps({
                 "message": "INTERNAL_SERVER_ERROR",
-                "error": e
+                "error": str(e)
             }),
         }
 

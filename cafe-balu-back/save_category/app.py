@@ -1,46 +1,51 @@
 import json
 import pymysql
-import logging
+from decimal import Decimal
 
+# Configuración de la conexión a la base de datos
 rds_host = "database-cafe-balu.cziym6ii4nn7.us-east-2.rds.amazonaws.com"
 rds_user = "baluroot"
 rds_password = "baluroot"
 rds_db = "cafe_balu"
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+
+def decimal_to_float(obj):
+    if isinstance(obj, Decimal):
+        return float(obj)
+    raise TypeError
+
 
 def lambda_handler(event, __):
     try:
-        if 'pathParameters' not in event:
-            logger.error("pathParameters not found in the event")
-            raise KeyError('pathParameters')
+        # Validar presencia del campo 'pathParameters' en el evento
+        status = 0
+        if 'pathParameters' in event:
+            status = event['pathParameters'].get('status')
+        else:
+            status = None
 
-        name = event['pathParameters'].get('name')
+        # Validar que el 'status' sea un entero si está presente
+        if status is not None:
+            try:
+                status = int(status)
+            except ValueError:
+                return {
+                    "statusCode": 400,
+                    "body": json.dumps({
+                        "message": "INVALID_STATUS"
+                    }),
+                }
 
-        if name is None:
-            logger.warning("Missing fields: name")
-            return {
-                "statusCode": 400,
-                "body": json.dumps({
-                    "message": "MISSING_FIELDS"
-                }),
-            }
+        result = get_all_categories(status)
 
-        save_category(name)
+        body = {
+            "message": "CATEGORIES_FETCHED",
+            "categories": result
+        }
+
         return {
             "statusCode": 200,
-            "body": json.dumps({
-                "message": "CATEGORY_SAVE",
-            }),
-        }
-    except KeyError as e:
-        return {
-            "statusCode": 400,
-            "body": json.dumps({
-                "message": "MISSING_KEY",
-                "error": str(e)
-            }),
+            "body": json.dumps(body, default=decimal_to_float)
         }
     except Exception as e:
         return {
@@ -51,21 +56,23 @@ def lambda_handler(event, __):
             }),
         }
 
-def save_category(name):
+
+def get_all_categories(status):
     connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
-    print(connection)
     try:
         cursor = connection.cursor()
-        cursor.execute("INSERT INTO categories (name, status) VALUES (%s, true)", (name,))
-        connection.commit()
-        logger.info("Database Create successfully for name=%s", name)
+
+        if status == 0:
+            cursor.execute("SELECT * FROM categories")
+        else:
+            cursor.execute("SELECT * FROM categories WHERE status = %s", (status,))
+
+        result = cursor.fetchall()
+
+        result = [dict(zip([column[0] for column in cursor.description], row)) for row in result]
+
+        return result
     except Exception as e:
-        logger.error("Database update error: %s", str(e))
-        return {
-            "statusCode": 500,
-            "body": json.dumps({
-                "message": "DATABASE_ERROR"
-            }),
-        }
+        raise
     finally:
         connection.close()

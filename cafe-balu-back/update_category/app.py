@@ -29,6 +29,36 @@ def lambda_handler(event, __):
                 }),
             }
 
+        if id == "" or newName == "":
+            logger.warning("Empty fields: id or newName")
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "EMPTY_FIELDS"
+                }),
+            }
+
+        if not isinstance(newName, str) or len(newName.strip()) == 0:
+            logger.warning("Invalid fields: newName")
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "INVALID_FIELDS"
+                }),
+            }
+
+        id = int(id)
+        newName = newName.strip()
+
+        if category_exist(id) is False:
+                logger.error("Category not found for id=%s", id)
+                return {
+                    "statusCode": 404,
+                    "body": json.dumps({
+                        "message": "CATEGORY_NOT_FOUND"
+                    }),
+                }
+
         update_category(id, newName)
 
         logger.info("Category updated successfully: id=%s, newName=%s", id, newName)
@@ -84,5 +114,27 @@ def update_category(id, newName):
                 "message": "CONNECTION_ERROR"
             }),
         }
+    finally:
+        connection.close()
+
+def category_exist(id):
+    connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
+    try:
+        try:
+            cursor = connection.cursor()
+            cursor.execute("SELECT * FROM categories WHERE id = %s", (id))
+            result = cursor.fetchone()
+            print("result", result)
+
+            if result is None:
+                return False
+
+            return True
+        except Exception as e:
+            logger.error("Database error: %s", str(e))
+            return False
+    except Exception as e:
+        logger.error("Database connection error: %s", str(e))
+        return False
     finally:
         connection.close()

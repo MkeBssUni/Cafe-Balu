@@ -27,6 +27,14 @@ def lambda_handler(event, __):
                 }),
             }
 
+        if status != 0 and status != 1:
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "INVALID_STATUS"
+                }),
+            }
+
         result = get_all_products(status)
 
         body = {
@@ -55,9 +63,9 @@ def get_all_products(status):
             cursor.execute("SELECT * FROM products")
         else:
             cursor.execute("SELECT * FROM products WHERE status = %s", (status,))
+
         connection.commit()
 
-        # Fetch all the rows and assign key-value pairs to a dictionary
         result = cursor.fetchall()
         result = [dict(zip([column[0] for column in cursor.description], row)) for row in result]
 

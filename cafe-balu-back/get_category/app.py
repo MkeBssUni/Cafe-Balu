@@ -13,15 +13,27 @@ def decimal_to_float(obj):
         return float(obj)
     raise TypeError
 
-
-# Función Lambda handler
 def lambda_handler(event, __):
     try:
+        # Validar presencia del campo 'pathParameters' en el evento
         status = 0
         if 'pathParameters' in event:
             status = event['pathParameters'].get('status')
         else:
             status = None
+
+        # Validar que el 'status' sea un entero si está presente
+        if status is not None:
+            try:
+                status = int(status)
+            except ValueError:
+                return {
+                    "statusCode": 400,
+                    "body": json.dumps({
+                        "message": "INVALID_STATUS"
+                    }),
+                }
+
         result = get_all_categories(status)
 
         body = {
@@ -34,7 +46,6 @@ def lambda_handler(event, __):
             "body": json.dumps(body, default=decimal_to_float)
         }
     except Exception as e:
-        # Manejo de errores y logging
         return {
             "statusCode": 500,
             "body": json.dumps({
@@ -42,6 +53,7 @@ def lambda_handler(event, __):
                 "error": str(e)
             }),
         }
+
 def get_all_categories(status):
     connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
     try:

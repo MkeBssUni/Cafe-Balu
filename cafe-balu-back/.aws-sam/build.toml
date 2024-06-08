@@ -82,4 +82,13 @@ manifest_hash = "645bb72eb0a9740cf4a02755ed1d6772"
 packagetype = "Zip"
 functions = ["UpdateProductFunction"]
 
+[function_build_definitions.2392e429-2ce0-4a79-9ea0-6615d14d3e78]
+codeuri = "D:\\School\\Desarrollo Web Integral\\Cafe-Balu\\cafe-balu-back\\view_sales_history_per_day"
+runtime = "python3.12"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "645bb72eb0a9740cf4a02755ed1d6772"
+packagetype = "Zip"
+functions = ["HistorySalesPerDayFunction"]
+
 [layer_build_definitions]

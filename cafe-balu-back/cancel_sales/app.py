@@ -1,6 +1,7 @@
 import json
 import pymysql
 import logging
+import re
 
 rds_host = "database-cafe-balu.cziym6ii4nn7.us-east-2.rds.amazonaws.com"
 rds_user = "baluroot"
@@ -12,11 +13,13 @@ logger.setLevel(logging.INFO)
 
 def lambda_handler(event, __):
     try:
-        if 'pathParameters' not in event:
-            logger.error("pathParameters not found in the event")
-            raise KeyError('pathParameters')
+        if 'body' not in event:
+            logger.error("body not found in the event")
+            raise KeyError('body')
 
-        id = event['pathParameters'].get('id')
+        # Decodificar el cuerpo como JSON
+        body = json.loads(event['body'])
+        id = body.get('id')
 
         if id is None:
             logger.warning("Missing fields: id")
@@ -24,6 +27,36 @@ def lambda_handler(event, __):
                 "statusCode": 400,
                 "body": json.dumps({
                     "message": "MISSING_FIELDS"
+                }),
+            }
+
+        # Verificar que el ID es un entero positivo
+        if not isinstance(id, int) or id <= 0:
+            logger.warning("Invalid id: id must be a positive integer")
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "INVALID_ID"
+                }),
+            }
+
+        # Verificar que el ID no contiene caracteres especiales
+        if re.search(r'[<>?#``]', str(id)):
+            logger.warning("Invalid characters in id")
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "INVALID_CHARACTERS"
+                }),
+            }
+
+        # Verificar que el ID existe en la base de datos
+        if not id_exists_in_db(id):
+            logger.warning("ID does not exist in database")
+            return {
+                "statusCode": 404,
+                "body": json.dumps({
+                    "message": "ID_NOT_FOUND"
                 }),
             }
 
@@ -42,6 +75,13 @@ def lambda_handler(event, __):
                 "error": str(e)
             }),
         }
+    except json.JSONDecodeError:
+        return {
+            "statusCode": 400,
+            "body": json.dumps({
+                "message": "INVALID_JSON_FORMAT"
+            }),
+        }
     except Exception as e:
         return {
             "statusCode": 500,
@@ -51,9 +91,21 @@ def lambda_handler(event, __):
             }),
         }
 
+def id_exists_in_db(id):
+    connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SELECT COUNT(*) FROM sales WHERE id = %s", (id,))
+        result = cursor.fetchone()
+        return result[0] > 0
+    except Exception as e:
+        logger.error("Database query error: %s", str(e))
+        return False
+    finally:
+        connection.close()
+
 def cancel_sale(id):
     connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
-    print(connection)
     try:
         cursor = connection.cursor()
         cursor.execute("UPDATE sales SET status = 0 WHERE id=%s", (id,))

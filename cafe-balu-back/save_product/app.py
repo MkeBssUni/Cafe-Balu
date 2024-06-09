@@ -26,7 +26,7 @@ def lambda_handler(event, __):
         image = body.get('image')
 
         # Validar campos faltantes: 'name', 'stock', 'price'
-        missing_fields = [field for field in ['name', 'stock', 'price'] if body.get(field) is None]
+        missing_fields = [field for field in ['name', 'stock', 'price', 'image'] if body.get(field) is None]
 
         if missing_fields:
             logger.warning(f"Missing fields: {', '.join(missing_fields)}")
@@ -90,7 +90,14 @@ def lambda_handler(event, __):
                 }),
             }
 
-        # Llamar a la función para añadir el producto a la base de datos
+        if is_invalid_image(image):
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "INVALID_IMAGE"
+                }),
+            }
+
         add_product(name, stock, price, category_id, image)
         return {
             "statusCode": 200,
@@ -158,3 +165,7 @@ def product_exists_in_category(category_id, name):
         raise e
     finally:
         connection.close()
+
+def is_invalid_image(image):
+    pattern = r"^data:image/(png|jpg|jpeg);base64,([a-zA-Z0-9+/=]+)$"
+    return not re.match(pattern, image)

@@ -39,11 +39,11 @@ def lambda_handler(event, __):
                 }),
             }
 
-        if type != 'PRODUCT' or type != 'CATEGORY':
+        if type != 'PRODUCT' and type != 'CATEGORY':
             return {
                 "statusCode": 400,
                 "body": json.dumps({
-                    "message": "INVALID_TYPE"
+                    "message": "INVALID_TYPE_"+type
                 }),
             }
 
@@ -67,8 +67,7 @@ def lambda_handler(event, __):
         return {
             "statusCode": 500,
             "body": json.dumps({
-                "message": "INTERNAL_SERVER_ERROR",
-                "error": str(e)
+                "message": "INTERNAL_SERVER_ERROR_",
             }),
         }
 
@@ -91,7 +90,6 @@ def change_status(id, type, status):
             "statusCode": 500,
             "body": json.dumps({
                 "message": "INTERNAL_SERVER_ERROR",
-                "error": str(e)
             }),
         }
     finally:

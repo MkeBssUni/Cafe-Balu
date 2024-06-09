@@ -1,6 +1,7 @@
 import json
 import pymysql
 import logging
+import re
 
 rds_host = "database-cafe-balu.cziym6ii4nn7.us-east-2.rds.amazonaws.com"
 rds_user = "baluroot"
@@ -32,6 +33,22 @@ def lambda_handler(event, __):
                 "statusCode": 400,
                 "body": json.dumps({
                     "message": "MISSING_FIELDS",
+                }),
+            }
+
+        if is_invalid_image(image):
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "INVALID_IMAGE",
+                }),
+            }
+
+        if not category_exists(category_id):
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "CATEGORY_NOT_FOUND",
                 }),
             }
 
@@ -105,3 +122,7 @@ def product_exists_in_category(category_id, name,product_id):
         raise e
     finally:
         connection.close()
+
+def is_invalid_image(image):
+    pattern = r"^data:image/(png|jpg|jpeg);base64,([a-zA-Z0-9+/=]+)$"
+    return not re.match(pattern, image)

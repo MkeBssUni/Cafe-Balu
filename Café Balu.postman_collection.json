@@ -22,10 +22,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/add_product",
+					"raw": "https://afzd4wkj63.execute-api.us-east-2.amazonaws.com/Prod/add_product",
 					"protocol": "https",
 					"host": [
-						"t4g18xbhrd",
+						"afzd4wkj63",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -45,10 +45,10 @@
 				"method": "PATCH",
 				"header": [],
 				"url": {
-					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/cancel_sale/{id}",
+					"raw": "https://afzd4wkj63.execute-api.us-east-2.amazonaws.com/Prod/cancel_sale/{id}",
 					"protocol": "https",
 					"host": [
-						"t4g18xbhrd",
+						"afzd4wkj63",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -68,11 +68,20 @@
 			"request": {
 				"method": "PATCH",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":1,\r\n    \"status\":0,\r\n    //\"type\": \"CATEGORY\",\r\n    \"type\": \"PRODUCT\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/change_status_category_or_product/{status}/{id}/{type}",
+					"raw": "https://afzd4wkj63.execute-api.us-east-2.amazonaws.com/Prod/change_status_category_or_product",
 					"protocol": "https",
 					"host": [
-						"t4g18xbhrd",
+						"afzd4wkj63",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -80,10 +89,7 @@
 					],
 					"path": [
 						"Prod",
-						"change_status_category_or_product",
-						"{status}",
-						"{id}",
-						"{type}"
+						"change_status_category_or_product"
 					]
 				}
 			},
@@ -95,10 +101,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/get_categories/{status}",
+					"raw": "https://afzd4wkj63.execute-api.us-east-2.amazonaws.com/Prod/get_categories/{status}",
 					"protocol": "https",
 					"host": [
-						"t4g18xbhrd",
+						"afzd4wkj63",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -119,10 +125,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/get_products/{status}",
+					"raw": "https://afzd4wkj63.execute-api.us-east-2.amazonaws.com/Prod/get_products/{status}",
 					"protocol": "https",
 					"host": [
-						"t4g18xbhrd",
+						"afzd4wkj63",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -152,10 +158,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/save_category",
+					"raw": "https://afzd4wkj63.execute-api.us-east-2.amazonaws.com/Prod/save_category",
 					"protocol": "https",
 					"host": [
-						"t4g18xbhrd",
+						"afzd4wkj63",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -176,7 +182,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    //Working on it\r\n}",
+					"raw": "{\r\n    \"total\": 150,\r\n    \"products\":[\r\n        {\r\n            \"id\": 1,\r\n            \"quantity\":1\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"quantity\":0\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -184,10 +190,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/save_sale",
+					"raw": "https://afzd4wkj63.execute-api.us-east-2.amazonaws.com/Prod/save_sale",
 					"protocol": "https",
 					"host": [
-						"t4g18xbhrd",
+						"afzd4wkj63",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -216,10 +222,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/update_category",
+					"raw": "https://afzd4wkj63.execute-api.us-east-2.amazonaws.com/Prod/update_category",
 					"protocol": "https",
 					"host": [
-						"t4g18xbhrd",
+						"afzd4wkj63",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -240,7 +246,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"id\": 1,\r\n  \"name\": \"Café Especial\",\r\n  \"stock\": 50,\r\n  \"price\": 9.99,\r\n  \"status\": \"disponible\",\r\n  \"image\": \"https://example.com/images/cafe_especial.jpg\",\r\n  \"category_id\": 5\r\n}\r\n",
+					"raw": "{\r\n  \"id\": 1,\r\n  \"name\": \"Café Especial\",\r\n  \"stock\": 50,\r\n  \"price\": 9.99,\r\n  \"status\": \"disponible\",\r\n  \"image\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGGoAAAxiCAIA\",\r\n  \"category_id\": 5\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -248,10 +254,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/update_product",
+					"raw": "https://afzd4wkj63.execute-api.us-east-2.amazonaws.com/Prod/update_product",
 					"protocol": "https",
 					"host": [
-						"t4g18xbhrd",
+						"afzd4wkj63",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -280,10 +286,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/history_per_day",
+					"raw": "https://afzd4wkj63.execute-api.us-east-2.amazonaws.com/Prod/history_per_day",
 					"protocol": "https",
 					"host": [
-						"t4g18xbhrd",
+						"afzd4wkj63",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",

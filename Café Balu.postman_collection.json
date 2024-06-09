@@ -14,7 +14,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n   \"name\": \"Coffe postmane\",\r\n    \"stock\": 100,\r\n    \"price\": 5.99,\r\n    \"category_id\": 1,\r\n    \"image\": \"https://example.com/coffee.jpg\"\r\n}",
+					"raw": "{\r\n   \"name\": \"Café espresso moka\",\r\n    \"stock\": 100,\r\n    \"price\": 5.99,\r\n    \"category_id\": 1,\r\n    \"image\": \"imagem.jpg\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -22,10 +22,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/add_product",
+					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/add_product",
 					"protocol": "https",
 					"host": [
-						"tb9xj2xd6l",
+						"t4g18xbhrd",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -45,10 +45,10 @@
 				"method": "PATCH",
 				"header": [],
 				"url": {
-					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/cancel_sale/{id}",
+					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/cancel_sale/{id}",
 					"protocol": "https",
 					"host": [
-						"tb9xj2xd6l",
+						"t4g18xbhrd",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -69,10 +69,10 @@
 				"method": "PATCH",
 				"header": [],
 				"url": {
-					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/change_status_category_or_product/{status}/{id}/{type}",
+					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/change_status_category_or_product/{status}/{id}/{type}",
 					"protocol": "https",
 					"host": [
-						"tb9xj2xd6l",
+						"t4g18xbhrd",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -95,10 +95,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/get_categories/{status}",
+					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/get_categories/{status}",
 					"protocol": "https",
 					"host": [
-						"tb9xj2xd6l",
+						"t4g18xbhrd",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -116,13 +116,13 @@
 		{
 			"name": "Obtener productos",
 			"request": {
-				"method": "POST",
+				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/get_products/{status}",
+					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/get_products/{status}",
 					"protocol": "https",
 					"host": [
-						"tb9xj2xd6l",
+						"t4g18xbhrd",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -142,11 +142,20 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"categoría registrada ya al final\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/save_category/{name}",
+					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/save_category",
 					"protocol": "https",
 					"host": [
-						"tb9xj2xd6l",
+						"t4g18xbhrd",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -154,8 +163,7 @@
 					],
 					"path": [
 						"Prod",
-						"save_category",
-						"{name}"
+						"save_category"
 					]
 				}
 			},
@@ -166,11 +174,20 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    //Working on it\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/save_sale",
+					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/save_sale",
 					"protocol": "https",
 					"host": [
-						"tb9xj2xd6l",
+						"t4g18xbhrd",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -189,11 +206,20 @@
 			"request": {
 				"method": "PUT",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":1,\r\n    \"name\": \"abr\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/update_category/{id}/{name}",
+					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/update_category",
 					"protocol": "https",
 					"host": [
-						"tb9xj2xd6l",
+						"t4g18xbhrd",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -201,9 +227,7 @@
 					],
 					"path": [
 						"Prod",
-						"update_category",
-						"{id}",
-						"{name}"
+						"update_category"
 					]
 				}
 			},
@@ -214,11 +238,20 @@
 			"request": {
 				"method": "PUT",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 1,\r\n  \"name\": \"Café Especial\",\r\n  \"stock\": 50,\r\n  \"price\": 9.99,\r\n  \"status\": \"disponible\",\r\n  \"image\": \"https://example.com/images/cafe_especial.jpg\",\r\n  \"category_id\": 5\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/update_product/{id}/{name}/{stock}/{price}/{status}/{image}/{category_id}",
+					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/update_product",
 					"protocol": "https",
 					"host": [
-						"tb9xj2xd6l",
+						"t4g18xbhrd",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",
@@ -226,14 +259,7 @@
 					],
 					"path": [
 						"Prod",
-						"update_product",
-						"{id}",
-						"{name}",
-						"{stock}",
-						"{price}",
-						"{status}",
-						"{image}",
-						"{category_id}"
+						"update_product"
 					]
 				}
 			},
@@ -244,11 +270,20 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"startDate\":\"2024-06-06\",\r\n    \"endDate\":\"2024-06-08\"\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "https://tb9xj2xd6l.execute-api.us-east-2.amazonaws.com/Prod/history_per_day",
+					"raw": "https://t4g18xbhrd.execute-api.us-east-2.amazonaws.com/Prod/history_per_day",
 					"protocol": "https",
 					"host": [
-						"tb9xj2xd6l",
+						"t4g18xbhrd",
 						"execute-api",
 						"us-east-2",
 						"amazonaws",

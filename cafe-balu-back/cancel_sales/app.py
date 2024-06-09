@@ -11,15 +11,10 @@ rds_db = "cafe_balu"
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+
 def lambda_handler(event, __):
     try:
-        if 'body' not in event:
-            logger.error("body not found in the event")
-            raise KeyError('body')
-
-        # Decodificar el cuerpo como JSON
-        body = json.loads(event['body'])
-        id = body.get('id')
+        id = int(event['pathParameters']['id'])
 
         if id is None:
             logger.warning("Missing fields: id")
@@ -91,6 +86,7 @@ def lambda_handler(event, __):
             }),
         }
 
+
 def id_exists_in_db(id):
     connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
     try:
@@ -103,6 +99,7 @@ def id_exists_in_db(id):
         return False
     finally:
         connection.close()
+
 
 def cancel_sale(id):
     connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)

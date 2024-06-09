@@ -15,12 +15,13 @@ def decimal_to_float(obj):
 def lambda_handler(event, __):
     try:
 
-        if 'pathParameters' not in event:
-            raise Exception
+        if 'body' not in event:
+            raise KeyError('body')
 
-        status = event['pathParameters'].get('status')
-        id = event['pathParameters'].get('id')
-        type = event['pathParameters'].get('type')
+        body = json.loads(event['body'])
+        status = body.get('status')
+        id = body.get('id')
+        type = body.get('type')
 
         if status is None or id is None or type is None:
             return {

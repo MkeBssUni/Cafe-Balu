@@ -14,10 +14,10 @@ def decimal_to_float(obj):
 
 def lambda_handler(event, __):
     try:
-        status = 0
+        status = None
 
-        if 'pathParameters' in event:
-            status = event['pathParameters'].get('status')
+        if 'pathParameters' in event and 'status' in event['pathParameters']:
+            status = int(event['pathParameters']['status'])
 
         if status is None:
             return {

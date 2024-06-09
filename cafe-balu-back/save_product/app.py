@@ -70,20 +70,25 @@ def lambda_handler(event, __):
             return {
                 "statusCode": 400,
                 "body": json.dumps({
-                    "message": "INVALID_CATEGORY_ID"
+                    "message": "MISSING_CATEGORY_ID"
                 }),
             }
 
-        # Validar 'image' URL (opcional): si está presente, debe ser una URL válida
-        if image is not None:
-            url_pattern = re.compile(r'^(https?://[^\s]+)$')
-            if not isinstance(image, str) or not url_pattern.match(image):
-                return {
-                    "statusCode": 400,
-                    "body": json.dumps({
-                        "message": "INVALID_IMAGE_URL"
-                    }),
-                }
+        if not category_exists(category_id):
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "CATEGORY_NOT_FOUND"
+                }),
+            }
+
+        if product_exists_in_category(category_id, name):
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "PRODUCT_EXISTS"
+                }),
+            }
 
         # Llamar a la función para añadir el producto a la base de datos
         add_product(name, stock, price, category_id, image)
@@ -121,6 +126,35 @@ def add_product(name, stock, price, category_id, image):
         logger.info("Product added successfully: name=%s", name)
     except Exception as e:
         logger.error("Database insert error: %s", str(e))
+        raise e
+    finally:
+        connection.close()
+
+
+def category_exists(category_id):
+    connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SELECT COUNT(*) FROM categories WHERE id = %s", (category_id,))
+        connection.commit()
+        return cursor.fetchone()[0] > 0
+
+    except Exception as e:
+        logger.error("Database select error: %s", str(e))
+        raise e
+    finally:
+        connection.close()
+
+def product_exists_in_category(category_id, name):
+    connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SELECT COUNT(*) FROM products WHERE category_id = %s AND lower(name) = %s", (category_id, name.lower()))
+        connection.commit()
+        return cursor.fetchone()[0] > 0
+
+    except Exception as e:
+        logger.error("Database select error: %s", str(e))
         raise e
     finally:
         connection.close()

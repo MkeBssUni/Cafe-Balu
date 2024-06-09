@@ -13,31 +13,27 @@ logger.setLevel(logging.INFO)
 
 def lambda_handler(event, __):
     try:
-        if 'pathParameters' not in event:
-            logger.error("pathParameters not found in the event")
-            raise KeyError('pathParameters')
+        if 'body' not in event:
+            logger.error("Request body not found in the event")
+            raise KeyError('body')
 
-        params = event['pathParameters']
-        required_params = ['id', 'name', 'stock', 'price', 'status', 'image', 'category_id']
+        body = json.loads(event['body'])
 
-        missing_params = [param for param in required_params if param not in params]
-        if missing_params:
-            logger.warning("Missing fields: %s", missing_params)
+        product_id = body.get('id')
+        name = body.get('name')
+        stock = body.get('stock')
+        price = body.get('price')
+        status = body.get('status')
+        image = body.get('image')
+        category_id = body.get('category_id')
+
+        if not product_id or not name or not stock or not price or not status or not image or not category_id:
             return {
                 "statusCode": 400,
                 "body": json.dumps({
                     "message": "MISSING_FIELDS",
-                    "missing": missing_params
                 }),
             }
-
-        product_id = params['id']
-        name = params['name']
-        stock = params['stock']
-        price = params['price']
-        status = params['status']
-        image = params['image']
-        category_id = params['category_id']
 
         update_product(product_id, name, stock, price, status, image, category_id)
         return {
@@ -79,5 +75,33 @@ def update_product(product_id, name, stock, price, status, image, category_id):
     except Exception as e:
         logger.error("Database update error: %s", str(e))
         raise
+    finally:
+        connection.close()
+
+def category_exists(category_id):
+    connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SELECT COUNT(*) FROM categories WHERE id = %s", (category_id,))
+        connection.commit()
+        return cursor.fetchone()[0] > 0
+
+    except Exception as e:
+        logger.error("Database select error: %s", str(e))
+        raise e
+    finally:
+        connection.close()
+
+def product_exists_in_category(category_id, name,product_id):
+    connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SELECT COUNT(*) FROM products WHERE category_id = %s AND lower(name) = %s and id != %s", (category_id, name.lower(), product_id))
+        connection.commit()
+        return cursor.fetchone()[0] > 0
+
+    except Exception as e:
+        logger.error("Database select error: %s", str(e))
+        raise e
     finally:
         connection.close()

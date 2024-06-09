@@ -13,12 +13,14 @@ logger.setLevel(logging.INFO)
 
 def lambda_handler(event, __):
     try:
-        if 'pathParameters' not in event:
-            logger.error("pathParameters not found in the event")
-            raise KeyError('pathParameters')
+        if 'body' not in event:
+            logger.error("Request body not found in the event")
+            raise KeyError('body')
 
-        newName = event['pathParameters'].get('newName')
-        id = event['pathParameters'].get('id')
+        body = json.loads(event['body'])
+
+        newName = body.get('name')
+        id = body.get('id')
 
         if newName is None or id is None:
             logger.warning("Missing fields: id or newName")
@@ -58,6 +60,15 @@ def lambda_handler(event, __):
                         "message": "CATEGORY_NOT_FOUND"
                     }),
                 }
+
+        if duplicated_name(newName) is True:
+            logger.error("Category already exists: newName=%s", newName)
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "DUPLICATED_NAME"
+                }),
+            }
 
         update_category(id, newName)
 
@@ -123,6 +134,28 @@ def category_exist(id):
         try:
             cursor = connection.cursor()
             cursor.execute("SELECT * FROM categories WHERE id = %s", (id))
+            result = cursor.fetchone()
+            print("result", result)
+
+            if result is None:
+                return False
+
+            return True
+        except Exception as e:
+            logger.error("Database error: %s", str(e))
+            return False
+    except Exception as e:
+        logger.error("Database connection error: %s", str(e))
+        return False
+    finally:
+        connection.close()
+
+def duplicated_name(newName):
+    connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
+    try:
+        try:
+            cursor = connection.cursor()
+            cursor.execute("SELECT * FROM categories WHERE lower(name) = %s", (newName.lower()))
             result = cursor.fetchone()
             print("result", result)
 

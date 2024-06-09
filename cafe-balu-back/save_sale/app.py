@@ -2,7 +2,6 @@ import json
 import pymysql
 import logging
 
-# Configuración de RDS (reemplaza con tus datos reales)
 rds_host = "database-cafe-balu.cziym6ii4nn7.us-east-2.rds.amazonaws.com"
 rds_user = "baluroot"
 rds_password = "baluroot"
@@ -12,17 +11,16 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def lambda_handler(event, __):
-    #arreglo de productos
     try:
         if 'body' not in event:
             logger.error("Request body not found in the event")
             raise KeyError('body')
 
-        body=json.loads(event['body'])
+        body = json.loads(event['body'])
         products = body.get('products')
         total = body.get('total')
 
-        if not products or not total:
+        if not products or total is None:
             logger.error("Products or total not found in the body")
             raise KeyError('products or total')
 
@@ -40,6 +38,22 @@ def lambda_handler(event, __):
                 "error": str(e)
             })
         }
+    except ValueError as e:
+        return {
+            "statusCode": 400,
+            "body": json.dumps({
+                "message": str(e)
+            })
+        }
+    except Exception as e:
+        logger.error("Unexpected error: %s", str(e), exc_info=True)
+        return {
+            "statusCode": 500,
+            "body": json.dumps({
+                "message": "INTERNAL_SERVER_ERROR",
+                "error": str(e)
+            })
+        }
 
 def get_products_info(products):
     connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
@@ -48,14 +62,17 @@ def get_products_info(products):
         products_info = []
 
         for product in products:
-            cursor.execute("select id, price, stock from products where id = %s", (product['id'],))
+            if product['quantity'] <= 0:
+                raise ValueError(f"Product with id {product['id']} has invalid quantity")
+
+            cursor.execute("SELECT id, price, stock FROM products WHERE id = %s", (product['id'],))
             product_info = cursor.fetchone()
 
             if product_info is None:
                 raise ValueError(f"Product with id {product['id']} not found")
 
             if product_info[2] < product['quantity']:
-                raise ValueError(f"Product with id {product['id']} has not enough stock")
+                raise ValueError(f"Product with id {product['id']} does not have enough stock")
 
             products_info.append({
                 "id": product_info[0],
@@ -65,26 +82,23 @@ def get_products_info(products):
 
         return products_info
     except Exception as e:
-        return {
-            "statusCode": 500,
-            "body": json.dumps({
-                "message": "DATABASE_ERROR",
-                "error": str(e)
-            }),
-        }
+        logger.error("Database query error: %s", str(e), exc_info=True)
+        raise
     finally:
         connection.close()
 
-def save_sale(products_info,total):
+def save_sale(products_info, total):
     connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
     try:
         cursor = connection.cursor()
-        cursor.execute("insert into sales (total, status) values (%s , 1)", (total,))
+        cursor.execute("INSERT INTO sales (total, status) VALUES (%s, 1)", (total,))
         sale_id = cursor.lastrowid
 
         for product in products_info:
-            cursor.execute("insert into sales_products (sale_id, product_id, quantity) values (%s, %s, %s)", (sale_id, product['id'], product['quantity']))
-            cursor.execute("update products set stock = stock - %s where id = %s", (product['quantity'], product['id']))
+            cursor.execute("INSERT INTO sales_products (sale_id, product_id, quantity) VALUES (%s, %s, %s)",
+                           (sale_id, product['id'], product['quantity']))
+            cursor.execute("UPDATE products SET stock = stock - %s WHERE id = %s",
+                           (product['quantity'], product['id']))
 
         connection.commit()
 
@@ -93,15 +107,16 @@ def save_sale(products_info,total):
             "body": json.dumps({
                 "message": "SALE_SAVED",
                 "sale_id": sale_id
-            }),
+            })
         }
     except Exception as e:
+        logger.error("Database transaction error: %s", str(e), exc_info=True)
         return {
             "statusCode": 500,
             "body": json.dumps({
                 "message": "DATABASE_ERROR",
                 "error": str(e)
-            }),
+            })
         }
     finally:
         connection.close()

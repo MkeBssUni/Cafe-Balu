@@ -97,7 +97,7 @@ jobs:
           pip install aws-sam-cli
 
       - name: Build SAM application
-        run: sam build -t lambdas_back-main/template.yaml
+        run: sam build -t cafe-balu-back/template.yaml
 
       - name: Deploy SAM application
         run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name incidenciaIntegradora9A --capabilities CAPABILITY_IAM --resolve-s3

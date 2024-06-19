@@ -51,7 +51,7 @@ def lambda_handler(event, __):
 
         id = int(id)
         newName = newName.strip()
-
+        exist = category_exist(id)
         if category_exist(id) is False:
                 logger.error("Category not found for id=%s", id)
                 return {

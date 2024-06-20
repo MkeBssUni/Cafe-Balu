@@ -14,8 +14,20 @@ logger.setLevel(logging.INFO)
 
 def lambda_handler(event, __):
     try:
-        id = int(event['pathParameters']['id'])
+         id_str = event['pathParameters']['id']
 
+            # Verificar que el ID sea un número
+        if not id_str.isdigit():
+            logger.warning("Invalid id: id must be a number")
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "INVALID_ID_FORMAT"
+                }),
+            }
+
+        id = int(id_str)
+            # Verificar que el ID no sea nulo
         if id is None:
             logger.warning("Missing fields: id")
             return {

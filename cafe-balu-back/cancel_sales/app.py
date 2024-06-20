@@ -14,21 +14,9 @@ logger.setLevel(logging.INFO)
 
 def lambda_handler(event, __):
     try:
-         id_str = event['pathParameters']['id']
-
-            # Verificar que el ID sea un número
-        if not id_str.isdigit():
-            logger.warning("Invalid id: id must be a number")
-            return {
-                "statusCode": 400,
-                "body": json.dumps({
-                    "message": "INVALID_ID_FORMAT"
-                }),
-            }
-
-        id = int(id_str)
-            # Verificar que el ID no sea nulo
-        if id is None:
+        # Validar que 'id' esté presente en pathParameters
+        id_str = event['pathParameters'].get('id')
+        if id_str is None:
             logger.warning("Missing fields: id")
             return {
                 "statusCode": 400,
@@ -37,9 +25,21 @@ def lambda_handler(event, __):
                 }),
             }
 
-        # Verificar que el ID es un entero positivo
-        if not isinstance(id, int) or id <= 0:
-            logger.warning("Invalid id: id must be a positive integer")
+            # Verificar que el ID no contiene caracteres especiales
+        if re.search(r'[<>?#``]', id_str):
+            logger.warning("Invalid characters in id")
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "INVALID_CHARACTERS"
+                }),
+            }
+
+        # Validar que 'id' sea un número entero
+        try:
+            id = int(id_str)
+        except ValueError:
+            logger.warning("Invalid id: id must be an integer")
             return {
                 "statusCode": 400,
                 "body": json.dumps({
@@ -47,13 +47,13 @@ def lambda_handler(event, __):
                 }),
             }
 
-        # Verificar que el ID no contiene caracteres especiales
-        if re.search(r'[<>?#``]', str(id)):
-            logger.warning("Invalid characters in id")
+        # Validar que 'id' sea un entero positivo
+        if id <= 0:
+            logger.warning("Invalid id: id must be a positive integer")
             return {
                 "statusCode": 400,
                 "body": json.dumps({
-                    "message": "INVALID_CHARACTERS"
+                    "message": "INVALID_ID"
                 }),
             }
 
@@ -74,11 +74,20 @@ def lambda_handler(event, __):
                 "message": "SUCCESSFUL_CANCELLATION",
             }),
         }
+    except pymysql.MySQLError as e:
+        logger.error("MySQL error: %s", str(e))
+        return {
+            "statusCode": 500,
+            "body": json.dumps({
+                "message": "DATABASE_ERROR",
+                "error": str(e)
+            }),
+        }
     except KeyError as e:
         return {
             "statusCode": 400,
             "body": json.dumps({
-                "message": "MISSING_KEY",
+                "message": "MISSING_FIELDS",
                 "error": str(e)
             }),
         }

@@ -15,6 +15,10 @@ import router from './router/index'
 import VueSweetalert2 from 'vue-sweetalert2';
 Vue.use(VueSweetalert2);
 
+// VueMultiselect
+import Multiselect from 'vue-multiselect';
+Vue.component('multi-select', Multiselect);
+
 new Vue({
   router,
   render: (h) => h(App)

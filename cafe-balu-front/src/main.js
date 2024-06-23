@@ -8,6 +8,10 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
+// VueRouter
+import router from './router/index'
+
 new Vue({
+  router,
   render: (h) => h(App)
 }).$mount('#app')

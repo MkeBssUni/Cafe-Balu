@@ -11,8 +11,9 @@
     "bootstrap-vue": "^2.23.1",
     "vue": "^2.7.16",
     "vue-router": "^2.8.1",
+    "vuelidate": "^0.7.7",
     "vue-sweetalert2": "^5.0.5",
-    "vue-multiselect": "^2.1.7"   
+    "vue-multiselect": "^2.1.7"
   },
   "devDependencies": {
     "@vitejs/plugin-legacy": "^2.0.0",

@@ -11,6 +11,10 @@ Vue.use(IconsPlugin)
 // VueRouter
 import router from './router/index'
 
+// Vuelidate
+import Vuelidate from 'vuelidate';
+Vue.use(Vuelidate);
+
 // VueSweetAlert
 import VueSweetalert2 from 'vue-sweetalert2';
 Vue.use(VueSweetalert2);

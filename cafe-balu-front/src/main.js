@@ -11,6 +11,10 @@ Vue.use(IconsPlugin)
 // VueRouter
 import router from './router/index'
 
+// VueSweetAlert
+import VueSweetalert2 from 'vue-sweetalert2';
+Vue.use(VueSweetalert2);
+
 new Vue({
   router,
   render: (h) => h(App)

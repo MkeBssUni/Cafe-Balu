@@ -18,7 +18,17 @@ def lambda_handler(event, __):
             logger.error("Request body not found in the event")
             raise KeyError('body')
 
-        body = json.loads(event['body'])
+        try:
+            body = json.loads(event['body'])
+        except json.JSONDecodeError as e:
+            logger.error("Invalid JSON format: %s", str(e))
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "message": "INVALID_JSON_FORMAT"
+                }),
+            }
+
         name = body.get('name')
         stock = body.get('stock')
         price = body.get('price')
@@ -38,8 +48,9 @@ def lambda_handler(event, __):
                 }),
             }
 
-        # Validar 'name': debe ser una cadena no vacía
-        if not isinstance(name, str) or not name.strip():
+        # Validar 'name': debe ser una cadena no vacía y sin caracteres inválidos
+        if not isinstance(name, str) or not name.strip() or not re.match(r'^[\w\s.-]+$', name):
+            logger.warning("Invalid name: %s", name)
             return {
                 "statusCode": 400,
                 "body": json.dumps({
@@ -113,6 +124,15 @@ def lambda_handler(event, __):
                 "error": str(e)
             }),
         }
+    except pymysql.MySQLError as e:
+        logger.error("MySQL error: %s", str(e))
+        return {
+            "statusCode": 500,
+            "body": json.dumps({
+                "message": "DATABASE_ERROR",
+                "error": str(e)
+            }),
+        }
     except Exception as e:
         logger.error("Exception: %s", str(e))
         return {
@@ -137,7 +157,6 @@ def add_product(name, stock, price, category_id, image):
     finally:
         connection.close()
 
-
 def category_exists(category_id):
     connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
     try:
@@ -157,6 +176,20 @@ def product_exists_in_category(category_id, name):
     try:
         cursor = connection.cursor()
         cursor.execute("SELECT COUNT(*) FROM products WHERE category_id = %s AND lower(name) = %s", (category_id, name.lower()))
+        connection.commit()
+        return cursor.fetchone()[0] > 0
+
+    except Exception as e:
+        logger.error("Database select error: %s", str(e))
+        raise e
+    finally:
+        connection.close()
+
+def is_name_duplicate(name):
+    connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SELECT COUNT(*) FROM products WHERE lower(name) = %s", (name.lower(),))
         connection.commit()
         return cursor.fetchone()[0] > 0
 

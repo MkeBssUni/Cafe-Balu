@@ -11,7 +11,6 @@ def decimal_to_float(obj):
     if isinstance(obj, Decimal):
         return float(obj)
     raise TypeError
-
 def lambda_handler(event, __):
     try:
         status = None
@@ -19,13 +18,6 @@ def lambda_handler(event, __):
         if 'pathParameters' in event and 'status' in event['pathParameters']:
             status = int(event['pathParameters']['status'])
 
-        if status is None:
-            return {
-                "statusCode": 400,
-                "body": json.dumps({
-                    "message": "MISSING_FIELDS"
-                }),
-            }
 
         if status != 0 and status != 1:
             return {

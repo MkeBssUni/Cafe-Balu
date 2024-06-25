@@ -1,0 +1,17 @@
+@font-face {
+    font-family: "Baloo";
+    src: url("../assets/fonts/Baloo-Regular.ttf") format("truetype");
+}
+
+body {
+    font-family: "Baloo", sans-serif;
+}
+
+.full-height {
+    height: 100vh;
+}
+
+.rounded-card {
+    border-radius: 40px;
+    background-color: #DAB284;
+}

@@ -1,7 +1,7 @@
 import unittest
 import json
 from get_products import app
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 mock_success_all ={
     "pathParameters": {
@@ -67,7 +67,7 @@ class TestUpdateCategory(unittest.TestCase):
             }
         ]
 
-        result = app.lambda_handler(mock_success_all, None)
+        result = app.lambda_handler(mock_success_active, None)
         print(result)
         status_code = result["statusCode"]
         self.assertEqual(status_code, 200)
@@ -94,3 +94,31 @@ class TestUpdateCategory(unittest.TestCase):
         body = json.loads(result["body"])
         self.assertIn("message", body)
         self.assertEqual(body["message"], "INTERNAL_SERVER_ERROR")
+
+    def test_get_all_products_decimal_to_float_ok(self):
+        result = app.lambda_handler(mock_success_all, None)
+        print(result)
+        status_code = result["statusCode"]
+        self.assertEqual(status_code, 200)
+        body = json.loads(result["body"])
+        self.assertIn("message", body)
+        self.assertEqual(body["message"], "PRODUCTS_FETCHED")
+
+    def test_decimal_to_float_invalid_type(self):
+        with self.assertRaises(TypeError):
+            app.decimal_to_float("string")
+
+    @patch('get_products.app.pymysql.connect')
+    def test_get_all_products_status_not_0(self, mock_connect):
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        mock_cursor.fetchall.return_value = [(1, 'Product A')]
+        mock_cursor.description = (('id',), ('name',))
+
+        mock_connection.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_connection
+
+        result = app.get_all_products(1)
+
+        mock_cursor.execute.assert_called_once_with("SELECT * FROM products WHERE status = %s", (1,))
+        self.assertEqual(result, [{'id': 1, 'name': 'Product A'}])

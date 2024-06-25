@@ -108,7 +108,6 @@ def update_category(id, newName):
             cursor = connection.cursor()
             cursor.execute("UPDATE categories SET name = %s WHERE id = %s", (newName, id))
             connection.commit()
-            logger.info("Database updated successfully for id=%s", id)
         except Exception as e:
             logger.error("Database update error: %s", str(e))
             return {

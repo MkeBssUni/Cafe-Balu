@@ -23,7 +23,7 @@ mock_invalid_status ={
 
 mock_internal_error ={
     "pathParameters":{
-        "status": None
+        "status": 1
     }
 }
 
@@ -83,9 +83,14 @@ class TestUpdateCategory(unittest.TestCase):
         body = json.loads(result["body"])
         self.assertIn("message", body)
         self.assertEqual(body["message"], "INVALID_STATUS")
+    @patch("get_products.app.get_all_products")
+    def test_get_all_products_internal_error(self, mock_get_all_products):
 
-    def test_get_all_products_internal_error(self):
+        mock_get_all_products.side_effect = Exception('Error')
         result = app.lambda_handler(mock_internal_error, None)
         print(result)
         status_code = result["statusCode"]
         self.assertEqual(status_code, 500)
+        body = json.loads(result["body"])
+        self.assertIn("message", body)
+        self.assertEqual(body["message"], "INTERNAL_SERVER_ERROR")

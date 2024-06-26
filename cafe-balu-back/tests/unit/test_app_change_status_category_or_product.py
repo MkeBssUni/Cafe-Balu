@@ -52,7 +52,15 @@ mock_change_status_type_not_found = {
     })
 }
 
-class TestUpdateCategory(unittest.TestCase):
+mock_change_status_internal_server_error = {
+    "body": json.dumps({
+        "id": 1,
+        "status": 1,
+        "type": "PRODUCT"
+    })
+}
+
+class TestChangeStatusCategoryOrProduct(unittest.TestCase):
 
     def test_lambda_change_status_category_success(self):
         result = app.lambda_handler(mock_change_status_category_success, None)
@@ -105,3 +113,18 @@ class TestUpdateCategory(unittest.TestCase):
         body = json.loads(result["body"])
         self.assertIn("message", body)
         self.assertEqual(body["message"], json.loads(mock_change_status_type_not_found["body"])["type"]+"_NOT_FOUND")
+
+    def test_decimal_to_float_invalid_type(self):
+        with self.assertRaises(TypeError):
+            app.decimal_to_float("string")
+
+    @patch("change_status_category_or_product.app.change_status")
+    def test_lambda_change_status_internal_server_error(self, mock_change_status):
+        mock_change_status.side_effect = Exception("Internal Server Error 5")
+        result = app.lambda_handler(mock_change_status_internal_server_error, None)
+        print(result)
+        status_code = result["statusCode"]
+        self.assertEqual(status_code, 500)
+        body = json.loads(result["body"])
+        self.assertIn("message", body)
+        self.assertEqual(body["message"], "INTERNAL_SERVER_ERROR_")

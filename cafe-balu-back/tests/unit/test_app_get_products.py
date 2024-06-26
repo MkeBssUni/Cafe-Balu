@@ -83,6 +83,7 @@ class TestUpdateCategory(unittest.TestCase):
         body = json.loads(result["body"])
         self.assertIn("message", body)
         self.assertEqual(body["message"], "INVALID_STATUS")
+
     @patch("get_products.app.get_all_products")
     def test_get_all_products_internal_error(self, mock_get_all_products):
 

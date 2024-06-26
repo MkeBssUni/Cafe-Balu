@@ -63,12 +63,6 @@ def get_all_products(status):
 
         return result
     except Exception as e:
-        return {
-            "statusCode": 500,
-            "body": json.dumps({
-                "message": "INTERNAL_SERVER_ERROR",
-                "error": str(e)
-            }),
-        }
+        raise e
     finally:
         connection.close()

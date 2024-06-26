@@ -17,7 +17,6 @@ def lambda_handler(event, __):
 
         if 'body' not in event:
             raise KeyError('body')
-
         body = json.loads(event['body'])
         status = body.get('status')
         id = body.get('id')
@@ -86,12 +85,7 @@ def change_status(id, type, status):
         cursor.execute(query, (status,id))
         connection.commit()
     except Exception as e:
-        return {
-            "statusCode": 500,
-            "body": json.dumps({
-                "message": "INTERNAL_SERVER_ERROR",
-            }),
-        }
+        raise e
     finally:
         connection.close()
 def type_exists(type, id):

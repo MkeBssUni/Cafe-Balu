@@ -208,6 +208,40 @@ Resources:
             Path: /history_per_day
             Method: post
 
+  LoginFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: login
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        Login:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiBaluchis
+            Path: /login
+            Method: post
+
+  NewPasswordFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: newPassword
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        NewPassword:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiBaluchis
+            Path: /new-password
+            Method: patch
+
 Outputs:
   UpdateCategoryApi:
     Description: "API Gateway endpoint URL for Prod stage for UpdateCategory function"
@@ -260,6 +294,18 @@ Outputs:
   HistorySalesPerDayFunctionArn:
     Description: "HistorySalesPerDay Lambda Function ARN"
     Value: !GetAtt HistorySalesPerDayFunction.Arn
+  LoginApi:
+    Description: "Login API"
+    Value: !Sub "https://${ApiBaluchis}.execute-api.${AWS::Region}.amazonaws.com/Prod/login"
+  LoginFunctionArn:
+    Description: "Login Lambda Function ARN"
+    Value: !GetAtt Login.Arn
+  NewPasswordApi:
+    Description: "New password API"
+    Value: !Sub "https://${ApiBaluchis}.execute-api.${AWS::Region}.amazonaws.com/Prod/new-password"
+  NewPasswordArn:
+    Description: "NewPassword Lambda Function ARN"
+    Value: !GetAtt NewPassword.Arn
   LambdaExecutionRoleArn:
     Description: "Lambda Execution Role ARN"
     Value: !GetAtt LambdaExecutionRole.Arn

@@ -299,13 +299,13 @@ Outputs:
     Value: !Sub "https://${ApiBaluchis}.execute-api.${AWS::Region}.amazonaws.com/Prod/login"
   LoginFunctionArn:
     Description: "Login Lambda Function ARN"
-    Value: !GetAtt Login.Arn
+    Value: !GetAtt LoginFunction.Arn
   NewPasswordApi:
     Description: "New password API"
     Value: !Sub "https://${ApiBaluchis}.execute-api.${AWS::Region}.amazonaws.com/Prod/new-password"
   NewPasswordArn:
     Description: "NewPassword Lambda Function ARN"
-    Value: !GetAtt NewPassword.Arn
+    Value: !GetAtt NewPasswordFunction.Arn
   LambdaExecutionRoleArn:
     Description: "Lambda Execution Role ARN"
     Value: !GetAtt LambdaExecutionRole.Arn

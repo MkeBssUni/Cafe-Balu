@@ -20,9 +20,6 @@ def lambda_handler(event, __):
             }
         )
 
-        #print("Response: ")
-        #print(response)
-
         id_token = response['AuthenticationResult']['IdToken']
         access_token = response['AuthenticationResult']['AccessToken']
         refresh_token = response['AuthenticationResult']['RefreshToken']

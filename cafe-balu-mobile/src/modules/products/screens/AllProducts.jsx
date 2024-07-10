@@ -1,36 +1,55 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
-import ContentCard from "../../../components/ContentCard";
-import { ScrollView } from "react-native-gesture-handler";
+import { StyleSheet, View, ScrollView, RefreshControl } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
 import ViewProducts from "../../../components/ViewProducts";
 import { getAllProducts } from "../functions/functions";
 
 export default function AllProducts() {
-  const [reloadComponent, setReloadComponent] = useState(false)
   const [products, setProducts] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(async () => {
-    let productList = await getAllProducts()
-    setProducts(productList);
-  },[reloadComponent])
-  
+  const loadProducts = async () => {
+    console.log("cargando de nuez")
+    try {
+      const productList = await getAllProducts();
+      setProducts(productList);
+    } catch (error) {
+      console.error("Error fetching products: ", error);
+    }
+  };
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    loadProducts().then(() => {
+      setRefreshing(false);
+    });
+  }, []);
 
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {products.map((product, index) => {
-          return (
-            <ViewProducts
-              index={index}
-              name={product.name}
-              image={product.image}
-              price={product.price}
-              stock={product.stock}
-              status={product.status}
-              categoryName={product.category_name}
-            />
-          );
-        })}
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContent}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        {products.map((product, index) => (
+          <ViewProducts
+            key={index}
+            index={index}
+            name={product.name}
+            image={product.image}
+            price={product.price}
+            stock={product.stock}
+            status={product.status}
+            categoryName={product.category_name}
+          />
+        ))}
       </ScrollView>
     </View>
   );
@@ -38,7 +57,13 @@ export default function AllProducts() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    flex: 1,
     backgroundColor: "#fff",
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    padding: 10,
   },
 });

@@ -3,7 +3,7 @@ import React from "react";
 import { Badge, Image, Card } from "@rneui/themed";
 import { cafeBase64 } from "../assets/imgs/imgs-base64";
 
-export default function ViewProduct(props) {
+export default function ViewProducts(props) {
   const { id, name, image, price, index, stock, status, categoryName } = props;
   return (
     <Card

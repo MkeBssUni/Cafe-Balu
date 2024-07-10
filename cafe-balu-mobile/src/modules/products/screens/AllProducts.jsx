@@ -1,19 +1,26 @@
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import { products } from "../functions/data";
+import React, { useEffect, useState } from "react";
 import ContentCard from "../../../components/ContentCard";
 import { ScrollView } from "react-native-gesture-handler";
-import ViewProduct from "../../../components/ViewProduct";
-
-var productsList = products;
+import ViewProducts from "../../../components/ViewProducts";
+import { getAllProducts } from "../functions/functions";
 
 export default function AllProducts() {
+  const [reloadComponent, setReloadComponent] = useState(false)
+  const [products, setProducts] = useState([]);
+
+  useEffect(async () => {
+    let productList = await getAllProducts()
+    setProducts(productList);
+  },[reloadComponent])
+  
+
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {productsList.map((product, index) => {
+        {products.map((product, index) => {
           return (
-            <ViewProduct
+            <ViewProducts
               index={index}
               name={product.name}
               image={product.image}
@@ -32,6 +39,6 @@ export default function AllProducts() {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor: '#fff'
+    backgroundColor: "#fff",
   },
 });

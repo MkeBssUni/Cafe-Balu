@@ -52,9 +52,9 @@ def get_all_products(status):
     try:
         cursor = connection.cursor()
         if status == 0:
-            cursor.execute("SELECT * FROM products")
+            cursor.execute("select p.*, c.name as category_name from products p inner join categories c on p.category_id = c.id;")
         else:
-            cursor.execute("SELECT * FROM products WHERE status = %s", (status,))
+            cursor.execute("select p.*, c.name as category_name from products p inner join categories c on p.category_id = c.id WHERE c.status = %s", (status,))
 
         connection.commit()
 

@@ -24,6 +24,7 @@ Vue.use(VueSweetalert2);
 
 // VueMultiselect
 import Multiselect from 'vue-multiselect';
+import 'vue-multiselect/dist/vue-multiselect.min.css';
 Vue.component('multi-select', Multiselect);
 
 new Vue({

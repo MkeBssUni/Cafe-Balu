@@ -1,14 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { Badge, Image, Card } from "@rneui/themed";
+import { Image, Card } from "@rneui/themed";
 import { cafeBase64 } from "../assets/imgs/imgs-base64";
 
 export default function ViewProducts(props) {
   const { id, name, image, price, index, stock, status, categoryName } = props;
   return (
-    <Card
-      containerStyle={styles.card}
-    >
+    <Card containerStyle={styles.card}>
       <View key={index} style={styles.rowContainer}>
         <View style={styles.imgContainer}>
           <Image
@@ -29,11 +27,9 @@ export default function ViewProducts(props) {
             <Text style={styles.rowItem}>Stock: {stock}</Text>
           </View>
           <View style={styles.row}>
-            <Badge
-              value={status == 1 ? "Activo" : "Inactivo"}
-              status={status == 1 ? "success" : "error"}
-              style={styles.rowItem}
-            />
+            <View style={[styles.status, status === 1 ? styles.activeStatus : styles.inactiveStatus]}>
+              <Text style={styles.statusText}>{status === 1 ? 'Activa' : 'Inactiva'}</Text>
+            </View>
           </View>
         </View>
       </View>
@@ -85,5 +81,21 @@ const styles = StyleSheet.create({
   },
   carDivider:{
     borderWidth: .5,
+  },
+  status: {
+    padding: 4,
+    borderRadius: 4,
+    height: 30,
+    marginTop: 8,
+  },
+  activeStatus: {
+    backgroundColor: '#DFF0D8',
+  },
+  inactiveStatus: {
+    backgroundColor: '#F2DEDE',
+  },
+  statusText: {
+    fontSize: 14,
+    color: '#000',
   },
 });

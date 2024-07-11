@@ -230,3 +230,121 @@ export const products =[
         "category_name": "Test update category success"
     }
 ]
+
+export const categoriesList = [
+    {
+        "id": 1,
+        "name": "Test update category success",
+        "status": 0
+    },
+    {
+        "id": 2,
+        "name": "Bebidas frías",
+        "status": 1
+    },
+    {
+        "id": 3,
+        "name": "Pasteles",
+        "status": 1
+    },
+    {
+        "id": 4,
+        "name": "Galletas",
+        "status": 1
+    },
+    {
+        "id": 5,
+        "name": "categoria1",
+        "status": 1
+    },
+    {
+        "id": 6,
+        "name": "categoria2",
+        "status": 1
+    },
+    {
+        "id": 7,
+        "name": "categoria3",
+        "status": 1
+    },
+    {
+        "id": 8,
+        "name": "categoria3",
+        "status": 1
+    },
+    {
+        "id": 9,
+        "name": "Registro categoria prueba",
+        "status": 1
+    },
+    {
+        "id": 10,
+        "name": "Carros chidos",
+        "status": 1
+    },
+    {
+        "id": 11,
+        "name": "prueba",
+        "status": 1
+    },
+    {
+        "id": 12,
+        "name": "CAFE_ARTESANAL",
+        "status": 1
+    },
+    {
+        "id": 13,
+        "name": "CAFE_ARTESANAL'",
+        "status": 1
+    },
+    {
+        "id": 14,
+        "name": "CAFE_ARTESANAL'",
+        "status": 1
+    },
+    {
+        "id": 15,
+        "name": "cafe",
+        "status": 1
+    },
+    {
+        "id": 16,
+        "name": "nombre%20de%20la%20categoria",
+        "status": 1
+    },
+    {
+        "id": 17,
+        "name": "test",
+        "status": 0
+    },
+    {
+        "id": 18,
+        "name": "test",
+        "status": 0
+    },
+    {
+        "id": 19,
+        "name": "registro",
+        "status": 1
+    },
+    {
+        "id": 20,
+        "name": "categoría registrada ya al final",
+        "status": 0
+    },
+    {
+        "id": 21,
+        "name": "nombre de la categoría",
+        "status": 1
+    },
+    {
+        "id": 22,
+        "name": "nombre de la categoría 2",
+        "status": 0
+    },
+    {
+        "id": 23,
+        "name": "categoría cafe isaac",
+        "status": 0
+    }
+]

@@ -25,6 +25,9 @@ const routes = [
                 path: "/login",
                 name: "login",
                 component: () => import("../modules/auth/views/Login.vue"),
+                meta: {
+                    hideNavigation: true,
+                }
             },
             {
                 path: "/products",

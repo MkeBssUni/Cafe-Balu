@@ -1,6 +1,6 @@
 <template>
     <b-container fluid>
-        <b-row class="bg-light-brown full-height">
+        <b-row class="bg-lighter-brown full-height">
             <b-col cols="6" class="p-0 d-flex align-items-center justify-content-end">
                 <b-img :src="require('@/assets/img/login.webp')" fluid
                     alt="Coffee" class="img"></b-img>

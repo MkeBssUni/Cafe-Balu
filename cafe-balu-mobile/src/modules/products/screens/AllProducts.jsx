@@ -8,7 +8,6 @@ export default function AllProducts() {
   const [refreshing, setRefreshing] = useState(false);
 
   const loadProducts = async () => {
-    console.log("cargando de nuez")
     try {
       const productList = await getAllProducts();
       setProducts(productList);

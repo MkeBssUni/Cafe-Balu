@@ -5,6 +5,7 @@ export const getAllProducts = async () =>{
         const response = await doGet("/get_products/0")
         return response.data.products;
     }catch(error){
+        console.log("response error: ", error)
         return error;
     }
 }

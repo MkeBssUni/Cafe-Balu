@@ -1,4 +1,4 @@
-import { doGet } from "../../../config/axios";
+import { doGet, doPost } from "../../../config/axios";
 
 export const getAllCategories = async () => {
     try {
@@ -7,5 +7,15 @@ export const getAllCategories = async () => {
     } catch (error) {
         console.log("error response: ", error)
         return error;
+    }
+}
+
+export const newCategory = async (categoryName) => {
+    try {
+        const response = await doPost("/save_category",{name:categoryName});
+        return response.data.message == 'CATEGORY_SAVED';
+    } catch (error) {
+        console.log("error response: ", error)
+        return false;
     }
 }

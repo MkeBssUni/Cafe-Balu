@@ -2,9 +2,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 
 export default function List(props) {
-  const { name, status } = props;
+  const { name, status, index } = props;
   return (
-    <View style={styles.categoryContainer}>
+    <View style={styles.categoryContainer} key={index}>
       <Text style={styles.categoryName}>{name.length > 23 ? name.substring(0, 23) + '...' : name}</Text>
       <View style={[styles.status, status === 1 ? styles.activeStatus : styles.inactiveStatus]}>
         <Text style={styles.statusText}>{status === 1 ? 'Activa' : 'Inactiva'}</Text>

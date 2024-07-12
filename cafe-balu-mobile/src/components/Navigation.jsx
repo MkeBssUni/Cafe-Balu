@@ -14,11 +14,11 @@ export default function Navigation() {
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color }) => screenOptions(route, color),
           tabBarActiveTintColor: "#8B4513",
-          tabBarInactiveTintColor: "#D2B48C",
+          tabBarInactiveTintColor: "#A77B4A",
           headerShown: false,
           tabBarStyle: {
             backgroundColor: "#F5F5F5",
-            borderTopColor: "#D2B48C",
+            borderTopColor: "#A77B4A",
             borderTopWidth: 1
           },
         })}

@@ -14,7 +14,7 @@
                 </b-form-group>
             </b-col>
             <b-col cols="2">
-                <b-button variant="outline-dark-brown" class="d-flex align-items-center justify-content-between w-100">
+                <b-button variant="outline-dark-brown" class="d-flex align-items-center justify-content-between w-100" @click="addSale()">
                     <span>Registrar</span>
                     <b-icon icon="plus-circle"></b-icon>
                 </b-button>
@@ -75,6 +75,7 @@
                 </b-row>
             </b-col>
         </b-row>
+        <AddSaleForm />
     </b-container>
 </template>
 
@@ -82,6 +83,9 @@
 const today = new Date();
 export default {
     name: 'Sales',
+    components: {
+        AddSaleForm: () => import('@/modules/sales/components/AddSaleForm.vue')
+    },
     data() {
         return {
             startDate: today,
@@ -118,6 +122,11 @@ export default {
             ],
         }
     },
+    methods: {
+        addSale() {
+            this.$bvModal.show('modal-add-sale');
+        }
+    }
 }
 </script>
 

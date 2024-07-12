@@ -13,12 +13,6 @@
             </b-nav-item>
             <b-nav-item>
                 <b-button variant="outline-dark-brown" class="d-flex align-items-center">                    
-                    <span>Perfil</span>
-                    <b-icon icon="person" class="ms-2"></b-icon>
-                </b-button>
-            </b-nav-item>
-            <b-nav-item>
-                <b-button variant="outline-dark-brown" class="d-flex align-items-center">                    
                     <span>Cerrar sesión</span>
                     <b-icon icon="box-arrow-right" class="ms-2" font-scale="0.95"></b-icon>
                 </b-button>

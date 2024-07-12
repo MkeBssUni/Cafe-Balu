@@ -2,10 +2,13 @@ import { StyleSheet, View, ScrollView, RefreshControl } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
 import ViewProducts from "../../../components/ViewProducts";
 import { getAllProducts } from "../functions/functions";
+import { SpeedDial } from "@rneui/themed";
+import { useNavigation } from "@react-navigation/native";
 
 export default function AllProducts() {
   const [products, setProducts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const navigate = useNavigation();
 
   const loadProducts = async () => {
     try {
@@ -50,6 +53,29 @@ export default function AllProducts() {
           />
         ))}
       </ScrollView>
+      <SpeedDial
+        isOpen={false}
+        icon={{
+          name: "add",
+          color: "#fff",
+        }}
+        openIcon={{
+          name: "close",
+          color: "#fff",
+        }}
+        buttonStyle={styles.buttonStyleDial}
+        onOpen={() => navigate.navigate("newProductStack")}
+      >
+        <SpeedDial.Action
+          icon={{
+            name: "add",
+            color: "#fff",
+          }}
+          title={"Nuevo producto"}
+          onPress={() => console.log("do something")}
+          buttonStyle={styles.buttonStyleDial}
+        />
+      </SpeedDial>
     </View>
   );
 }
@@ -64,5 +90,8 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     padding: 10,
+  },
+  buttonStyleDial: {
+    backgroundColor: "#A77B4A",
   },
 });

@@ -13,7 +13,7 @@ export default function ViewProducts(props) {
             resizeMode="contain"
             style={styles.img}
             source={{
-              uri: cafeBase64,
+              uri: image || cafeBase64,
             }}
           />
         </View>
@@ -28,7 +28,7 @@ export default function ViewProducts(props) {
           </View>
           <View style={styles.row}>
             <View style={[styles.status, status === 1 ? styles.activeStatus : styles.inactiveStatus]}>
-              <Text style={styles.statusText}>{status === 1 ? 'Activa' : 'Inactiva'}</Text>
+              <Text style={styles.statusText}>{status === 1 ? 'Activo' : 'Inactivo'}</Text>
             </View>
           </View>
         </View>

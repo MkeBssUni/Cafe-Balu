@@ -1,4 +1,4 @@
-import { doGet } from "../../../config/axios";
+import { doGet, doPost } from "../../../config/axios";
 
 export const getAllProducts = async () =>{
     try{
@@ -7,5 +7,22 @@ export const getAllProducts = async () =>{
     }catch(error){
         console.log("response error: ", error)
         return error;
+    }
+}
+
+export const saveProduct = async (product) =>{
+    try{
+        const response = await doPost("/add_product",{
+            name: product.name,
+            stock: product.stock,
+            price: product.price,
+            category_id: product.category_id,
+            image: product.image
+        });
+        console.log(response);
+        return response.data;
+    }catch(error){
+        console.log("error response: ", error)
+        return false;
     }
 }

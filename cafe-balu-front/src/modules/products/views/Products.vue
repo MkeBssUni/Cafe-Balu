@@ -18,7 +18,7 @@
                 </multi-select>
             </b-col>
             <b-col cols="2">
-                <b-button variant="outline-dark-brown" class="d-flex align-items-center justify-content-between w-100">
+                <b-button variant="outline-dark-brown" class="d-flex align-items-center justify-content-between w-100" @click="saveProduct()">
                     <span>Registrar</span>
                     <b-icon icon="plus-circle"></b-icon>
                 </b-button>
@@ -87,12 +87,16 @@
                 </b-row>
             </b-col>
         </b-row>
+        <SaveProduct />
     </b-container>
 </template>
 
 <script>
 export default {
     name: 'Products',
+    components: {
+        SaveProduct: () => import('@/modules/products/views/components/SaveProductForm.vue')
+    },
     data() {
         return {
             category: { id: 0, name: 'Todas las categorías' },
@@ -141,6 +145,9 @@ export default {
     methods: {
         searchProduct() {
             if (this.search.trim().length > 0) this.products = this.products.filter(product => product.name.toLowerCase().includes(this.search.toLowerCase()));            
+        },
+        saveProduct() {
+            this.$bvModal.show('modal-save-product');
         }
     }
 }

@@ -19,7 +19,6 @@ export const saveProduct = async (product) =>{
             category_id: product.category_id,
             image: product.image
         });
-        console.log(response);
         return response.data;
     }catch(error){
         console.log("error response: ", error)

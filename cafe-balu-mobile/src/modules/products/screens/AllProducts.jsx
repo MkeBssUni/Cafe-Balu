@@ -13,7 +13,7 @@ export default function AllProducts() {
   const loadProducts = async () => {
     try {
       const productList = await getAllProducts();
-      setProducts(productList);
+      setProducts(productList.reverse());
     } catch (error) {
       console.error("Error fetching products: ", error);
     }

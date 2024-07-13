@@ -1,13 +1,12 @@
 import { ScrollView, StyleSheet, View, RefreshControl } from "react-native";
 import React, { useState, useEffect, useCallback } from "react";
-import { categoriesList } from "../../../kernel/data";
 import List from "../../../components/List";
 import { getAllCategories } from "../functions/functions";
 import { SpeedDial } from "@rneui/themed";
 import ModalNewCateogry from "../../../components/ModalNewCateogry";
 
 export default function AllCategories() {
-  const [categories, setCategories] = useState(categoriesList);
+  const [categories, setCategories] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [openDial, setOpenDial] = useState(false);
 
@@ -18,7 +17,7 @@ export default function AllCategories() {
   const loadCategories = async () => {
     try {
       const categoriesList = await getAllCategories();
-      setCategories(categoriesList);
+      setCategories(categoriesList.reverse());
     } catch (error) {
       console.log("error categories: ", error);
     }

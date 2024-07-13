@@ -1,13 +1,18 @@
-import { StyleSheet, Image, View } from "react-native";
-import React, { useState } from "react";
+import { StyleSheet, Image, View, ScrollView } from "react-native";
+import React, { useState, useEffect } from "react";
 import { Button, Input } from "@rneui/base";
 import * as ImagePicker from "expo-image-picker";
 import { isEmpty } from "lodash";
 import { saveProduct } from "../functions/functions";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import Select from "../../../components/Select";
+import { getAllCategories } from "../../categories/functions/functions";
 
 export default function NewProduct() {
-    const navigation = useNavigation();
+  const [categories, setCategories] = useState([]);
+  const route = useRoute();
+
+  const navigation = useNavigation();
   const [errors, setErrors] = useState({
     name: "",
     stock: "",
@@ -19,10 +24,19 @@ export default function NewProduct() {
     name: "",
     stock: "",
     price: "",
-    category_id: 1, // Default category, replace with the correct one
+    category_id: category,
     image: null,
   });
   const [image, setImage] = useState(null);
+  const [category, setCategory] = useState(0);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const categoriesData = await getAllCategories();
+      setCategories(categoriesData);
+    };
+    fetchCategories();
+  }, []);
 
   const handleChange = (name, value) => {
     setNewProduct({
@@ -40,11 +54,11 @@ export default function NewProduct() {
       base64: true,
     });
     if (!result.canceled) {
-        const { uri, base64 } = result.assets[0];
-        const imageFormat = uri.split('.').pop();
-        const base64Image = `data:image/${imageFormat};base64,${base64}`;
-        setImage(uri);
-        handleChange("image", base64Image);
+      const { uri, base64 } = result.assets[0];
+      const imageFormat = uri.split(".").pop();
+      const base64Image = `data:image/${imageFormat};base64,${base64}`;
+      setImage(uri);
+      handleChange("image", base64Image);
     }
   };
 
@@ -73,6 +87,7 @@ export default function NewProduct() {
       ...newProduct,
       stock: parseInt(newProduct.stock),
       price: parseFloat(newProduct.price),
+      category_id: category,
     };
 
     if (isEmpty(updatedProduct.name)) {
@@ -114,76 +129,88 @@ export default function NewProduct() {
 
   return (
     <View style={styles.container}>
-      <Input
-        label="Nombre del producto"
-        placeholder="ej: Muffin de chocolate"
-        labelStyle={styles.label}
-        keyboardType="default"
-        containerStyle={styles.inputContainer}
-        autoCapitalize="sentences"
-        onChange={(event) => handleChange("name", event.nativeEvent.text)}
-        errorMessage={errors.name}
-        value={newProduct.name}
-      />
-      <View style={styles.row}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         <Input
-          label="Stock"
-          placeholder="ej: 10"
+          label="Nombre del producto"
+          placeholder="ej: Muffin de chocolate"
           labelStyle={styles.label}
-          keyboardType="numeric"
-          containerStyle={styles.inputContainerRow}
-          onChange={(event) => handleChange("stock", event.nativeEvent.text)}
-          errorMessage={errors.stock}
-          value={newProduct.stock}
+          keyboardType="default"
+          containerStyle={styles.inputContainer}
+          autoCapitalize="sentences"
+          onChange={(event) => handleChange("name", event.nativeEvent.text)}
+          errorMessage={errors.name}
+          value={newProduct.name}
         />
-        <Input
-          label="Precio"
-          placeholder="ej: 25.00"
-          labelStyle={styles.label}
-          keyboardType="numeric"
-          containerStyle={styles.inputContainerRow}
-          onChange={(event) => handleChange("price", event.nativeEvent.text)}
-          errorMessage={errors.price}
-          value={newProduct.price}
+        <View style={styles.row}>
+          <Input
+            label="Stock"
+            placeholder="ej: 10"
+            labelStyle={styles.label}
+            keyboardType="numeric"
+            containerStyle={styles.inputContainerRow}
+            onChange={(event) => handleChange("stock", event.nativeEvent.text)}
+            errorMessage={errors.stock}
+            value={newProduct.stock}
+          />
+          <Input
+            label="Precio"
+            placeholder="ej: 25.00"
+            labelStyle={styles.label}
+            keyboardType="numeric"
+            containerStyle={styles.inputContainerRow}
+            onChange={(event) => handleChange("price", event.nativeEvent.text)}
+            errorMessage={errors.price}
+            value={newProduct.price}
+          />
+        </View>
+        <Select
+          value={category}
+          setValue={setCategory}
+          label={"Selecciona una categoría"}
+          list={categories}
+          defaultTitle={"Categoría"}
         />
-      </View>
-      <Button
-        title={image ? "Cambiar imagen" : "Seleccionar imagen"}
-        onPress={pickImage}
-        buttonStyle={styles.imgPickerButton}
-        iconRight={true}
-        icon={
-          image
-            ? {
-                name: "image-edit",
-                type: "material-community",
-                size: 22,
-                color: "white",
-              }
-            : {
-                name: "image-plus",
-                type: "material-community",
-                size: 22,
-                color: "white",
-              }
-        }
-      />
-      {image && <Image source={{ uri: image }} style={styles.image} />}
-      <View style={styles.row}>
         <Button
-          title="Limpiar"
-          buttonStyle={styles.closeButton}
-          containerStyle={styles.buttonContainer}
-          onPress={cleanForm}
+          title={image ? "Cambiar imagen" : "Seleccionar imagen"}
+          onPress={pickImage}
+          buttonStyle={styles.imgPickerButton}
+          iconRight={true}
+          icon={
+            image
+              ? {
+                  name: "image-edit",
+                  type: "material-community",
+                  size: 22,
+                  color: "white",
+                }
+              : {
+                  name: "image-plus",
+                  type: "material-community",
+                  size: 22,
+                  color: "white",
+                }
+          }
         />
+        {image && <Image source={{ uri: image }} style={styles.image} />}
+        <View style={styles.row}>
+          <Button
+            title="Limpiar"
+            buttonStyle={styles.closeButton}
+            containerStyle={styles.buttonContainer}
+            onPress={cleanForm}
+          />
 
-        <Button
-          title="Guardar"
-          buttonStyle={styles.saveButton}
-          containerStyle={styles.buttonContainer}
-          onPress={sendData}
-        />
-      </View>
+          <Button
+            title="Guardar"
+            buttonStyle={styles.saveButton}
+            containerStyle={styles.buttonContainer}
+            onPress={sendData}
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -193,6 +220,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     padding: 15,
+  },
+  scrollView: {
+    flex: 1,
   },
   label: {
     color: "#8B4513",
@@ -219,6 +249,7 @@ const styles = StyleSheet.create({
   imgPickerButton: {
     backgroundColor: "#D2B48C",
     borderRadius: 10,
+    marginTop: 20,
   },
   saveButton: {
     backgroundColor: "#A77B4A",

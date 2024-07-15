@@ -1,7 +1,8 @@
 import React from "react";
-import { View } from "react-native";
 import Navigation from "./src/components/Navigation";
+import { LogBox } from "react-native";
 
+LogBox.ignoreAllLogs(true);
 const Flex = () => {
   return (
     <Navigation />    

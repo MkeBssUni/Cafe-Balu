@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import ProductsStack from "../stack/ProductsStack";
 import CategoriesStack from "../stack/CategoriesStack";
 import { Icon } from "@rneui/base";
+import SalesStack from "../stack/SalesStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -22,8 +23,15 @@ export default function Navigation() {
             borderTopWidth: 1
           },
         })}
-        initialRouteName="products"
+        initialRouteName="sales"
       >
+        <Tab.Screen
+          name="sales"
+          component={SalesStack}
+          options={{
+            title: "Ventas",
+          }}
+        />
         <Tab.Screen
           name="products"
           component={ProductsStack}
@@ -46,6 +54,9 @@ export default function Navigation() {
 const screenOptions = (route, color) => {
   let iconName;
   switch (route.name) {
+    case "sales":
+      iconName = "currency-usd";
+      break;
     case "products":
       iconName = "food-fork-drink";
       break;

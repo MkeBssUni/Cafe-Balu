@@ -238,7 +238,7 @@ export const categoriesList = [
         "status": 0
     },
     {
-        "id": 2,
+        "id": 2,    
         "name": "Bebidas frías",
         "status": 1
     },
@@ -346,5 +346,144 @@ export const categoriesList = [
         "id": 23,
         "name": "categoría cafe isaac",
         "status": 0
+    }
+]
+
+export const salesPerDay =[
+    {
+        "sale_id": 23,
+        "createdAt": "2024-06-09 03:48:35",
+        "status": 0,
+        "total": 150.0,
+        "products": [
+            {
+                "product_id": 1,
+                "name": "Capuccino",
+                "price": 25.0
+            },
+            {
+                "product_id": 2,
+                "name": "Caffé especial",
+                "price": 75.0
+            },
+            {
+                "product_id": 1,
+                "name": "Capuccino",
+                "price": 25.0
+            },
+            {
+                "product_id": 2,
+                "name": "Caffé especial",
+                "price": 75.0
+            },
+            {
+                "product_id": 1,
+                "name": "Capuccino",
+                "price": 25.0
+            },
+            {
+                "product_id": 2,
+                "name": "Caffé especial",
+                "price": 75.0
+            },
+        ]
+    },
+    {
+        "sale_id": 25,
+        "createdAt": "2024-06-09 03:51:21",
+        "status": 1,
+        "total": 150.0,
+        "products": [
+            {
+                "product_id": 1,
+                "name": "Capuccino",
+                "price": 25.0
+            },
+            {
+                "product_id": 2,
+                "name": "Caffé especial",
+                "price": 75.0
+            }
+        ]
+    },
+    {
+        "sale_id": 27,
+        "createdAt": "2024-06-09 03:58:48",
+        "status": 1,
+        "total": 150.0,
+        "products": [
+            {
+                "product_id": 1,
+                "name": "Capuccino",
+                "price": 25.0
+            },
+            {
+                "product_id": 2,
+                "name": "Caffé especial",
+                "price": 75.0
+            }
+        ]
+    },
+    {
+        "sale_id": 28,
+        "createdAt": "2024-06-09 03:58:56",
+        "status": 1,
+        "total": 150.0,
+        "products": [
+            {
+                "product_id": 1,
+                "name": "Capuccino",
+                "price": 25.0
+            },
+            {
+                "product_id": 2,
+                "name": "Caffé especial",
+                "price": 75.0
+            }
+        ]
+    },
+    {
+        "sale_id": 36,
+        "createdAt": "2024-06-09 04:18:16",
+        "status": 1,
+        "total": 150.0,
+        "products": [
+            {
+                "product_id": 2,
+                "name": "Caffé especial",
+                "price": 75.0
+            }
+        ]
+    },
+    {
+        "sale_id": 37,
+        "createdAt": "2024-06-09 04:19:44",
+        "status": 1,
+        "total": 150.0,
+        "products": [
+            {
+                "product_id": 1,
+                "name": "Capuccino",
+                "price": 25.0
+            },
+            {
+                "product_id": 2,
+                "name": "Caffé especial",
+                "price": 75.0
+            }
+        ]
+    },
+    {
+        "sale_id": 38,
+        "createdAt": "2024-06-09 04:59:31",
+        "status": 1,
+        "total": 150.0,
+        "products": [
+            {
+                "product_id": 2,
+                "name": "Caffé especial",
+                "price": 75.0
+            }
+        ]
     }
 ]

@@ -7,12 +7,20 @@ import { saveProduct } from "../functions/functions";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Select from "../../../components/Select";
 import { getAllCategories } from "../../categories/functions/functions";
+import CustomToast from "../../../components/CustomToast";
 
 export default function NewProduct() {
   const [categories, setCategories] = useState([]);
+  const [toastConfig, setToastConfig] = useState({
+    visible: false,
+    message: "",
+    iconName: "",
+    iconColor: "",
+    toastColor: "",
+  });
   const route = useRoute();
-
   const navigation = useNavigation();
+
   const [errors, setErrors] = useState({
     name: "",
     stock: "",
@@ -29,6 +37,14 @@ export default function NewProduct() {
   });
   const [image, setImage] = useState(null);
   const [category, setCategory] = useState(0);
+
+  const showToast = (message, iconName, iconColor, toastColor) => {
+    setToastConfig({ visible: true, message, iconName, iconColor, toastColor });
+  };
+
+  const handleHideToast = () => {
+    setToastConfig((prevState) => ({ ...prevState, visible: false }));
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -112,18 +128,24 @@ export default function NewProduct() {
       setErrors((prev) => ({ ...prev, price: "El precio debe ser mayor a 0" }));
       return;
     }
+    
+    if(updatedProduct.category_id === 0 || updatedProduct.category_id === undefined){
+      showToast("La categoría es requerida", "alert-circle", "#fff", "#FF0000");
+      return;
+    }
 
     if (isEmpty(updatedProduct.image)) {
-      //pendiente implementar el toast
-      setErrors((prev) => ({ ...prev, image: "La imagen es requerida" }));
+      showToast("La imagen es requerida", "alert-circle", "#fff", "#FF0000");
       return;
     }
 
     const result = saveProduct(updatedProduct);
     if (result) {
-      console.log("Producto guardado con éxito");
-      cleanForm();
-      navigation.navigate("allProductsStack");
+      showToast("Producto guardado", "check-circle", "#fff", "#00B82C");
+      setTimeout(() => {
+        cleanForm();
+        navigation.navigate("allProductsStack");
+      }, 2000);
     }
   };
 
@@ -211,6 +233,7 @@ export default function NewProduct() {
           />
         </View>
       </ScrollView>
+      <CustomToast {...toastConfig} onHide={handleHideToast} />
     </View>
   );
 }

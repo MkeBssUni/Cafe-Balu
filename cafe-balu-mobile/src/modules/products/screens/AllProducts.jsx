@@ -4,10 +4,12 @@ import ViewProducts from "../../../components/ViewProducts";
 import { getAllProducts } from "../functions/functions";
 import { SpeedDial } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
+import Loading from "../../../components/Loading";
 
 export default function AllProducts() {
   const [products, setProducts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [showLoading, setShowLoading] = useState(true);
   const navigate = useNavigation();
 
   const loadProducts = async () => {
@@ -20,9 +22,11 @@ export default function AllProducts() {
   };
 
   useEffect(() => {
+    setShowLoading(true);
     loadProducts();
+    setShowLoading(false);
   }, []);
-
+  
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     loadProducts().then(() => {
@@ -30,14 +34,14 @@ export default function AllProducts() {
     });
   }, []);
 
-  return (
+  return !showLoading ? (
     <View style={styles.container}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
         }
       >
         {products.map((product, index) => (
@@ -77,7 +81,9 @@ export default function AllProducts() {
         />
       </SpeedDial>
     </View>
-  );
+  ) : (
+    <Loading />
+  )
 }
 
 const styles = StyleSheet.create({

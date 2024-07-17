@@ -77,6 +77,11 @@ jobs:
         run: |
           cd cafe-balu-back/newPassword/
           pip install -r requirements.txt
+      
+      - name: Install dependencies for get one product
+        run: |
+          cd cafe-balu-back/get_one_product/
+          pip install -r requirements.txt
 
       - name: Install AWS CLI
         run: |

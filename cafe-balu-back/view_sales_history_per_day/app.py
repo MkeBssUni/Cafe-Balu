@@ -128,7 +128,8 @@ def history_per_day(start_date, end_date):
                 sales.total,
                 products.id AS product_id,
                 products.name,
-                products.price
+                products.price,
+                sales_products.quantity
             FROM
                 sales
             INNER JOIN

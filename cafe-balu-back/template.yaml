@@ -241,6 +241,23 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /new-password
             Method: patch
+  
+  GetOneProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get_one_product
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetOneProduct:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiBaluchis
+            Get: /get_product/{id}
+            Method: patch
 
 Outputs:
   UpdateCategoryApi:
@@ -306,6 +323,12 @@ Outputs:
   NewPasswordArn:
     Description: "NewPassword Lambda Function ARN"
     Value: !GetAtt NewPasswordFunction.Arn
+  GetOneProductApi:
+    Description: "Get one product API"
+    Value: !Sub "https://${ApiBaluchis}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_product/{id}"
+  GetOneProductFunctionArn:
+    Description: "GetOneProduct Lambda Function ARN"
+    Value: !GetAtt GetOneProductFunction.Arn
   LambdaExecutionRoleArn:
     Description: "Lambda Execution Role ARN"
     Value: !GetAtt LambdaExecutionRole.Arn

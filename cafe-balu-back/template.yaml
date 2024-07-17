@@ -256,8 +256,8 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref ApiBaluchis
-            Get: /get_product/{id}
-            Method: patch
+            Path: /get_product/{id}
+            Method: get
 
 Outputs:
   UpdateCategoryApi:

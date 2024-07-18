@@ -1,12 +1,12 @@
 <template>
     <b-container fluid>
-        <b-row class="bg-lighter-brown full-height">
-            <b-col cols="6" class="p-0 d-flex align-items-center justify-content-end">
+        <b-row class="bg-lighter-brown full-height d-flex justify-content-center">
+            <b-col cols="4" lg="6" class="p-0 d-none d-md-flex align-items-center justify-content-end">
                 <b-img :src="require('@/assets/img/login.webp')" fluid
                     alt="Coffee" class="img"></b-img>
             </b-col>
-            <b-col cols="6" class="px-5 align-self-center">
-                <b-card class="p-4 mx-5 rounded-card">
+            <b-col cols="12" sm="11" md="8" lg="6" class="px-5 align-self-center">
+                <b-card class="p-4 mx-xl-4 rounded-card">
                     <b-row class="d-flex justify-content-center">
                         <b-col cols="12">
                             <h1 class="text-center text-dark-brown" style="font-weight: 600;">Café Balú</h1>
@@ -33,7 +33,7 @@
                                 </b-input-group>
                             </b-form-group>
                         </b-col>
-                        <b-col cols="6" class="my-4">
+                        <b-col cols="8" class="my-4">
                             <b-button class="w-100" variant="light-brown">
                                 Iniciar sesión
                             </b-button>

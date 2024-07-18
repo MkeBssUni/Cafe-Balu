@@ -1,7 +1,7 @@
 <template>
     <b-container fluid>
         <b-row class="p-4">
-            <b-col cols="6">
+            <b-col cols="12" md="4" lg="6">
                 <b-input-group>
                     <b-form-input placeholder="Buscar por nombre..." @keyup.enter="searchProduct()"
                         v-model="search"></b-form-input>
@@ -11,14 +11,15 @@
                     </b-button>
                 </b-input-group>
             </b-col>
-            <b-col cols="4">
+            <b-col cols="12" sm="6" md="4" class="mt-3 mt-md-0">
                 <multi-select :options="categories" v-model="category" placeholder="Selecciona una categoría"
                     label="name" track-by="name" :taggable="false" :allow-empty="false"
                     selectLabel="Presiona enter para seleccionar" selectedLabel="Seleccionado" deselectLabel="">
                 </multi-select>
             </b-col>
-            <b-col cols="2">
-                <b-button variant="outline-dark-brown" class="d-flex align-items-center justify-content-between w-100" @click="saveProduct()">
+            <b-col cols="12" sm="6" md="4" lg="2" class="mt-3 mt-md-0">
+                <b-button variant="outline-dark-brown" class="d-flex align-items-center justify-content-between w-100"
+                    @click="saveProduct()">
                     <span>Registrar</span>
                     <b-icon icon="plus-circle"></b-icon>
                 </b-button>
@@ -68,21 +69,21 @@
                 </b-table>
             </b-col>
             <b-col cols="12" class="bg-light m-0">
-                <b-row class="d-flex align-items-center">
-                    <b-col cols="4">
-                        <b>Mostrando {{ pagination.size * (pagination.page - 1) + 1 }} al
-                            {{ pagination.size * pagination.page }} de {{ pagination.total }}
-                            registros</b>
-                    </b-col>
-                    <b-col cols="4" class="d-flex justify-content-center align-items-center mt-3">
+                <b-row class="d-flex align-items-center justify-content-center">
+                    <b-col cols="12" md="4" order-md="2" class="d-flex justify-content-center align-items-center mt-3">
                         <b-pagination size="sm" v-model="pagination.page" :total-rows="pagination.total"
                             :per-page="pagination.size" aria-controls="product-table">
                         </b-pagination>
                     </b-col>
-                    <b-col cols="4" class="d-flex align-items-center justify-content-between">
+                    <b-col cols="12" md="4" order-md="1" class="text-center text-md-start">
+                        <b>Mostrando {{ pagination.size * (pagination.page - 1) + 1 }} al
+                            {{ pagination.size * pagination.page }} de {{ pagination.total }}
+                            registros</b>
+                    </b-col>
+                    <b-col cols="10" sm="8" md="4" order-md="3" class="d-flex align-items-center justify-content-between my-2 my-md-0">
                         <b>Registros por página</b>
-                        <b-form-select v-model="pagination.size" :options="pageOptions" class="form-select"
-                            style="width: 30%"></b-form-select>
+                        <b-form-select v-model="pagination.size" :options="pageOptions"
+                            class="form-select small"></b-form-select>
                     </b-col>
                 </b-row>
             </b-col>
@@ -144,7 +145,7 @@ export default {
     },
     methods: {
         searchProduct() {
-            if (this.search.trim().length > 0) this.products = this.products.filter(product => product.name.toLowerCase().includes(this.search.toLowerCase()));            
+            if (this.search.trim().length > 0) this.products = this.products.filter(product => product.name.toLowerCase().includes(this.search.toLowerCase()));
         },
         saveProduct() {
             this.$bvModal.show('modal-save-product');
@@ -153,4 +154,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped>
+.small {    
+    width: 40%;    
+}
+</style>

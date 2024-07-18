@@ -1,20 +1,29 @@
 <template>
     <b-container fluid>
-        <b-row class="p-4 d-flex align-items-center justify-content-end">
-            <b-col cols="4">
-                <b-form-group>
-                    <b-form-datepicker v-model="startDate" class="w-100">
-                    </b-form-datepicker>
-                </b-form-group>
+        <b-row class="p-4 d-flex align-items-lg-center justify-content-end">
+            <b-col cols="12" md="9" lg="10">
+                <b-row>
+                    <b-col cols="12" lg="6" xl="5"
+                        class="d-flex align-items-center justify-content-between justify-content-sm-end justify-content-lg-start">
+                        <label class="mb-0 me-3">Fecha de inicio: <b class="text-danger">*</b></label>
+                        <b-form-group>
+                            <b-form-datepicker v-model="startDate" class="w-100">
+                            </b-form-datepicker>
+                        </b-form-group>
+                    </b-col>
+                    <b-col cols="12" lg="6" xl="5"
+                        class="mt-3 mt-lg-0 d-flex align-items-center justify-content-between justify-content-sm-end justify-content-lg-start">
+                        <label class="mb-0 me-3">Fecha de fin: <b class="text-danger">*</b></label>
+                        <b-form-group>
+                            <b-form-datepicker v-model="endDate" class="w-100">
+                            </b-form-datepicker>
+                        </b-form-group>
+                    </b-col>
+                </b-row>
             </b-col>
-            <b-col cols="4">
-                <b-form-group>
-                    <b-form-datepicker v-model="endDate" class="w-100">
-                    </b-form-datepicker>
-                </b-form-group>
-            </b-col>
-            <b-col cols="2">
-                <b-button variant="outline-dark-brown" class="d-flex align-items-center justify-content-between w-100" @click="saleForm()">
+            <b-col cols="8" sm="6" md="3" lg="2" class="mt-3 mt-md-0">
+                <b-button variant="outline-dark-brown" class="d-flex align-items-center justify-content-between w-100"
+                    @click="saleForm()">
                     <span>Registrar</span>
                     <b-icon icon="plus-circle"></b-icon>
                 </b-button>
@@ -59,18 +68,18 @@
                 </b-table>
             </b-col>
             <b-col cols="12" class="bg-light m-0">
-                <b-row class="d-flex align-items-center">
-                    <b-col cols="4">
-                        <b>Mostrando {{ pagination.size * (pagination.page - 1) + 1 }} al
-                            {{ pagination.size * pagination.page }} de {{ pagination.total }}
-                            registros</b>
-                    </b-col>
-                    <b-col cols="4" class="d-flex justify-content-center align-items-center mt-3">
+                <b-row class="d-flex align-items-center justify-content-center">
+                    <b-col cols="12" md="4" order-md="2" class="d-flex justify-content-center align-items-center mt-3">
                         <b-pagination size="sm" v-model="pagination.page" :total-rows="pagination.total"
                             :per-page="pagination.size" aria-controls="product-table">
                         </b-pagination>
                     </b-col>
-                    <b-col cols="4" class="d-flex align-items-center justify-content-between">
+                    <b-col cols="12" md="4" order-md="1" class="text-center text-md-start">
+                        <b>Mostrando {{ pagination.size * (pagination.page - 1) + 1 }} al
+                            {{ pagination.size * pagination.page }} de {{ pagination.total }}
+                            registros</b>
+                    </b-col>
+                    <b-col cols="10" sm="8" md="4" order-md="3" class="d-flex align-items-center justify-content-between my-2 my-md-0">
                         <b>Registros por página</b>
                         <b-form-select v-model="pagination.size" :options="pageOptions" class="form-select"
                             style="width: 30%"></b-form-select>

@@ -1,10 +1,9 @@
 <template>
-    <b-modal id="modal-add-sale" ref="modal-add-sale" centered scrollable hide-footer :no-close-on-backdrop="true"
+    <b-modal id="modal-sale-form" ref="modal-sale-form" centered scrollable hide-footer :no-close-on-backdrop="true"
         size="xl" @closed="cleanForm()" @hidden="cleanForm()">
         <template #modal-header="{ close }">
             <h5 class="mb-0">Registrar venta</h5>
             <b-icon @click="close()" class="ms-auto" icon="x" font-scale="1.6" cursor="pointer"></b-icon>
-
         </template>
         <b-row class="p-2">
             <b-col cols="5">
@@ -68,7 +67,7 @@
                         <h6>Resumen de la venta</h6>
                     </template>
                     <b-card-body>
-                        <b-list-group v-if="form.products.length > 0" class="scrollable">
+                        <b-list-group v-if="form.products.length > 0" class="scrollable" ref="summary">
                             <b-list-group-item v-for="(product, index) in form.products" :key="index">
                                 <b-row>
                                     <b-col cols="9">
@@ -180,6 +179,9 @@ export default {
             this.editMode = false;
             this.cleanForm();
         },
+        scrollToTop() {
+            this.$refs.summary.scrollTop = 0;
+        },
         addProduct() {
             this.form.products.unshift({
                 id: this.form.product.id,
@@ -193,6 +195,7 @@ export default {
             });
             this.total += this.form.product.price * this.form.quantity;
             this.cleanForm();
+            this.scrollToTop();
         },
         loadProduct(index) {            
             this.editMode = true;
@@ -217,6 +220,7 @@ export default {
             });
             this.total += this.form.product.price * this.form.quantity;
             this.resetForm();
+            this.scrollToTop();
         },
         deleteProduct(index) {            
             this.total -= this.form.products[index].price * this.form.products[index].quantity;

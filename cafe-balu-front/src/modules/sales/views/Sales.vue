@@ -14,7 +14,7 @@
                 </b-form-group>
             </b-col>
             <b-col cols="2">
-                <b-button variant="outline-dark-brown" class="d-flex align-items-center justify-content-between w-100" @click="addSale()">
+                <b-button variant="outline-dark-brown" class="d-flex align-items-center justify-content-between w-100" @click="saleForm()">
                     <span>Registrar</span>
                     <b-icon icon="plus-circle"></b-icon>
                 </b-button>
@@ -37,7 +37,10 @@
                         <span>${{ row.item.total }}</span>
                     </template>
                     <template v-slot:cell(status)="row">
-                        <b-badge variant="danger" v-if="row.item.status">
+                        <b-badge variant="success" v-if="row.item.status">
+                            Completada
+                        </b-badge>
+                        <b-badge variant="danger" v-else>
                             Cancelada
                         </b-badge>
                     </template>
@@ -75,7 +78,7 @@
                 </b-row>
             </b-col>
         </b-row>
-        <AddSaleForm />
+        <SalesForm />
     </b-container>
 </template>
 
@@ -84,7 +87,7 @@ const today = new Date();
 export default {
     name: 'Sales',
     components: {
-        AddSaleForm: () => import('@/modules/sales/components/AddSaleForm.vue')
+        SalesForm: () => import('@/modules/sales/components/SalesForm.vue')
     },
     data() {
         return {
@@ -123,8 +126,8 @@ export default {
         }
     },
     methods: {
-        addSale() {
-            this.$bvModal.show('modal-add-sale');
+        saleForm() {
+            this.$bvModal.show('modal-sale-form');
         }
     }
 }

@@ -1,12 +1,12 @@
 <template>
     <b-modal id="modal-sale-form" ref="modal-sale-form" centered scrollable hide-footer :no-close-on-backdrop="true"
-        size="xl" @closed="cleanForm()" @hidden="cleanForm()">
+        @closed="cleanForm()" @hidden="cleanForm()" modal-class="custom-modal">
         <template #modal-header="{ close }">
             <h5 class="mb-0">Registrar venta</h5>
             <b-icon @click="close()" class="ms-auto" icon="x" font-scale="1.6" cursor="pointer"></b-icon>
         </template>
         <b-row class="p-2">
-            <b-col cols="5">
+            <b-col cols="12" lg="6">
                 <b-card no-body class="custom-card">
                     <template #header>
                         <h6 v-if="!editMode">Formulario para agregar un producto</h6>
@@ -61,7 +61,7 @@
                     </b-card-body>
                 </b-card>
             </b-col>
-            <b-col cols="7">
+            <b-col cols="12" lg="6" class="mt-3 mt-lg-0">
                 <b-card no-body class="custom-card">
                     <template #header>
                         <h6>Resumen de la venta</h6>
@@ -70,9 +70,9 @@
                         <b-list-group v-if="form.products.length > 0" class="scrollable" ref="summary">
                             <b-list-group-item v-for="(product, index) in form.products" :key="index">
                                 <b-row>
-                                    <b-col cols="9">
+                                    <b-col cols="9" md="6" lg="9">
                                         <b-row>
-                                            <b-col cols="10">
+                                            <b-col cols="12" sm="9" xl="10">
                                                 <p class="mb-1 text-muted">{{ product.category.name }}</p>
                                                 <div class="d-flex">
                                                     <h6>
@@ -83,12 +83,12 @@
                                                     <p class="ms-2 mb-1">{{ product.name }}</p>
                                                 </div>
                                             </b-col>
-                                            <b-col cols="2" class="d-flex align-items-center justify-content-center">
+                                            <b-col cols="12" sm="3" xl="2" class="d-flex align-items-center">
                                                 <b>${{ product.price * product.quantity }}</b>
                                             </b-col>
                                         </b-row>
                                     </b-col>
-                                    <b-col cols="3" class="d-flex justify-content-end">
+                                    <b-col cols="3" md="6" lg="3" class="d-flex justify-content-end">
                                         <div class="d-flex flex-row flex-nowrap align-items-center">
                                             <b-button variant="outline-warning" size="sm" title="Editar"
                                                 v-b-tooltip.hover.top class="me-1" @click="loadProduct(index)">
@@ -197,17 +197,17 @@ export default {
             this.cleanForm();
             this.scrollToTop();
         },
-        loadProduct(index) {            
+        loadProduct(index) {
             this.editMode = true;
             this.form.category = this.categories.find(category => category.id === this.form.products[index].category.id);
             this.form.product = this.products.find(product => product.id === this.form.products[index].id);
             this.form.quantity = this.form.products[index].quantity;
-            this.productSelectedIndex = index;
+            this.productSelectedIndex = index;            
         },
-        editProduct() {            
+        editProduct() {
             const index = this.productSelectedIndex;
             this.total -= this.form.products[index].price * this.form.products[index].quantity;
-            this.form.products.splice(index, 1);            
+            this.form.products.splice(index, 1);
             this.form.products.unshift({
                 id: this.form.product.id,
                 name: this.form.product.name,
@@ -220,11 +220,11 @@ export default {
             });
             this.total += this.form.product.price * this.form.quantity;
             this.resetForm();
-            this.scrollToTop();
+            this.scrollToTop();            
         },
-        deleteProduct(index) {            
+        deleteProduct(index) {
             this.total -= this.form.products[index].price * this.form.products[index].quantity;
-            this.form.products.splice(index, 1);            
+            this.form.products.splice(index, 1);
         }
     }
 }

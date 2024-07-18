@@ -13,3 +13,17 @@ h1, h2, h3, h4, h5, h6 {
 .position-relative {
     position: relative;
 }
+
+.custom-modal .modal-dialog {
+    max-width: 86%;
+    max-height: 100%;
+    margin: 0 auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    display: flex;
+    position: fixed;
+    z-index: 100000;
+}

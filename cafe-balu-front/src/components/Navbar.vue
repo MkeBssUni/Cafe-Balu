@@ -6,10 +6,14 @@
         </b-navbar-brand>
         <b-navbar-nav v-if="role">
             <b-nav-item class="position-relative">
-                <b-button variant="outline-dark-brown" class="d-flex align-items-center position-relative"
+                <b-button variant="outline-dark-brown" class="d-flex align-items-center position-relative d-none d-sm-block"
                     @click="toggleDropdown()">
                     <span>Menú de opciones</span>
                     <b-icon :icon="dropdown ? 'chevron-up' : 'chevron-down'" class="ms-2" font-scale="0.95"></b-icon>
+                </b-button>
+                <b-button variant="outline-dark-brown" class="d-flex align-items-center position-relative d-sm-none"
+                    @click="toggleDropdown()" v-b-tooltip.hover.left="'Menú de opciones'">                    
+                    <b-icon :icon="dropdown ? 'chevron-up' : 'chevron-down'" font-scale="0.95"></b-icon>
                 </b-button>
                 <b-list-group v-if="dropdown && role === 'admin'" class="options">
                     <b-list-group-item class="d-flex align-items-center justify-content-between">
@@ -49,9 +53,13 @@
                 </b-list-group>
             </b-nav-item>
             <b-nav-item>
-                <b-button variant="outline-dark-brown" class="d-flex align-items-center" @click="logout">
+                <b-button variant="outline-dark-brown" class="d-none d-sm-flex align-items-center" @click="logout">
                     <span>Cerrar sesión</span>
                     <b-icon icon="box-arrow-right" class="ms-2" font-scale="0.95"></b-icon>
+                </b-button>
+                <b-button variant="outline-dark-brown" class="d-flex align-items-center d-sm-none" @click="logout"
+                    v-b-tooltip.hover.left="'Cerrar sesión'">
+                    <b-icon icon="box-arrow-right" font-scale="0.95"></b-icon>
                 </b-button>
             </b-nav-item>
         </b-navbar-nav>
@@ -99,7 +107,7 @@ export default {
     top: 88%;
     right: 0;
     margin-right: 0.5rem;
-    width: 140%;
+    width: 240px;
     z-index: 1000;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }

@@ -4,6 +4,7 @@ Description: >
   cafe-balu-back
   Sample SAM Template for cafe-balu-back
 
+
 Globals:
   Function:
     Timeout: 25

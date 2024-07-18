@@ -1,7 +1,7 @@
 <template>
     <b-container fluid>
         <b-row class="p-4">
-            <b-col cols="12" md="4" lg="6">
+            <b-col cols="12" md="5" lg="6">
                 <b-input-group>
                     <b-form-input placeholder="Buscar por nombre..." @keyup.enter="searchProduct()"
                         v-model="search"></b-form-input>
@@ -17,7 +17,7 @@
                     selectLabel="Presiona enter para seleccionar" selectedLabel="Seleccionado" deselectLabel="">
                 </multi-select>
             </b-col>
-            <b-col cols="12" sm="6" md="4" lg="2" class="mt-3 mt-md-0">
+            <b-col cols="12" sm="6" md="3" lg="2" class="mt-3 mt-md-0">
                 <b-button variant="outline-dark-brown" class="d-flex align-items-center justify-content-between w-100"
                     @click="saveProduct()">
                     <span>Registrar</span>

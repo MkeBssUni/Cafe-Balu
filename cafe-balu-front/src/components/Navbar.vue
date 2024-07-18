@@ -11,7 +11,7 @@
                     <span>Menú de opciones</span>
                     <b-icon :icon="dropdown ? 'chevron-up' : 'chevron-down'" class="ms-2" font-scale="0.95"></b-icon>
                 </b-button>
-                <b-button variant="outline-dark-brown" class="d-flex align-items-center position-relative d-sm-none"
+                <b-button variant="outline-dark-brown" class="d-flex align-items-center py-2 position-relative d-sm-none"
                     @click="toggleDropdown()" v-b-tooltip.hover.left="'Menú de opciones'">                    
                     <b-icon :icon="dropdown ? 'chevron-up' : 'chevron-down'" font-scale="0.95"></b-icon>
                 </b-button>
@@ -57,7 +57,7 @@
                     <span>Cerrar sesión</span>
                     <b-icon icon="box-arrow-right" class="ms-2" font-scale="0.95"></b-icon>
                 </b-button>
-                <b-button variant="outline-dark-brown" class="d-flex align-items-center d-sm-none" @click="logout"
+                <b-button variant="outline-dark-brown" class="d-flex align-items-center py-2 d-sm-none" @click="logout"
                     v-b-tooltip.hover.left="'Cerrar sesión'">
                     <b-icon icon="box-arrow-right" font-scale="0.95"></b-icon>
                 </b-button>

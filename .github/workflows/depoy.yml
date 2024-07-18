@@ -82,6 +82,11 @@ jobs:
         run: |
           cd cafe-balu-back/get_one_product/
           pip install -r requirements.txt
+      
+      - name: Install dependencies for get top sold products
+        run: |
+          cd cafe-balu-back/top_sold_products/
+          pip install -r requirements.txt
 
       - name: Install AWS CLI
         run: |

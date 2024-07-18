@@ -258,6 +258,23 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_product/{id}
             Method: get
+  
+  GetTopSoldProductsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: top_sold_products
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetTopSoldProducts:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiBaluchis
+            Path: /get_top_sold_products
+            Method: post
 
 Outputs:
   UpdateCategoryApi:
@@ -329,6 +346,12 @@ Outputs:
   GetOneProductFunctionArn:
     Description: "GetOneProduct Lambda Function ARN"
     Value: !GetAtt GetOneProductFunction.Arn
+  GetTopSoldProductsApi:
+    Description: "Get top sold products API"
+    Value: !Sub "https://${ApiBaluchis}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_top_sold_products"
+  GetTopSoldProductsFunctionArn:
+    Description: "GetTopSoldProducts Lambda Function ARN"
+    Value: !GetAtt GetTopSoldProductsFunction.Arn
   LambdaExecutionRoleArn:
     Description: "Lambda Execution Role ARN"
     Value: !GetAtt LambdaExecutionRole.Arn

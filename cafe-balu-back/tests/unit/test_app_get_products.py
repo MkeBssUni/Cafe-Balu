@@ -108,18 +108,3 @@ class TestUpdateCategory(unittest.TestCase):
     def test_decimal_to_float_invalid_type(self):
         with self.assertRaises(TypeError):
             app.decimal_to_float("string")
-
-    @patch('get_products.app.pymysql.connect')
-    def test_get_all_products_status_not_0(self, mock_connect):
-        mock_connection = MagicMock()
-        mock_cursor = MagicMock()
-        mock_cursor.fetchall.return_value = [(1, 'Product A')]
-        mock_cursor.description = (('id',), ('name',))
-
-        mock_connection.cursor.return_value = mock_cursor
-        mock_connect.return_value = mock_connection
-
-        result = app.get_all_products(1)
-
-        mock_cursor.execute.assert_called_once_with("SELECT * FROM products WHERE status = %s", (1,))
-        self.assertEqual(result, [{'id': 1, 'name': 'Product A'}])

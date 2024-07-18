@@ -87,7 +87,7 @@
                 </b-row>
             </b-col>
         </b-row>
-        <SalesForm />
+        <SaleForm />
     </b-container>
 </template>
 
@@ -96,7 +96,7 @@ const today = new Date();
 export default {
     name: 'Sales',
     components: {
-        SalesForm: () => import('@/modules/sales/components/SalesForm.vue')
+        SaleForm: () => import('@/modules/sales/components/SaleForm.vue')
     },
     data() {
         return {

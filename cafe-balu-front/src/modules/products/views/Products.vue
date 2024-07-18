@@ -88,7 +88,7 @@
                 </b-row>
             </b-col>
         </b-row>
-        <SaveProduct />
+        <ProductForm />
     </b-container>
 </template>
 
@@ -96,7 +96,7 @@
 export default {
     name: 'Products',
     components: {
-        SaveProduct: () => import('@/modules/products/views/components/SaveProductForm.vue')
+        ProductForm: () => import('@/modules/products/components/ProductForm.vue')
     },
     data() {
         return {
@@ -148,7 +148,7 @@ export default {
             if (this.search.trim().length > 0) this.products = this.products.filter(product => product.name.toLowerCase().includes(this.search.toLowerCase()));
         },
         saveProduct() {
-            this.$bvModal.show('modal-save-product');
+            this.$bvModal.show('modal-product-form');
         }
     }
 }

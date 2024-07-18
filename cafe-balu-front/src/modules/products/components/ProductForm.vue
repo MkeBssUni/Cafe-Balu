@@ -1,5 +1,5 @@
 <template>
-    <b-modal id="modal-save-product" ref="modal-save-product" centered scrollable hide-footer
+    <b-modal id="modal-product-form" ref="modal-product-form" centered scrollable hide-footer
         :no-close-on-backdrop="true" @closed="cleanForm()" @hidden="cleanForm()">
         <template #modal-header="{ close }">
             <h5 class="mb-0">Registrar producto</h5>

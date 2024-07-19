@@ -112,8 +112,15 @@ def get_end_of_day_balance(date):
             COALESCE((SELECT total_transactions FROM total_transactions), 0) AS total_transactions_today,
             COALESCE((SELECT cancelled_transactions FROM cancelled_transactions), 0) AS total_cancelled_transactions;
     """, (date, date, date))
-    balance = cursor.fetchone()
+    result = cursor.fetchone()
     connection.close()
+    balance = {
+        "most_sold_product": result[0],
+        "average_sale": result[1],
+        "total_sales_today": result[2],
+        "total_transactions_today": result[3],
+        "total_cancelled_transactions": result[4]
+    }
     return balance
 
 def decimal_to_float(obj):

@@ -6,13 +6,14 @@
         </b-navbar-brand>
         <b-navbar-nav v-if="role">
             <b-nav-item class="position-relative">
-                <b-button variant="outline-dark-brown" class="d-flex align-items-center position-relative d-none d-sm-block"
-                    @click="toggleDropdown()">
+                <b-button variant="outline-dark-brown"
+                    class="d-flex align-items-center position-relative d-none d-sm-block" @click="toggleDropdown()">
                     <span>Menú de opciones</span>
                     <b-icon :icon="dropdown ? 'chevron-up' : 'chevron-down'" class="ms-2" font-scale="0.95"></b-icon>
                 </b-button>
-                <b-button variant="outline-dark-brown" class="d-flex align-items-center py-2 position-relative d-sm-none"
-                    @click="toggleDropdown()" v-b-tooltip.hover.left="'Menú de opciones'">                    
+                <b-button variant="outline-dark-brown"
+                    class="d-flex align-items-center py-2 position-relative d-sm-none" @click="toggleDropdown()"
+                    v-b-tooltip.hover.left="'Menú de opciones'">
                     <b-icon :icon="dropdown ? 'chevron-up' : 'chevron-down'" font-scale="0.95"></b-icon>
                 </b-button>
                 <b-list-group v-if="dropdown && role === 'admin'" class="options">
@@ -20,7 +21,8 @@
                         <span>Mi perfil</span>
                         <b-icon icon="person-circle" font-scale="0.95"></b-icon>
                     </b-list-group-item>
-                    <b-list-group-item class="d-flex align-items-center justify-content-between">
+                    <b-list-group-item class="d-flex align-items-center justify-content-between"
+                        @click="goTo('/categories')">
                         <span>Gestionar categorías</span>
                         <b-icon icon="list" font-scale="0.95"></b-icon>
                     </b-list-group-item>
@@ -78,7 +80,7 @@
 export default {
     data() {
         return {
-            role: "sales",
+            role: "admin",
             dropdown: false
         }
     },

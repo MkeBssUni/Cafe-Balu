@@ -154,8 +154,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.small {    
-    width: 40%;    
-}
-</style>
+<style scoped></style>

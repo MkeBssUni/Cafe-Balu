@@ -79,10 +79,11 @@
                             {{ pagination.size * pagination.page }} de {{ pagination.total }}
                             registros</b>
                     </b-col>
-                    <b-col cols="10" sm="8" md="4" order-md="3" class="d-flex align-items-center justify-content-between my-2 my-md-0">
+                    <b-col cols="10" sm="8" md="4" order-md="3"
+                        class="d-flex align-items-center justify-content-between my-2 my-md-0">
                         <b>Registros por página</b>
-                        <b-form-select v-model="pagination.size" :options="pageOptions" class="form-select"
-                            style="width: 30%"></b-form-select>
+                        <b-form-select v-model="pagination.size" :options="pageOptions"
+                            class="form-select small"></b-form-select>
                     </b-col>
                 </b-row>
             </b-col>

@@ -21,8 +21,6 @@ def decimal_to_float(obj):
 def validate_date(date_string):
     try:
         date_obj = datetime.strptime(date_string, '%Y-%m-%d')
-        if date_obj > datetime.now():
-            return False
         return True
     except ValueError:
         return False

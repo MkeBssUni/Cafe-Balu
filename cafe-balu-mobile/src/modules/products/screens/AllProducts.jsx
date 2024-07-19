@@ -41,7 +41,7 @@ export default function AllProducts() {
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#8B4513"]}/>
         }
       >
         {products.map((product, index) => (

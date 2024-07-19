@@ -37,7 +37,7 @@ export default function AllCategories() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollViewContent}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#8B4513"]}/>
         }
       >
         {categories.map((category, index) => (

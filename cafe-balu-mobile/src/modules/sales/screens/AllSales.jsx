@@ -1,49 +1,31 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
-import { salesPerDay } from "../../../kernel/data";
+import { ScrollView, StyleSheet, RefreshControl, View } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import { yearsList } from "../../../kernel/data";
 import CardSale from "../../../components/CardSale";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { Button } from "@rneui/base";
+import Select from "../../../components/Select";
+import { monthsList } from "../../../kernel/data";
+import { getCurrentMonth, getCurrentYear, getSalesPerDay } from "../functions/functions";
 
 export default function AllSales() {
   const [sales, setSales] = useState([]);
-
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [mode, setMode] = useState("date");
-  const [showStartDate, setShowStartDate] = useState(false);
-  const [showEndDate, setShowEndDate] = useState(false);
-
-  const onChangeStartDate = (event, selectedDate) => {
-    setShowStartDate(false);
-    setStartDate(selectedDate);
-  };
-
-  const onChangeEndDate = (event, selectedDate) => {
-    setShowEndDate(false);
-    setEndDate(selectedDate);
-  };
-
-  const showModeStart = (currentMode) => {
-    setShowStartDate(true);
-    setMode(currentMode);
-  };
-
-  const showModeEnd = (currentMode) => {
-    setShowEndDate(true);
-    setMode(currentMode);
-  };
-
-  const showDatepickerStart = () => {
-    showModeStart("date");
-  };
-
-  const showDatepickerEnd = () => {
-    showModeEnd("date");
-  }
+  const [refreshing, setRefreshing] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
+  const [selectedYear, setSelectedYear] = useState(getCurrentYear());
 
   useEffect(() => {
-    setSales(salesPerDay);
+    fetchSales();
+  }, [selectedMonth, selectedYear]);
+
+  const fetchSales = async () => {
+    const salesData = await getSalesPerDay(selectedMonth, selectedYear);
+    setSales(salesData);
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchSales().then(() => {
+      setRefreshing(false);
+    });
   }, []);
 
   return (
@@ -52,60 +34,27 @@ export default function AllSales() {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#8B4513"]}/>
+        }
       >
         <View style={styles.row}>
-          <Button
-            onPress={showDatepickerStart}
-            title="Fecha inicio"
-            buttonStyle={styles.datePickerBtn}
-            containerStyle={styles.buttonContainer}
-            iconRight={true}
-            icon={{
-              name: 'calendar-start',
-              type: 'material-community',
-              size: 22,
-              color: 'white',
-            }}
+          <Select
+            value={selectedMonth}
+            setValue={setSelectedMonth}
+            label={"Selecciona un mes"}
+            list={monthsList}
+            defaultTitle={"Meses"}
           />
-          <Button
-            onPress={showDatepickerEnd}
-            title="Fecha fin"
-            buttonStyle={styles.datePickerBtn}
-            containerStyle={styles.buttonContainer}
-            iconRight={true}
-            icon={{
-              name: 'calendar-end',
-              type: 'material-community',
-              size: 22,
-              color: 'white',
-            }}
+          
+          <Select
+            value={selectedYear}
+            setValue={setSelectedYear}
+            label={"Selecciona un año"}
+            list={yearsList}
+            defaultTitle={"Años"}
           />
         </View>
-        {showStartDate && (
-          <DateTimePicker
-            testID="dateTimePickerStart"
-            value={startDate}
-            mode={mode}
-            is24Hour={true}
-            style={styles.imgPicker}
-            onChange={onChangeStartDate}
-          />
-        )}
-        
-        {showEndDate && (
-          <DateTimePicker
-            testID="dateTimePickerEnd"
-            value={endDate}
-            mode={mode}
-            is24Hour={true}
-            style={styles.imgPicker}
-            onChange={onChangeEndDate}
-            maximumDate={new Date()}
-            minimumDate={startDate}
-          />
-        )}
-
-
         {sales.map((sale, index) => (
           <CardSale
             key={index}
@@ -139,14 +88,13 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
+    marginHorizontal: 16,
   },
   buttonContainer: {
     marginTop: 10,
     width: "40%",
     alignSelf: "center",
-    marginHorizontal: 16
+    marginHorizontal: 16,
   },
-  imgPicker:{
-  }
+  imgPicker: {},
 });

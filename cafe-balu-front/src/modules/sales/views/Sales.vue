@@ -56,7 +56,7 @@
                     <template v-slot:cell(actions)="row">
                         <div class="d-flex flex-row flex-nowrap">
                             <b-button variant="outline-info" size="sm" title="Ver detalles" v-b-tooltip.hover.top
-                                class="me-1">
+                                class="me-1" @click="getSaleDetails()">
                                 <b-icon icon="eye"></b-icon>
                             </b-button>
                             <b-button variant="outline-danger" size="sm" title="Cancelar" v-b-tooltip.hover.top
@@ -89,6 +89,7 @@
             </b-col>
         </b-row>
         <SaleForm />
+        <SaleDetails />
     </b-container>
 </template>
 
@@ -97,7 +98,8 @@ const today = new Date();
 export default {
     name: 'Sales',
     components: {
-        SaleForm: () => import('@/modules/sales/components/SaleForm.vue')
+        SaleForm: () => import('@/modules/sales/components/SaleForm.vue'),
+        SaleDetails: () => import('@/modules/sales/components/SaleDetails.vue')
     },
     data() {
         return {
@@ -138,6 +140,9 @@ export default {
     methods: {
         saleForm() {
             this.$bvModal.show('modal-sale-form');
+        },
+        getSaleDetails() {
+            this.$bvModal.show('modal-sale-details');
         }
     }
 }

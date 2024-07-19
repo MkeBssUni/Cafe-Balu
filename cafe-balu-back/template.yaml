@@ -293,6 +293,23 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_end_of_day_balance
             Method: post
+  
+  GetLowStockProductsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get_low_stock_products
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetLowStockProducts:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiBaluchis
+            Path: /get_low_stock_products
+            Method: get
 
 Outputs:
   UpdateCategoryApi:
@@ -376,6 +393,12 @@ Outputs:
   GetEndOfDayBalanceFunctionArn:
     Description: "GetEndOfDayBalance Lambda Function ARN"
     Value: !GetAtt GetEndOfDayBalanceFunction.Arn
+  GetLowStockProductsApi:
+    Description: "Get low stock products API"
+    Value: !Sub "https://${ApiBaluchis}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_low_stock_products"
+  GetLowStockProductsFunctionArn:
+    Description: "GetLowStockProducts Lambda Function ARN"
+    Value: !GetAtt GetLowStockProductsFunction.Arn
   LambdaExecutionRoleArn:
     Description: "Lambda Execution Role ARN"
     Value: !GetAtt LambdaExecutionRole.Arn

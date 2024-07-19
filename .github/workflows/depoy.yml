@@ -87,6 +87,11 @@ jobs:
         run: |
           cd cafe-balu-back/top_sold_products/
           pip install -r requirements.txt
+      
+      - name: Install dependencies for get end of day balance
+        run: |
+          cd cafe-balu-back/end_of_day_balance/
+          pip install -r requirements.txt
 
       - name: Install AWS CLI
         run: |

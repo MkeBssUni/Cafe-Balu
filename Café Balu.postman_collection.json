@@ -435,6 +435,29 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Low stock products",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://afzd4wkj63.execute-api.us-east-2.amazonaws.com/Prod/get_low_stock_products",
+					"protocol": "https",
+					"host": [
+						"afzd4wkj63",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"Prod",
+						"get_low_stock_products"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

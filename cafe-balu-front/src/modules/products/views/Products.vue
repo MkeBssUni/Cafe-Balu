@@ -49,7 +49,7 @@
                     <template v-slot:cell(actions)="row">
                         <div class="d-flex flex-row flex-nowrap">
                             <b-button variant="outline-info" size="sm" title="Ver detalles" v-b-tooltip.hover.top
-                                class="me-1">
+                                class="me-1" @click="getProductDetails()">
                                 <b-icon icon="eye"></b-icon>
                             </b-button>
                             <b-button variant="outline-warning" size="sm" title="Editar" v-b-tooltip.hover.top
@@ -89,6 +89,7 @@
             </b-col>
         </b-row>
         <ProductForm />
+        <ProductDetails />
     </b-container>
 </template>
 
@@ -96,7 +97,8 @@
 export default {
     name: 'Products',
     components: {
-        ProductForm: () => import('@/modules/products/components/ProductForm.vue')
+        ProductForm: () => import('@/modules/products/components/ProductForm.vue'),
+        ProductDetails: () => import('@/modules/products/components/ProductDetails.vue')
     },
     data() {
         return {
@@ -149,6 +151,9 @@ export default {
         },
         saveProduct() {
             this.$bvModal.show('modal-product-form');
+        },
+        getProductDetails() {
+            this.$bvModal.show('modal-product-details');
         }
     }
 }

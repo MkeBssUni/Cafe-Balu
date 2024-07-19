@@ -1,13 +1,20 @@
 <template>
     <b-container fluid>
-        <b-row class="p-4">
-            <b-col cols="12" sm="10" md="8" lg="6">
+        <b-row class="p-4 d-flex justify-content-between">
+            <b-col cols="12" sm="8" md="9" xl="8">
                 <b-input-group>
                     <b-form-input placeholder="Buscar por nombre..."></b-form-input>
                     <b-button variant="secondary" class="d-flex align-items-center justify-content-between">
                         <b-icon icon="search"></b-icon>
                     </b-button>
                 </b-input-group>
+            </b-col>
+            <b-col cols="12" sm="4" md="3" xl="2" class="mt-3 mt-sm-0">
+                <b-button variant="outline-dark-brown" class="d-flex align-items-center justify-content-between w-100"
+                    @click="saveCategory()">
+                    <span>Registrar</span>
+                    <b-icon icon="plus-circle"></b-icon>
+                </b-button>
             </b-col>
         </b-row>
         <b-row class="shadow mx-4 mb-4">
@@ -67,12 +74,16 @@
                 </b-row>
             </b-col>
         </b-row>
+        <CategoryForm />
     </b-container>
 </template>
 
 <script>
 export default {
     name: 'Categories',
+    components: {
+        CategoryForm: () => import('@/modules/categories/components/CategoryForm.vue')
+    },
     data() {
         return {
             loading: false,
@@ -103,6 +114,11 @@ export default {
                 { key: 'status', label: 'Estado' },
                 { key: 'actions', label: 'Acciones' }
             ],
+        }
+    },
+    methods: {
+        saveCategory() {
+            this.$bvModal.show('modal-category-form');
         }
     },
 }

@@ -276,6 +276,23 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_top_sold_products
             Method: post
+  
+  GetEndOfDayBalanceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: end_of_day_balance
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetEndOfDayBalance:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiBaluchis
+            Path: /get_end_of_day_balance
+            Method: post
 
 Outputs:
   UpdateCategoryApi:
@@ -353,6 +370,12 @@ Outputs:
   GetTopSoldProductsFunctionArn:
     Description: "GetTopSoldProducts Lambda Function ARN"
     Value: !GetAtt GetTopSoldProductsFunction.Arn
+  GetEndOfDayBalanceApi:
+    Description: "Get end of day balance API"
+    Value: !Sub "https://${ApiBaluchis}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_end_of_day_balance"
+  GetEndOfDayBalanceFunctionArn:
+    Description: "GetEndOfDayBalance Lambda Function ARN"
+    Value: !GetAtt GetEndOfDayBalanceFunction.Arn
   LambdaExecutionRoleArn:
     Description: "Lambda Execution Role ARN"
     Value: !GetAtt LambdaExecutionRole.Arn

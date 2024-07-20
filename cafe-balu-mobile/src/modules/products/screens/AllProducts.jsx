@@ -6,6 +6,7 @@ import { SpeedDial } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../../../components/Loading";
 import CustomToast from "../../../components/CustomToast";
+import EmptyScreen from "../../../components/EmptyScreen";
 
 export default function AllProducts() {
   const [products, setProducts] = useState([]);
@@ -70,7 +71,7 @@ export default function AllProducts() {
             />
           }
         >
-          {products.map((product, index) => (
+          {products.length > 0 ? products.map((product, index) => (
             <ViewProducts
               key={index}
               index={index}
@@ -81,7 +82,7 @@ export default function AllProducts() {
               status={product.status}
               categoryName={product.category_name}
             />
-          ))}
+          )) : <EmptyScreen title={"Sin productos"} />}
         </ScrollView>
       )}
       <SpeedDial

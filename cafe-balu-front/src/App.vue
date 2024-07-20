@@ -1,7 +1,10 @@
 <template>
   <div id="app">
-    <header>
-      <Navbar v-if="!$route.meta.hideNavigation" />
+    <header class="sticky-top" v-if="!role && !$route.meta.hideNavigation">      
+      <NoSessionNavbar  />      
+    </header>
+    <header v-else-if="role && !$route.meta.hideNavigation">
+      <ActiveSessionNavbar />
     </header>
     <main>
       <router-view></router-view>
@@ -10,11 +13,19 @@
 </template>
 
 <script>
-import Navbar from './components/Navbar.vue';
+import NoSessionNavbar from './components/NoSessionNavbar.vue';
+import ActiveSessionNavbar from './components/ActiveSessionNavbar.vue';
+
 export default {
   name: 'App',
   components: {
-    Navbar
-  }
+    NoSessionNavbar, ActiveSessionNavbar
+  },
+  data() {
+    return {      
+      /* role: "admin" */
+      role: null
+    };
+  },
 }
 </script>

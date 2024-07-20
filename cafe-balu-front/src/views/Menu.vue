@@ -35,7 +35,7 @@
                     </div>
                 </b-carousel>
             </b-col>
-            <b-col cols="12">
+            <b-col cols="12" id="products">
                 <b-row v-for="category in categories" :key="category.id"
                     :class="{ 'bg-more-lighter-brown': category.id % 2 === 0, 'px-5 d-flex align-items-center justify-content-center': true }">
                     <b-col cols="3" v-for="product in category.products" :key="product.id" class="px-3 py-5">

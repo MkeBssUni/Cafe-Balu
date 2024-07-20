@@ -2,7 +2,7 @@
     <b-navbar class="bg-lighter-brown d-flex align-items-center justify-content-between">
         <b-navbar-brand class="d-flex align-items-center">
             <b-img :src="require('@/assets/img/logo.png')" class="img mx-3"></b-img>
-            <h4 class="text-dark-brown mb-0">Café Balu</h4>
+            <h4 class="text-dark-brown">Café Balu</h4>
         </b-navbar-brand>
         <b-navbar-nav v-if="role">
             <b-nav-item class="position-relative">

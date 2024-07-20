@@ -26,7 +26,7 @@ export default function CardSale({ id, date, status, total, products }) {
           <View>
             <Text style={styles.subtitle}>Productos:</Text>
             {products.map((product, index) => (
-              <Text key={index} style={styles.product}>{product.name} - ${product.price}</Text>
+              <Text key={index} style={styles.product}>{product.name} x{product.quantity} - ${product.price} c/u</Text>
             ))}
           </View>
         </View>

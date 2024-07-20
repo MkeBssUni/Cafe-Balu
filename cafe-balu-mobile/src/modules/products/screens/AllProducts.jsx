@@ -5,27 +5,46 @@ import { getAllProducts } from "../functions/functions";
 import { SpeedDial } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../../../components/Loading";
+import CustomToast from "../../../components/CustomToast";
 
 export default function AllProducts() {
   const [products, setProducts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [showLoading, setShowLoading] = useState(true);
-  const navigate = useNavigation();
+  const [toastConfig, setToastConfig] = useState({
+    visible: false,
+    message: "",
+    iconName: "",
+    iconColor: "",
+    toastColor: "",
+  });
+
+  const navigation = useNavigation();
+
+  
+  useEffect(() => {
+    setShowLoading(true);
+    loadProducts();
+  }, []);
+  
+  const showToast = (message, iconName, iconColor, toastColor) => {
+    setToastConfig({ visible: true, message, iconName, iconColor, toastColor });
+  };
+
+  const handleHideToast = () => {
+    setToastConfig((prevState) => ({ ...prevState, visible: false }));
+  };
 
   const loadProducts = async () => {
     try {
       const productList = await getAllProducts();
       setProducts(productList.reverse());
     } catch (error) {
-      console.error("Error fetching products: ", error);
+      showToast("Error al cargar los productos", "alert-circle", "#fff", "#FF3232");
+    } finally {
+      setShowLoading(false);
     }
   };
-
-  useEffect(() => {
-    setShowLoading(true);
-    loadProducts();
-    setShowLoading(false);
-  }, []);
   
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -34,56 +53,54 @@ export default function AllProducts() {
     });
   }, []);
 
-  return !showLoading ? (
+  return (
     <View style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollViewContent}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#8B4513"]}/>
-        }
-      >
-        {products.map((product, index) => (
-          <ViewProducts
-            key={index}
-            index={index}
-            name={product.name}
-            image={product.image}
-            price={product.price}
-            stock={product.stock}
-            status={product.status}
-            categoryName={product.category_name}
-          />
-        ))}
-      </ScrollView>
+      {showLoading ? (
+        <Loading />
+      ) : (
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollViewContent}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={["#8B4513"]}
+            />
+          }
+        >
+          {products.map((product, index) => (
+            <ViewProducts
+              key={index}
+              index={index}
+              name={product.name}
+              image={product.image}
+              price={product.price}
+              stock={product.stock}
+              status={product.status}
+              categoryName={product.category_name}
+            />
+          ))}
+        </ScrollView>
+      )}
       <SpeedDial
         isOpen={false}
-        icon={{
-          name: "add",
-          color: "#fff",
-        }}
-        openIcon={{
-          name: "close",
-          color: "#fff",
-        }}
+        icon={{ name: "add", color: "#fff" }}
+        openIcon={{ name: "close", color: "#fff" }}
         buttonStyle={styles.buttonStyleDial}
-        onOpen={() => navigate.navigate("newProductStack")}
+        onOpen={() => navigation.navigate("newProductStack")}
       >
         <SpeedDial.Action
-          icon={{
-            name: "add",
-            color: "#fff",
-          }}
+          icon={{ name: "add", color: "#fff" }}
           title={"Nuevo producto"}
           onPress={() => console.log("do something")}
           buttonStyle={styles.buttonStyleDial}
         />
       </SpeedDial>
+      <CustomToast {...toastConfig} onHide={handleHideToast} />
     </View>
-  ) : (
-    <Loading />
-  )
+  );
 }
 
 const styles = StyleSheet.create({

@@ -5,6 +5,7 @@ import CardSale from "../../../components/CardSale";
 import Select from "../../../components/Select";
 import { monthsList } from "../../../kernel/data";
 import { getCurrentMonth, getCurrentYear, getSalesPerDay } from "../functions/functions";
+import EmptyScreen from "../../../components/EmptyScreen";
 
 export default function AllSales() {
   const [sales, setSales] = useState([]);
@@ -55,16 +56,18 @@ export default function AllSales() {
             defaultTitle={"Años"}
           />
         </View>
-        {sales.map((sale, index) => (
-          <CardSale
-            key={index}
-            id={sale.id}
-            date={sale.createdAt}
-            status={sale.status}
-            total={sale.total}
-            products={sale.products}
-          />
-        ))}
+        {
+          sales.length > 0  ?sales.map((sale, index) => (
+            <CardSale
+              key={index}
+              id={sale.id}
+              date={sale.createdAt}
+              status={sale.status}
+              total={sale.total}
+              products={sale.products}
+            />
+          )) : <EmptyScreen title={'Sin ventas'} />
+        }
       </ScrollView>
     </View>
   );

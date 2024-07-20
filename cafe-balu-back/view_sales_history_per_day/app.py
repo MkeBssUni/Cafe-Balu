@@ -88,7 +88,8 @@ def lambda_handler(event, context):
             grouped_sales[sale_id]["products"].append({
                 "product_id": sale["product_id"],
                 "name": sale["name"],
-                "price": float(sale["price"])
+                "price": float(sale["price"]),
+                "quantity": sale["quantity"]
             })
 
         return {

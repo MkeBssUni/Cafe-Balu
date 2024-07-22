@@ -8,7 +8,7 @@ import SalesStack from "../stack/SalesStack";
 
 const Tab = createBottomTabNavigator();
 
-export default function Navigation() {
+export default function Navigation({setReload}) {
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -38,6 +38,7 @@ export default function Navigation() {
           options={{
             title: "Productos",
           }}
+          initialParams={{setReload}}
         />
         <Tab.Screen
           name="categories"

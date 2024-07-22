@@ -92,21 +92,21 @@ def lambda_handler(event, __):
             }
 
         # Validar 'category_id' (opcional): si está presente, debe ser un entero positivo
-        if category_id is not None and (not isinstance(category_id, int) or category_id <= 0):
-            return {
-                "statusCode": 400,
-                "body": json.dumps({
-                    "message": "MISSING_CATEGORY_ID"
-                }),
-            }
-
-        if not category_exists(category_id):
-            return {
-                "statusCode": 400,
-                "body": json.dumps({
-                    "message": "CATEGORY_NOT_FOUND"
-                }),
-            }
+        if category_id is not None:
+            if not isinstance(category_id, int) or category_id <= 0:
+                return {
+                    "statusCode": 400,
+                    "body": json.dumps({
+                        "message": "INVALID_CATEGORY_ID"
+                    }),
+                }
+            if not category_exists(category_id):
+                return {
+                    "statusCode": 400,
+                    "body": json.dumps({
+                        "message": "CATEGORY_NOT_FOUND"
+                    }),
+                }
 
         if product_exists_in_category(category_id, name):
             return {
@@ -181,8 +181,10 @@ def category_exists(category_id):
         cursor = connection.cursor()
         cursor.execute("SELECT COUNT(*) FROM categories WHERE id = %s", (category_id,))
         connection.commit()
-        return cursor.fetchone()[0] > 0
-
+        result = cursor.fetchone()
+        if result is None:
+            return False
+        return result[0] > 0
     except Exception as e:
         logger.error("Database select error: %s", str(e))
         raise e
@@ -195,8 +197,10 @@ def product_exists_in_category(category_id, name):
         cursor = connection.cursor()
         cursor.execute("SELECT COUNT(*) FROM products WHERE category_id = %s AND lower(name) = %s", (category_id, name.lower()))
         connection.commit()
-        return cursor.fetchone()[0] > 0
-
+        result = cursor.fetchone()
+        if result is None:
+            return False
+        return result[0] > 0
     except Exception as e:
         logger.error("Database select error: %s", str(e))
         raise e
@@ -209,8 +213,10 @@ def is_name_duplicate(name):
         cursor = connection.cursor()
         cursor.execute("SELECT COUNT(*) FROM products WHERE lower(name) = %s", (name.lower(),))
         connection.commit()
-        return cursor.fetchone()[0] > 0
-
+        result = cursor.fetchone()
+        if result is None:
+            return False
+        return result[0] > 0
     except Exception as e:
         logger.error("Database select error: %s", str(e))
         raise e

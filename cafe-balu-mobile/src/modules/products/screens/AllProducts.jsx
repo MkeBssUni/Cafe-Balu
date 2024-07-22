@@ -8,7 +8,7 @@ import Loading from "../../../components/Loading";
 import CustomToast from "../../../components/CustomToast";
 import EmptyScreen from "../../../components/EmptyScreen";
 
-export default function AllProducts() {
+export default function AllProducts({ setReload, reload }) {
   const [products, setProducts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [showLoading, setShowLoading] = useState(true);
@@ -27,6 +27,13 @@ export default function AllProducts() {
     setShowLoading(true);
     loadProducts();
   }, []);
+
+  useEffect(() => {
+    if (setReload) {
+      loadProducts();
+      setReload(false);
+    }
+  }, [reload]);
   
   const showToast = (message, iconName, iconColor, toastColor) => {
     setToastConfig({ visible: true, message, iconName, iconColor, toastColor });
@@ -39,7 +46,7 @@ export default function AllProducts() {
   const loadProducts = async () => {
     try {
       const productList = await getAllProducts();
-      setProducts(productList);
+      setProducts(productList.reverse());
     } catch (error) {
       showToast("Error al cargar los productos", "alert-circle", "#fff", "#FF3232");
     } finally {
@@ -90,7 +97,7 @@ export default function AllProducts() {
         icon={{ name: "add", color: "#fff" }}
         openIcon={{ name: "close", color: "#fff" }}
         buttonStyle={styles.buttonStyleDial}
-        onOpen={() => navigation.navigate("newProductStack")}
+        onOpen={() => navigation.navigate("newProductStack", { setReload })}
       >
         <SpeedDial.Action
           icon={{ name: "add", color: "#fff" }}

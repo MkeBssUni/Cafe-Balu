@@ -1,8 +1,9 @@
 import { doGet, doPost } from "../../../config/axios";
 
-export const getAllCategories = async () => {
+export const getAllCategories = async (status) => {
     try {
-        const response = await doGet("/get_categories/0")
+        if (status == undefined) status = 0;
+        const response = await doGet(`/get_categories/${status}`);
         return response.data.categories;
     } catch (error) {
         console.log("error response: ", error)

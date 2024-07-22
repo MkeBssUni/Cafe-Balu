@@ -36,7 +36,7 @@ export default function AllCategories() {
 
   const loadCategories = async () => {
     try {
-      const categoriesList = await getAllCategories();
+      const categoriesList = await getAllCategories(0);
       setCategories(categoriesList.reverse());
     } catch (error) {
       showToast(

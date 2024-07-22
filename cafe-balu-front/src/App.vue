@@ -23,8 +23,8 @@ export default {
   },
   data() {
     return {      
-      /* role: "admin" */
-      role: null
+      role: "admin"
+      /* role: null */
     };
   },
 }

@@ -2,8 +2,9 @@
     <div>
         <b-navbar class="bg-white d-flex align-items-center justify-content-center">
             <b-navbar-brand class="d-flex align-items-center">
-                <b-img :src="require('@/assets/img/logo.png')" class="navbar-img mx-3"></b-img>
-                <h4 class="text-dark-brown">Café Balu</h4>
+                <h4 class="text-navbar-brown">Café</h4>
+                <b-img :src="require('@/assets/img/logos/logo.png')" class="custom-navbar-img mx-3"></b-img>
+                <h4 class="text-navbar-brown">Balu</h4>
             </b-navbar-brand>
         </b-navbar>
         <b-navbar class="bg-more-lighter-brown d-flex align-items-center justify-content-center">

@@ -1,4 +1,5 @@
 $theme-colors: (
+    "dark": #000000,
     "success": #95cc7b,
     "dark-success": #53A93D,    
     "danger": #e48a8a,
@@ -9,10 +10,12 @@ $theme-colors: (
     "light-brown": #D2B48C,
     "lighter-brown": #e4c9a1,
     "more-lighter-brown": #f0d9b5,
-    "dark-brown": #8B4513,
+    "dark-brown": #6d441c,
     "darker-brown": #4a1f1f,
     "card-title": #4E2F11,
     "badge-brown": #D4B698,
+    "navbar-brown": #8B4411,
+    "navbar-light-brown": #c0a27c,
 );
 
 .badge-success {

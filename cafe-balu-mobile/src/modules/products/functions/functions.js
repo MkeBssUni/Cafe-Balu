@@ -19,9 +19,8 @@ export const saveProduct = async (product) =>{
             category_id: product.category_id,
             image: product.image
         });
-        return response.data;
+        return response;
     }catch(error){
-        console.log("error response: ", error)
-        return false;
+        return error;
     }
 }

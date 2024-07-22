@@ -2,14 +2,29 @@ import json
 import pymysql
 import logging
 import re
+import boto3
+import uuid
+import base64
 
 rds_host = "database-cafe-balu.cziym6ii4nn7.us-east-2.rds.amazonaws.com"
 rds_user = "baluroot"
 rds_password = "baluroot"
 rds_db = "cafe_balu"
+bucket_name = "cafe-balu-images"
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
+s3 = boto3.client('s3')
+
+def upload_image_to_s3(base64_data):
+    # Remover el prefijo de la cadena base64
+    base64_data = base64_data.split(",")[1]
+    binary_data = base64.b64decode(base64_data)
+    file_name = f"images/{uuid.uuid4()}.jpg"
+    s3.put_object(Bucket=bucket_name, Key=file_name, Body=binary_data, ContentType='image/jpeg')
+    s3_url = f"https://{bucket_name}.s3.amazonaws.com/{file_name}"
+    return s3_url
 
 def lambda_handler(event, __):
     try:
@@ -109,7 +124,10 @@ def lambda_handler(event, __):
                 }),
             }
 
-        add_product(name, stock, price, category_id, image)
+        # Subir imagen a S3 y obtener la URL
+        image_url = upload_image_to_s3(image)
+
+        add_product(name, stock, price, category_id, image_url)
         return {
             "statusCode": 200,
             "body": json.dumps({
@@ -143,12 +161,12 @@ def lambda_handler(event, __):
             }),
         }
 
-def add_product(name, stock, price, category_id, image):
+def add_product(name, stock, price, category_id, image_url):
     connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
     try:
         cursor = connection.cursor()
         cursor.execute("INSERT INTO products (name, stock, price, category_id, status, image) VALUES (%s, %s, %s, %s, true, %s)",
-                       (name, stock, price, category_id, image))
+                       (name, stock, price, category_id, image_url))
         connection.commit()
         logger.info("Product added successfully: name=%s", name)
     except Exception as e:

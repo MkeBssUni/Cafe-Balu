@@ -39,7 +39,7 @@ export default function AllProducts() {
   const loadProducts = async () => {
     try {
       const productList = await getAllProducts();
-      setProducts(productList.reverse());
+      setProducts(productList);
     } catch (error) {
       showToast("Error al cargar los productos", "alert-circle", "#fff", "#FF3232");
     } finally {

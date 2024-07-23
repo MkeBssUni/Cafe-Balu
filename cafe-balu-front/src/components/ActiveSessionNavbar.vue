@@ -63,7 +63,8 @@
                             </b-button>
                         </div>
                     </div>
-                    <div class="custom-dropdown-item d-flex align-items-center justify-content-between">
+                    <div class="custom-dropdown-item d-flex align-items-center justify-content-between"
+                        @click="changePassword">
                         <span>Cambiar contraseña</span>
                         <b-icon icon="key" font-scale="0.98"></b-icon>
                     </div>
@@ -74,6 +75,7 @@
                 </div>
             </b-nav-item>
         </b-navbar-nav>
+        <ChangePasswordForm />
     </b-navbar>
 </template>
 
@@ -92,6 +94,9 @@ export default {
             nip: "7133",
             showNip: false
         }
+    },
+    components: {
+        ChangePasswordForm: () => import('@/modules/auth/components/ChangePasswordForm.vue')
     },
     mounted() {
         document.addEventListener('click', this.handleClickOutside);
@@ -122,6 +127,9 @@ export default {
         },
         goTo(route) {
             this.$router.push(route);
+        },
+        changePassword() {
+            this.$bvModal.show('modal-change-password-form');
         },
         logout() {
             this.goTo('/login');

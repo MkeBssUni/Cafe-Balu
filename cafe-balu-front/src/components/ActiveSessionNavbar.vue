@@ -19,12 +19,14 @@
                 <div v-if="dropdowns.options" class="custom-dropdown">
                     <div class="custom-dropdown-item d-flex align-items-center justify-content-between"
                         @click="goTo('/categories')">
-                        <span>Gestionar categorías</span>
+                        <span v-if="session.role === 'admin'">Gestionar categorías</span>
+                        <span v-else>Visualizar categorías</span>
                         <b-icon icon="list" font-scale="0.95"></b-icon>
                     </div>
                     <div class="custom-dropdown-item d-flex align-items-center justify-content-between"
                         @click="goTo('/products')">
-                        <span>Gestionar productos</span>
+                        <span v-if="session.role === 'admin'">Gestionar productos</span>
+                        <span v-else>Visualizar productos</span>
                         <b-icon icon="box" font-scale="0.95"></b-icon>
                     </div>
                     <div class="custom-dropdown-item d-flex align-items-center justify-content-between"
@@ -85,7 +87,7 @@ export default {
         return {
             session: {
                 email: "admin@gmail.com",
-                role: "admin"
+                role: "sales"
             },
             dropdowns: {
                 options: false,

@@ -47,6 +47,10 @@ h6 {
     color: var(--navbar-brown);
 }
 
+.custom-navbar-brand:hover {
+    color: var(--navbar-brown);
+}
+
 .custom-navbar-img {
     width: 36px;
     height: auto;

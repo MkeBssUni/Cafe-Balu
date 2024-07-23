@@ -1,6 +1,6 @@
 <template>
     <b-navbar class="bg-more-lighter-brown d-flex align-items-center justify-content-between px-3">
-        <b-navbar-brand class="custom-navbar-brand d-flex align-items-center">
+        <b-navbar-brand class="custom-navbar-brand d-flex align-items-center" @click="goTo('/home')">
             <b-img :src="require('@/assets/img/logos/logo.png')" class="custom-navbar-img"></b-img>
             <div class="ms-3">
                 <h5>Café Balu</h5>

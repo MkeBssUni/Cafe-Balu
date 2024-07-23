@@ -39,8 +39,8 @@
                             </b-button>
                         </b-col>
                         <b-col cols="12" class="text-center">
-                            <b-link class="text-dark-brown text-decoration-none">
-                                <small>¿No recuerdas tu contraseña? Resetear contraseña</small>
+                            <b-link class="text-dark-brown text-decoration-none" to="/validate-password">
+                                <small>Haz clic aquí para validar tu contraseña</small>
                             </b-link>
                         </b-col>
                     </b-row>

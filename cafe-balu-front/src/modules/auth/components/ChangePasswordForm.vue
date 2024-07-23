@@ -91,9 +91,9 @@ export default {
         },
         cleanForm() {
             this.form = {
-                current_password: "",
-                new_password: "",
-                confirm_password: "",
+                currentPassword: "",
+                newPassword: "",
+                confirmPassword: "",
             };
         }
     }

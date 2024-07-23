@@ -33,6 +33,14 @@ const routes = [
                 meta: {
                     hideNavigation: true,
                 }
+            },            
+            {
+                path: "/validate-password",
+                name: "validatePassword",
+                component: () => import("../modules/auth/views/ValidatePassword.vue"),
+                meta: {
+                    hideNavigation: true,
+                }
             },
             {
                 path: "/products",

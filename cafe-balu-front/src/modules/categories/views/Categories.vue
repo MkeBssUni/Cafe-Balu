@@ -69,7 +69,7 @@
                         class="d-flex align-items-center justify-content-between my-2 my-md-0">
                         <b>Registros por página</b>
                         <b-form-select v-model="pagination.size" :options="pageOptions"
-                            class="form-select small"></b-form-select>
+                            class="form-select custom-pagination-select"></b-form-select>
                     </b-col>
                 </b-row>
             </b-col>

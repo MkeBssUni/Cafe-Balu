@@ -106,7 +106,7 @@
                         <div class="d-flex justify-content-center align-items-center scrollable" v-else>
                             <h6 class="text-muted text-center">Sin productos por el momento</h6>
                         </div>
-                        <hr class="divider">
+                        <hr class="custom-divider">
                         <div class="d-flex justify-content-between align-items-center">
                             <span>Total</span>
                             <h6>${{ total }}</h6>

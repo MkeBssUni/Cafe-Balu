@@ -21,6 +21,23 @@
     src: url("../assets/fonts/Baloo-Regular.ttf") format("truetype");
 }
 
+label {
+    margin-bottom: 0.5rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin-bottom: 0;
+}
+
+.full-height {
+    height: 100vh;
+}
+
 .position-relative {
     position: relative;
 }
@@ -44,11 +61,11 @@
 .custom-dropdown {
     position: absolute;
     top: 87%;
-    right: 0;    
+    right: 0;
     z-index: 1000;
-    margin-right: 0.5rem;    
+    margin-right: 0.5rem;
     width: 280px;
-    background-color: #ffffff;    
+    background-color: #ffffff;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(210, 180, 140, 0.6);
 }
@@ -84,27 +101,6 @@
     background-color: var(--more-lighter-brown);
 }
 
-.full-height {
-    height: 100vh;
-}
-
-.h-80 {
-    height: 80vh;
-}
-
-label {
-    margin-bottom: 0.5rem;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    margin-bottom: 0;
-}
-
 .custom-modal .modal-dialog {
     max-width: 86%;
     max-height: 100%;
@@ -119,10 +115,10 @@ h6 {
     z-index: 100000;
 }
 
-.small {
+.custom-pagination-select {
     width: 40%;
 }
 
-.divider {
+.custom-divider {
     border-top: 1px solid #575757;
 }

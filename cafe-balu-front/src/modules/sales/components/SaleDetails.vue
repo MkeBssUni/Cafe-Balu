@@ -16,7 +16,7 @@
                 </b-badge>
             </b-col>
         </b-row>
-        <hr class="divider" />
+        <hr class="custom-divider" />
         <b-row class="p-2">
             <b-col cols="12">
                 <b-card no-body>

@@ -4,7 +4,7 @@
             <b-img :src="require('@/assets/img/logos/logo.png')" class="custom-navbar-img"></b-img>
             <div class="ms-3">
                 <h5>Café Balu</h5>
-                <span>{{ role === 'admin' ? 'Administración' : 'Ventas' }}</span>
+                <span>{{ session.role === 'admin' ? 'Administración' : 'Ventas' }}</span>
             </div>
         </b-navbar-brand>
         <b-navbar-nav>

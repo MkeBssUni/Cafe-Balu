@@ -47,6 +47,11 @@ h6 {
     color: var(--navbar-brown);
 }
 
+.custom-navbar-brand h5 {
+    font-style: italic;
+    font-size: 1.3rem;
+}
+
 .custom-navbar-brand:hover {
     color: var(--navbar-brown);
 }

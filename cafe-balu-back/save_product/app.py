@@ -1,6 +1,5 @@
 import json
 import pymysql
-import logging
 import re
 import boto3
 import uuid
@@ -11,10 +10,6 @@ rds_user = "baluroot"
 rds_password = "baluroot"
 rds_db = "cafe_balu"
 bucket_name = "cafe-balu-images"
-
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-
 s3 = boto3.client('s3')
 
 def upload_image_to_s3(base64_data):
@@ -30,13 +25,11 @@ def lambda_handler(event, __):
     try:
         # Validar presencia del campo 'body' en el evento
         if 'body' not in event:
-            logger.error("Request body not found in the event")
             raise KeyError('body')
 
         try:
             body = json.loads(event['body'])
         except json.JSONDecodeError as e:
-            logger.error("Invalid JSON format: %s", str(e))
             return {
                 "statusCode": 400,
                 "body": json.dumps({
@@ -54,7 +47,6 @@ def lambda_handler(event, __):
         missing_fields = [field for field in ['name', 'stock', 'price', 'image'] if body.get(field) is None]
 
         if missing_fields:
-            logger.warning(f"Missing fields: {', '.join(missing_fields)}")
             return {
                 "statusCode": 400,
                 "body": json.dumps({
@@ -65,7 +57,6 @@ def lambda_handler(event, __):
 
         # Validar 'name': debe ser una cadena no vacía y sin caracteres inválidos
         if not isinstance(name, str) or not name.strip() or not re.match(r'^[\w\s.-]+$', name):
-            logger.warning("Invalid name: %s", name)
             return {
                 "statusCode": 400,
                 "body": json.dumps({
@@ -143,7 +134,6 @@ def lambda_handler(event, __):
             }),
         }
     except pymysql.MySQLError as e:
-        logger.error("MySQL error: %s", str(e))
         return {
             "statusCode": 500,
             "body": json.dumps({
@@ -152,7 +142,6 @@ def lambda_handler(event, __):
             }),
         }
     except Exception as e:
-        logger.error("Exception: %s", str(e))
         return {
             "statusCode": 500,
             "body": json.dumps({
@@ -168,9 +157,7 @@ def add_product(name, stock, price, category_id, image_url):
         cursor.execute("INSERT INTO products (name, stock, price, category_id, status, image) VALUES (%s, %s, %s, %s, true, %s)",
                        (name, stock, price, category_id, image_url))
         connection.commit()
-        logger.info("Product added successfully: name=%s", name)
     except Exception as e:
-        logger.error("Database insert error: %s", str(e))
         raise e
     finally:
         connection.close()
@@ -186,7 +173,6 @@ def category_exists(category_id):
             return False
         return result[0] > 0
     except Exception as e:
-        logger.error("Database select error: %s", str(e))
         raise e
     finally:
         connection.close()
@@ -202,7 +188,6 @@ def product_exists_in_category(category_id, name):
             return False
         return result[0] > 0
     except Exception as e:
-        logger.error("Database select error: %s", str(e))
         raise e
     finally:
         connection.close()
@@ -218,7 +203,6 @@ def is_name_duplicate(name):
             return False
         return result[0] > 0
     except Exception as e:
-        logger.error("Database select error: %s", str(e))
         raise e
     finally:
         connection.close()

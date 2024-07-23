@@ -8,7 +8,7 @@
             </div>
         </b-navbar-brand>
         <b-navbar-nav>
-            <b-nav-item class="position-relative">
+            <b-nav-item class="position-relative" ref="options">
                 <b-button variant="lighter-brown" class="border-dark-brown d-flex align-items-center"
                     @click="toggleDropdown(1)">
                     <span class="text-dark-brown d-sm-none">Opciones</span>
@@ -34,7 +34,7 @@
                     </div>
                 </div>
             </b-nav-item>
-            <b-nav-item class="position-relative">
+            <b-nav-item class="position-relative" ref="profile">
                 <b-button variant="lighter-brown" class="border-dark-brown d-flex align-items-center"
                     @click="toggleDropdown(2)">
                     <span class="text-dark-brown d-sm-none">Perfil</span>
@@ -67,8 +67,7 @@
                         <span>Cambiar contraseña</span>
                         <b-icon icon="key" font-scale="0.98"></b-icon>
                     </div>
-                    <div class="custom-dropdown-item d-flex align-items-center justify-content-between"
-                        @click="logout">
+                    <div class="custom-dropdown-item d-flex align-items-center justify-content-between" @click="logout">
                         <span>Cerrar sesión</span>
                         <b-icon icon="box-arrow-right" font-scale="0.98"></b-icon>
                     </div>
@@ -94,6 +93,12 @@ export default {
             showNip: false
         }
     },
+    mounted() {
+        document.addEventListener('click', this.handleClickOutside);
+    },
+    beforeDestroy() {
+        document.removeEventListener('click', this.handleClickOutside);
+    },
     methods: {
         toggleDropdown(index) {
             if (index == 1) {
@@ -102,6 +107,17 @@ export default {
             } else {
                 this.dropdowns.profile = !this.dropdowns.profile;
                 this.dropdowns.options = false;
+            }
+        },
+        handleClickOutside(event) {
+            const options = this.$refs.options;
+            const profile = this.$refs.profile;
+
+            if (options && !options.contains(event.target)) {
+                this.dropdowns.options = false;
+            }
+            if (profile && !profile.contains(event.target)) {
+                this.dropdowns.profile = false;
             }
         },
         goTo(route) {

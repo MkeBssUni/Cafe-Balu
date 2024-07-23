@@ -7,6 +7,7 @@ import { monthsList } from "../../../kernel/data";
 import { getCurrentMonth, getCurrentYear, getSalesPerDay } from "../functions/functions";
 import EmptyScreen from "../../../components/EmptyScreen";
 import Loading from "../../../components/Loading";
+import ModalLogin from "../../../components/ModalLogin";
 
 export default function AllSales() {
   const [sales, setSales] = useState([]);
@@ -14,6 +15,7 @@ export default function AllSales() {
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
   const [selectedYear, setSelectedYear] = useState(getCurrentYear());
   const [showLoading, setShowLoading] = useState(true);
+  const [showLogin, setShowLogin] = useState(true);
 
   useEffect(() => {
     fetchSales();
@@ -71,6 +73,7 @@ export default function AllSales() {
           />
         )) : <EmptyScreen title={"Sin ventas"} />}
       </ScrollView>
+      <ModalLogin visible={true} setVisible={setShowLogin} />
     </View>
   );
 }

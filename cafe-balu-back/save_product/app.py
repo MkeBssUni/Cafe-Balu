@@ -170,7 +170,7 @@ def add_product(name, stock, price, category_id, image_url, description):
     try:
         cursor = connection.cursor()
         cursor.execute("INSERT INTO products (name, stock, price, category_id, status, image, description) VALUES (%s, %s, %s, %s, true, %s, %s)",
-                       (name, stock, price, category_id, image_url))
+                       (name, stock, price, category_id, image_url, description))
         connection.commit()
     except Exception as e:
         raise e

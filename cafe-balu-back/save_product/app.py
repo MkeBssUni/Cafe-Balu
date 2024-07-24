@@ -42,6 +42,21 @@ def lambda_handler(event, __):
         price = body.get('price')
         category_id = body.get('category_id')
         image = body.get('image')
+        description = "Sin descripción"
+
+        if 'description' in body:
+            description = body.get('description')
+
+        if len(description) > 255:
+            return {
+                "statusCode": 413,
+                "body": json.dumps({
+                    "message": "DESCRIPTION_TOO_LONG"
+                }),
+            }
+
+        if description is None:
+            description = "Sin descripción"
 
         # Validar campos faltantes: 'name', 'stock', 'price'
         missing_fields = [field for field in ['name', 'stock', 'price', 'image'] if body.get(field) is None]
@@ -118,7 +133,7 @@ def lambda_handler(event, __):
         # Subir imagen a S3 y obtener la URL
         image_url = upload_image_to_s3(image)
 
-        add_product(name, stock, price, category_id, image_url)
+        add_product(name, stock, price, category_id, image_url, description)
         return {
             "statusCode": 200,
             "body": json.dumps({
@@ -150,11 +165,11 @@ def lambda_handler(event, __):
             }),
         }
 
-def add_product(name, stock, price, category_id, image_url):
+def add_product(name, stock, price, category_id, image_url, description):
     connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
     try:
         cursor = connection.cursor()
-        cursor.execute("INSERT INTO products (name, stock, price, category_id, status, image) VALUES (%s, %s, %s, %s, true, %s)",
+        cursor.execute("INSERT INTO products (name, stock, price, category_id, status, image, description) VALUES (%s, %s, %s, %s, true, %s, %s)",
                        (name, stock, price, category_id, image_url))
         connection.commit()
     except Exception as e:

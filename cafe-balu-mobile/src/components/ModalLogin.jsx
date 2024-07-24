@@ -1,25 +1,29 @@
+import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   View,
   KeyboardAvoidingView,
   Platform,
   Dimensions,
+  Animated,
+  Modal,
+  TouchableWithoutFeedback,
 } from "react-native";
-import React, { useState } from "react";
-import { Overlay, Input, Button } from "@rneui/base";
+import { Input, Button } from "@rneui/base";
 import { isEmpty } from "lodash";
 import { doPost } from "../config/axios";
-const { height } = Dimensions.get("window");
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomToast from "./CustomToast";
+import Loading from "./Loading";
 
+const { height } = Dimensions.get("window");
 
-
-export default function ModalLogin({ visible, setVisible, onLogin }) {
+export default function ModalLogin({ visible, setVisible }) {
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [visiblePassword, setVisiblePassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [toastConfig, setToastConfig] = useState({
     visible: false,
@@ -36,6 +40,18 @@ export default function ModalLogin({ visible, setVisible, onLogin }) {
   const handleHideToast = () => {
     setToastConfig((prevState) => ({ ...prevState, visible: false }));
   };
+
+  const translateY = useRef(new Animated.Value(height)).current;
+
+  useEffect(() => {
+    if (visible) {
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 800,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [visible]);
 
   const login = async (username, password) => {
     try {
@@ -69,7 +85,9 @@ export default function ModalLogin({ visible, setVisible, onLogin }) {
       valid = false;
     }
     if (valid) {
+      setLoading(true);
       const success = await login(email, password);
+      setLoading(false);
 
       if (success) {
         showToast("Inicio de sesión exitoso", "check-circle", "#fff", "#00B82C");
@@ -82,85 +100,100 @@ export default function ModalLogin({ visible, setVisible, onLogin }) {
   };
 
   const closeModal = () => {
-    setVisible(false);
-    setErrors({ email: "", password: "" });
-    setEmail("");
-    setPassword("");
+    Animated.timing(translateY, {
+      toValue: height,
+      duration: 800,
+      useNativeDriver: true,
+    }).start(() => {
+      setVisible(false);
+      setErrors({ email: "", password: "" });
+      setEmail("");
+      setPassword("");
+    });
   };
 
   return (
-    <Overlay
-      isVisible={visible}
-      onBackdropPress={() => setVisible(!visible)}
-      overlayStyle={styles.overlay}
-      backdropStyle={styles.backdrop}
+    <Modal
+      transparent
+      animationType="none"
+      visible={visible}
+      onRequestClose={closeModal}
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.keyboardAvoidingView}
-      >
-        <View>
-          <Input
-            label="Email"
-            placeholder="ej: usuario@correo.com"
-            labelStyle={styles.label}
-            keyboardType="email-address"
-            containerStyle={styles.inputContainer}
-            autoCapitalize="none"
-            onChange={(event) => setEmail(event.nativeEvent.text)}
-            errorMessage={errors.email}
-            rightIcon={{
-              name: "account",
-              type: "material-community",
-              color: "#8B4513",
-            }}
-          />
-          <Input
-            label="Contraseña"
-            placeholder="********"
-            labelStyle={styles.label}
-            secureTextEntry={!visiblePassword}
-            containerStyle={styles.inputContainer}
-            onChange={(event) => setPassword(event.nativeEvent.text)}
-            errorMessage={errors.password}
-            rightIcon={{
-              name: visiblePassword ? "eye-off" : "eye",
-              type: "material-community",
-              color: "#8B4513",
-              onPress: () => setVisiblePassword(!visiblePassword),
-            }}
-          />
-          <View style={styles.row}>
-            <Button
-              title="Cancelar"
-              buttonStyle={styles.closeButton}
-              containerStyle={styles.buttonContainer}
-              onPress={closeModal}
-            />
-            <Button
-              title="Iniciar sesión"
-              buttonStyle={styles.loginButton}
-              containerStyle={styles.buttonContainer}
-              onPress={handleLogin}
-            />
-          </View>
-        </View>
-      </KeyboardAvoidingView>
-      <CustomToast {...toastConfig} onHide={handleHideToast} />
-    </Overlay>
+      <TouchableWithoutFeedback onPress={closeModal}>
+        <View style={styles.backdrop} />
+      </TouchableWithoutFeedback>
+      <Animated.View style={[styles.animatedOverlay, { transform: [{ translateY }] }]}>
+        {loading ? (
+          <Loading />
+        ) : (
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={styles.keyboardAvoidingView}
+          >
+            <View>
+              <Input
+                label="Email"
+                placeholder="ej: usuario@correo.com"
+                labelStyle={styles.label}
+                keyboardType="email-address"
+                containerStyle={styles.inputContainer}
+                autoCapitalize="none"
+                onChange={(event) => setEmail(event.nativeEvent.text)}
+                errorMessage={errors.email}
+                rightIcon={{
+                  name: "account",
+                  type: "material-community",
+                  color: "#8B4513",
+                }}
+              />
+              <Input
+                label="Contraseña"
+                placeholder="********"
+                labelStyle={styles.label}
+                secureTextEntry={!visiblePassword}
+                containerStyle={styles.inputContainer}
+                onChange={(event) => setPassword(event.nativeEvent.text)}
+                errorMessage={errors.password}
+                rightIcon={{
+                  name: visiblePassword ? "eye-off" : "eye",
+                  type: "material-community",
+                  color: "#8B4513",
+                  onPress: () => setVisiblePassword(!visiblePassword),
+                }}
+              />
+              <View style={styles.row}>
+                <Button
+                  title="Cancelar"
+                  buttonStyle={styles.closeButton}
+                  containerStyle={styles.buttonContainer}
+                  onPress={closeModal}
+                />
+                <Button
+                  title="Iniciar sesión"
+                  buttonStyle={styles.loginButton}
+                  containerStyle={styles.buttonContainer}
+                  onPress={handleLogin}
+                />
+              </View>
+            </View>
+          </KeyboardAvoidingView>
+        )}
+        <CustomToast {...toastConfig} onHide={handleHideToast} />
+      </Animated.View>
+    </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    width: "100%",
-    height: height * 0.45,
-    position: "absolute",
+  animatedOverlay: {
+    position: 'absolute',
     bottom: 0,
+    width: '100%',
+    backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 20,
-    backgroundColor: "white",
+    height: height * 0.45,
   },
   keyboardAvoidingView: {
     width: "100%",
@@ -190,6 +223,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   backdrop: {
+    flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
 });
+

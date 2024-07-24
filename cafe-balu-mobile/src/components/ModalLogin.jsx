@@ -9,14 +9,33 @@ import React, { useState } from "react";
 import { Overlay, Input, Button } from "@rneui/base";
 import { isEmpty } from "lodash";
 import { doPost } from "../config/axios";
-
 const { height } = Dimensions.get("window");
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomToast from "./CustomToast";
+
+
 
 export default function ModalLogin({ visible, setVisible, onLogin }) {
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [visiblePassword, setVisiblePassword] = useState(false);
+
+  const [toastConfig, setToastConfig] = useState({
+    visible: false,
+    message: "",
+    iconName: "",
+    iconColor: "",
+    toastColor: "",
+  });
+
+  const showToast = (message, iconName, iconColor, toastColor) => {
+    setToastConfig({ visible: true, message, iconName, iconColor, toastColor });
+  };
+
+  const handleHideToast = () => {
+    setToastConfig((prevState) => ({ ...prevState, visible: false }));
+  };
 
   const login = async (username, password) => {
     try {
@@ -26,7 +45,7 @@ export default function ModalLogin({ visible, setVisible, onLogin }) {
       };
 
       const response = await doPost("/login", payload);
-      if (response.data.id_token) //guardar en storage
+      if (response.data.id_token) await AsyncStorage.setItem("token", response.data.id_token);
       return true;
     } catch (error) {
       return false;
@@ -53,14 +72,11 @@ export default function ModalLogin({ visible, setVisible, onLogin }) {
       const success = await login(email, password);
 
       if (success) {
-        console.log("Inicio de sesión exitoso");
-        closeModal();
+        showToast("Inicio de sesión exitoso", "check-circle", "#fff", "#00B82C");
+        const token = await AsyncStorage.getItem("token");
+        console.log("token", token);
       } else {
-        console.log("Error en el inicio de sesión");
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          general: "Error en el inicio de sesión",
-        }));
+        showToast("Ocurrió un error", "alert-circle", "#fff", "#FF0000");
       }
     }
   };
@@ -130,6 +146,7 @@ export default function ModalLogin({ visible, setVisible, onLogin }) {
           </View>
         </View>
       </KeyboardAvoidingView>
+      <CustomToast {...toastConfig} onHide={handleHideToast} />
     </Overlay>
   );
 }

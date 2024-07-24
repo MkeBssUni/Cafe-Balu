@@ -13,6 +13,17 @@ logger.setLevel(logging.INFO)
 
 def lambda_handler(event, __):
     try:
+        claims = event['requestContext']['authorizer']['claims']
+        role = claims['cognito:groups']
+
+        if 'admin' not in role:
+            return {
+                "statusCode": 403,
+                "body": json.dumps({
+                    "message": "FORBIDDEN"
+                }),
+            }
+
         body = json.loads(event.get('body', '{}'))
         name = body.get('name')
 

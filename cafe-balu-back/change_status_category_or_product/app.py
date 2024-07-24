@@ -14,6 +14,17 @@ def decimal_to_float(obj):
 
 def lambda_handler(event, __):
     try:
+        claims = event['requestContext']['authorizer']['claims']
+        role = claims['cognito:groups']
+
+        if 'admin' not in role:
+            return {
+                "statusCode": 403,
+                "body": json.dumps({
+                    "message": "FORBIDDEN"
+                }),
+            }
+
 
         if 'body' not in event:
             raise KeyError('body')

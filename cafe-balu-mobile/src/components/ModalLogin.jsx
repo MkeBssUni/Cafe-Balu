@@ -61,10 +61,15 @@ export default function ModalLogin({ visible, setVisible }) {
       };
 
       const response = await doPost("/login", payload);
+      
+      if(response.data.role !== "admin") {
+        showToast("No tienes permisos para acceder", "alert-circle", "#fff", "#FF0000");
+        return { success: false, message: "No tienes permisos para acceder" };
+      }
       if (response.data.id_token) await AsyncStorage.setItem("token", response.data.id_token);
-      return true;
+      return { success: true, message: "Inicio de sesión exitoso" };
     } catch (error) {
-      return false;
+      return { success: false, message: "No se pudo iniciar sesión"}
     }
   };
 
@@ -86,15 +91,13 @@ export default function ModalLogin({ visible, setVisible }) {
     }
     if (valid) {
       setLoading(true);
-      const success = await login(email, password);
+      const response = await login(email, password);
       setLoading(false);
 
-      if (success) {
-        showToast("Inicio de sesión exitoso", "check-circle", "#fff", "#00B82C");
-        const token = await AsyncStorage.getItem("token");
-        console.log("token", token);
+      if (response.success) {
+        showToast(response.message, "check-circle", "#fff", "#00B82C");
       } else {
-        showToast("Ocurrió un error", "alert-circle", "#fff", "#FF0000");
+        showToast(response.message, "alert-circle", "#fff", "#FF0000");
       }
     }
   };

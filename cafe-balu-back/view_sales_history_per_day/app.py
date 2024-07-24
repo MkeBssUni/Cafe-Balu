@@ -35,6 +35,17 @@ def validate_date_range(start_date, end_date):
 
 def lambda_handler(event, context):
     try:
+        claims = event['requestContext']['authorizer']['claims']
+        role = claims['cognito:groups']
+
+        if 'admin' not in role or 'sales' not in role:
+            return {
+                "statusCode": 403,
+                "body": json.dumps({
+                    "message": "FORBIDDEN"
+                }),
+            }
+
         if 'body' not in event:
             logger.error("body not found in the event")
             raise KeyError('body')

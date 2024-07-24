@@ -12,6 +12,17 @@ logger.setLevel(logging.INFO)
 
 def lambda_handler(event, __):
     try:
+        claims = event['requestContext']['authorizer']['claims']
+        role = claims['cognito:groups']
+
+        if 'admin' not in role or 'sales' not in role:
+            return {
+                "statusCode": 403,
+                "body": json.dumps({
+                    "message": "FORBIDDEN"
+                }),
+            }
+
         if 'body' not in event:
             logger.error("Request body not found in the event")
             raise KeyError('body')

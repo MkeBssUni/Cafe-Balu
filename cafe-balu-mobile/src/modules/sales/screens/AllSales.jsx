@@ -73,7 +73,7 @@ export default function AllSales() {
           />
         )) : <EmptyScreen title={"Sin ventas"} />}
       </ScrollView>
-      <ModalLogin visible={true} setVisible={setShowLogin} />
+      <ModalLogin visible={showLogin} setVisible={setShowLogin} />
     </View>
   );
 }

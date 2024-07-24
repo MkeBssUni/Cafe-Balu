@@ -1,5 +1,4 @@
 import json
-import boto3
 import pymysql
 from decimal import Decimal
 
@@ -16,17 +15,6 @@ def decimal_to_float(obj):
 
 def lambda_handler(event, __):
     try:
-        claims = event['requestContext']['authorizer']['claims']
-        role = claims['cognito:groups']
-
-        if 'admin-balu' not in role:
-            return {
-                "statusCode": 403,
-                "body": json.dumps({
-                    "message": "FORBIDDEN"
-                }),
-            }
-
         # Validar presencia del campo 'pathParameters' en el evento
         status = 0
         if 'pathParameters' in event:

@@ -1,8 +1,19 @@
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const instance = axios.create({
     baseURL:'https://afzd4wkj63.execute-api.us-east-2.amazonaws.com/Prod',
     timeout: 5000,
+})
+
+instance.interceptors.request.use(async (config) => {
+    const token = (AsyncStorage.getItem("token") || null)
+    if(token) {
+        config.headers.Authorization = `Bearer ${token}`
+    }
+    return config;
+}, function(error){
+    return Promise.reject(error);
 })
 
 const doPost = async (url, data) => {

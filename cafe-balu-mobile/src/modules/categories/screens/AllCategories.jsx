@@ -7,11 +7,15 @@ import ModalNewCateogry from "../../../components/ModalNewCateogry";
 import Loading from "../../../components/Loading";
 import CustomToast from "../../../components/CustomToast";
 import EmptyScreen from "../../../components/EmptyScreen";
+import { tokenExists } from "../../../kernel/functions";
+import NoSession from "../../../components/NoSession";
 
 export default function AllCategories() {
   const [categories, setCategories] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [openDial, setOpenDial] = useState(false);
+  const [reload, setReload] = useState(false);
+  const [session, setSession] = useState(false);
 
   const [showLoading, setShowLoading] = useState(true);
   const [toastConfig, setToastConfig] = useState({
@@ -22,9 +26,21 @@ export default function AllCategories() {
     toastColor: "",
   });
 
+  const checkSession = async () => {
+    const session = await tokenExists();
+    setSession(session);
+  };
+
   useEffect(() => {
-    loadCategories();
-  }, []);
+    const initialize = async () => {
+      setShowLoading(true);
+      await checkSession();
+      await loadCategories();
+      setShowLoading(false);
+    };
+
+    initialize();
+  }, [reload]);
 
   const showToast = (message, iconName, iconColor, toastColor) => {
     setToastConfig({ visible: true, message, iconName, iconColor, toastColor });
@@ -61,57 +77,66 @@ export default function AllCategories() {
     <View style={styles.container}>
       {showLoading ? (
         <Loading />
-      ) : (
-        <ScrollView
-          style={styles.scrollView}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollViewContent}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={["#8B4513"]}
-            />
-          }
-        >
-          {
-            categories.length > 0 ?
+      ) : session ? (
+        <>
+          <ScrollView
+            style={styles.scrollView}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scrollViewContent}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={["#8B4513"]}
+              />
+            }
+          >
+            {categories.length > 0 ? (
               categories.map((category, index) => (
-                <List index={index} name={category.name} status={category.status} />
+                <List
+                  key={index}
+                  index={index}
+                  name={category.name}
+                  status={category.status}
+                />
               ))
-            : <EmptyScreen title={"Sin categorías"} />
-          }
-        </ScrollView>
+            ) : (
+              <EmptyScreen title={"Sin categorías"} />
+            )}
+          </ScrollView>
+          <SpeedDial
+            isOpen={openDial}
+            icon={{
+              name: "add",
+              color: "#fff",
+            }}
+            openIcon={{
+              name: "close",
+              color: "#fff",
+            }}
+            onOpen={() => setOpenDial(!openDial)}
+            onClose={() => setOpenDial(!openDial)}
+            buttonStyle={styles.buttonStyleDial}
+          >
+            <SpeedDial.Action
+              icon={{
+                name: "add",
+                color: "#fff",
+              }}
+              title={"Nueva categoría"}
+              onPress={() => console.log("do something")}
+              buttonStyle={styles.buttonStyleDial}
+            />
+          </SpeedDial>
+          <ModalNewCateogry
+            openDial={openDial}
+            setOpenDial={setOpenDial}
+            onRefresh={onRefresh}
+          />
+        </>
+      ) : (
+        <NoSession setReload={setReload} />
       )}
-      <SpeedDial
-        isOpen={false}
-        icon={{
-          name: "add",
-          color: "#fff",
-        }}
-        openIcon={{
-          name: "close",
-          color: "#fff",
-        }}
-        onOpen={() => setOpenDial(!openDial)}
-        onClose={() => setOpenDial(!openDial)}
-        buttonStyle={styles.buttonStyleDial}
-      >
-        <SpeedDial.Action
-          icon={{
-            name: "add",
-            color: "#fff",
-          }}
-          title={"Nueva categoría"}
-          onPress={() => console.log("do something")}
-          buttonStyle={styles.buttonStyleDial}
-        />
-      </SpeedDial>
-      <ModalNewCateogry
-        openDial={openDial}
-        setOpenDial={setOpenDial}
-        onRefresh={onRefresh}
-      />
       <CustomToast {...toastConfig} onHide={handleHideToast} />
     </View>
   );

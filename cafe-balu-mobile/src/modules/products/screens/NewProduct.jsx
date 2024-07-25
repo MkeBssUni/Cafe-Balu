@@ -4,10 +4,12 @@ import { Button, Input } from "@rneui/base";
 import * as ImagePicker from "expo-image-picker";
 import { isEmpty } from "lodash";
 import { saveProduct } from "../functions/functions";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import Select from "../../../components/Select";
 import { getAllCategories } from "../../categories/functions/functions";
 import CustomToast from "../../../components/CustomToast";
+import NoSession from "../../../components/NoSession";
+import { tokenExists } from "../../../kernel/functions";
 
 export default function NewProduct(props) {
   const { setReload } = props.route.params;
@@ -19,7 +21,10 @@ export default function NewProduct(props) {
     iconColor: "",
     toastColor: "",
   });
-  const route = useRoute();
+
+  const [reloadPage, setReloadPage] = useState(false);
+  const [session, setSession] = useState(false);
+
   const navigation = useNavigation();
 
   const [errors, setErrors] = useState({
@@ -47,13 +52,19 @@ export default function NewProduct(props) {
     setToastConfig((prevState) => ({ ...prevState, visible: false }));
   };
 
+  const checkSession = async () => {
+    const session = await tokenExists();
+    setSession(session);
+  }
+
   useEffect(() => {
     const fetchCategories = async () => {
       const categoriesData = await getAllCategories(1);
       setCategories(categoriesData);
     };
+    checkSession();
     fetchCategories();
-  }, []);
+  }, [reloadPage]);
 
   const handleChange = (name, value) => {
     setNewProduct({
@@ -169,7 +180,7 @@ export default function NewProduct(props) {
 
   return (
     <View style={styles.container}>
-      <ScrollView
+      {session ? <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
@@ -250,7 +261,7 @@ export default function NewProduct(props) {
             onPress={sendData}
           />
         </View>
-      </ScrollView>
+      </ScrollView> : <NoSession setReload={setReloadPage} />}
       <CustomToast {...toastConfig} onHide={handleHideToast} />
     </View>
   );

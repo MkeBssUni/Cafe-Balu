@@ -18,7 +18,7 @@ import Loading from "./Loading";
 
 const { height } = Dimensions.get("window");
 
-export default function ModalLogin({ visible, setVisible }) {
+export default function ModalLogin({ visible, setVisible, setReload }) {
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -96,6 +96,7 @@ export default function ModalLogin({ visible, setVisible }) {
 
       if (response.success) {
         showToast(response.message, "check-circle", "#fff", "#00B82C");
+        closeModal();
       } else {
         showToast(response.message, "alert-circle", "#fff", "#FF0000");
       }
@@ -109,6 +110,7 @@ export default function ModalLogin({ visible, setVisible }) {
       useNativeDriver: true,
     }).start(() => {
       setVisible(false);
+      setReload(true);
       setErrors({ email: "", password: "" });
       setEmail("");
       setPassword("");

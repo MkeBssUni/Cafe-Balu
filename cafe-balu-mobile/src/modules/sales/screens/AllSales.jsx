@@ -7,7 +7,8 @@ import { monthsList } from "../../../kernel/data";
 import { getCurrentMonth, getCurrentYear, getSalesPerDay } from "../functions/functions";
 import EmptyScreen from "../../../components/EmptyScreen";
 import Loading from "../../../components/Loading";
-import ModalLogin from "../../../components/ModalLogin";
+import { tokenExists } from "../../../kernel/functions";
+import NoSession from "../../../components/NoSession";
 
 export default function AllSales() {
   const [sales, setSales] = useState([]);
@@ -15,11 +16,18 @@ export default function AllSales() {
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
   const [selectedYear, setSelectedYear] = useState(getCurrentYear());
   const [showLoading, setShowLoading] = useState(true);
-  const [showLogin, setShowLogin] = useState(true);
+  const [reload, setReload] = useState(false)
+  const [session, setSession] = useState(false);
+
+  const checkSession = async () => {
+    const session = await tokenExists();
+    setSession(session);
+  }
 
   useEffect(() => {
     fetchSales();
-  }, [selectedMonth, selectedYear]);
+    checkSession();
+  }, [selectedMonth, selectedYear, reload]);
 
   const fetchSales = async () => {
     setShowLoading(true);
@@ -37,7 +45,7 @@ export default function AllSales() {
 
   return (
     <View style={styles.container}>
-        <ScrollView
+        { session ? <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
@@ -72,8 +80,7 @@ export default function AllSales() {
             products={sale.products}
           />
         )) : <EmptyScreen title={"Sin ventas"} />}
-      </ScrollView>
-      <ModalLogin visible={showLogin} setVisible={setShowLogin} />
+      </ScrollView> : <NoSession setReload={setReload} /> }
     </View>
   );
 }
@@ -104,5 +111,4 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginHorizontal: 16,
   },
-  imgPicker: {},
 });

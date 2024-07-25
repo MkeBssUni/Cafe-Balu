@@ -29,6 +29,7 @@ export default function NewProduct(props) {
 
   const [errors, setErrors] = useState({
     name: "",
+    description: "",
     stock: "",
     price: "",
     category: "",
@@ -36,6 +37,7 @@ export default function NewProduct(props) {
   });
   const [newProduct, setNewProduct] = useState({
     name: "",
+    description: "",
     stock: "",
     price: "",
     category_id: category,
@@ -55,7 +57,7 @@ export default function NewProduct(props) {
   const checkSession = async () => {
     const session = await tokenExists();
     setSession(session);
-  }
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -118,6 +120,16 @@ export default function NewProduct(props) {
       category_id: category,
     };
 
+    if (isEmpty(updatedProduct.description)) {
+      delete updatedProduct.description;
+    } else if (updatedProduct.description.length > 255) {
+      setErrors((prev) => ({
+        ...prev,
+        description: "La descripción no puede tener más de 255 caracteres",
+      }));
+      return;
+    }
+
     if (isEmpty(updatedProduct.name)) {
       setErrors((prev) => ({ ...prev, name: "El nombre es requerido" }));
       return;
@@ -156,9 +168,8 @@ export default function NewProduct(props) {
 
     try {
       const result = await saveProduct(updatedProduct);
-      
-      if(result.data == undefined) throw new Error("Error al guardar el producto");
-      
+
+      if (result.data == undefined) throw new Error("Error al guardar el producto");
 
       showToast("Producto guardado", "check-circle", "#fff", "#00B82C");
 
@@ -180,88 +191,103 @@ export default function NewProduct(props) {
 
   return (
     <View style={styles.container}>
-      {session ? <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-      >
-        <Input
-          label="Nombre del producto"
-          placeholder="ej: Muffin de chocolate"
-          labelStyle={styles.label}
-          keyboardType="default"
-          containerStyle={styles.inputContainer}
-          autoCapitalize="sentences"
-          onChange={(event) => handleChange("name", event.nativeEvent.text)}
-          errorMessage={errors.name}
-          value={newProduct.name}
-        />
-        <View style={styles.row}>
+      {session ? (
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
           <Input
-            label="Stock"
-            placeholder="ej: 10"
+            label="Nombre del producto"
+            placeholder="ej: Muffin de chocolate"
             labelStyle={styles.label}
-            keyboardType="numeric"
-            containerStyle={styles.inputContainerRow}
-            onChange={(event) => handleChange("stock", event.nativeEvent.text)}
-            errorMessage={errors.stock}
-            value={newProduct.stock}
+            keyboardType="default"
+            containerStyle={styles.inputContainer}
+            autoCapitalize="sentences"
+            onChange={(event) => handleChange("name", event.nativeEvent.text)}
+            errorMessage={errors.name}
+            value={newProduct.name}
           />
           <Input
-            label="Precio"
-            placeholder="ej: 25.00"
+            label="Descripción del producto"
+            placeholder="ej: Muffin con chispas de chocolate"
             labelStyle={styles.label}
-            keyboardType="numeric"
-            containerStyle={styles.inputContainerRow}
-            onChange={(event) => handleChange("price", event.nativeEvent.text)}
-            errorMessage={errors.price}
-            value={newProduct.price}
+            keyboardType="default"
+            containerStyle={styles.inputContainer}
+            autoCapitalize="sentences"
+            onChange={(event) => handleChange("description", event.nativeEvent.text)}
+            errorMessage={errors.description}
+            value={newProduct.description}
           />
-        </View>
-        <Select
-          value={category}
-          setValue={setCategory}
-          label={"Selecciona una categoría"}
-          list={categories}
-          defaultTitle={"Categoría"}
-        />
-        <Button
-          title={image ? "Cambiar imagen" : "Seleccionar imagen"}
-          onPress={pickImage}
-          buttonStyle={styles.imgPickerButton}
-          iconRight={true}
-          icon={
-            image
-              ? {
-                  name: "image-edit",
-                  type: "material-community",
-                  size: 22,
-                  color: "white",
-                }
-              : {
-                  name: "image-plus",
-                  type: "material-community",
-                  size: 22,
-                  color: "white",
-                }
-          }
-        />
-        {image && <Image source={{ uri: image }} style={styles.image} />}
-        <View style={styles.row}>
+          <View style={styles.row}>
+            <Input
+              label="Stock"
+              placeholder="ej: 10"
+              labelStyle={styles.label}
+              keyboardType="numeric"
+              containerStyle={styles.inputContainerRow}
+              onChange={(event) => handleChange("stock", event.nativeEvent.text)}
+              errorMessage={errors.stock}
+              value={newProduct.stock}
+            />
+            <Input
+              label="Precio"
+              placeholder="ej: 25.00"
+              labelStyle={styles.label}
+              keyboardType="numeric"
+              containerStyle={styles.inputContainerRow}
+              onChange={(event) => handleChange("price", event.nativeEvent.text)}
+              errorMessage={errors.price}
+              value={newProduct.price}
+            />
+          </View>
+          <Select
+            value={category}
+            setValue={setCategory}
+            label={"Selecciona una categoría"}
+            list={categories}
+            defaultTitle={"Categoría"}
+          />
           <Button
-            title="Limpiar"
-            buttonStyle={styles.closeButton}
-            containerStyle={styles.buttonContainer}
-            onPress={cleanForm}
+            title={image ? "Cambiar imagen" : "Seleccionar imagen"}
+            onPress={pickImage}
+            buttonStyle={styles.imgPickerButton}
+            iconRight={true}
+            icon={
+              image
+                ? {
+                    name: "image-edit",
+                    type: "material-community",
+                    size: 22,
+                    color: "white",
+                  }
+                : {
+                    name: "image-plus",
+                    type: "material-community",
+                    size: 22,
+                    color: "white",
+                  }
+            }
           />
+          {image && <Image source={{ uri: image }} style={styles.image} />}
+          <View style={styles.row}>
+            <Button
+              title="Limpiar"
+              buttonStyle={styles.closeButton}
+              containerStyle={styles.buttonContainer}
+              onPress={cleanForm}
+            />
 
-          <Button
-            title="Guardar"
-            buttonStyle={styles.saveButton}
-            containerStyle={styles.buttonContainer}
-            onPress={sendData}
-          />
-        </View>
-      </ScrollView> : <NoSession setReload={setReloadPage} />}
+            <Button
+              title="Guardar"
+              buttonStyle={styles.saveButton}
+              containerStyle={styles.buttonContainer}
+              onPress={sendData}
+            />
+          </View>
+        </ScrollView>
+      ) : (
+        <NoSession setReload={setReloadPage} />
+      )}
       <CustomToast {...toastConfig} onHide={handleHideToast} />
     </View>
   );

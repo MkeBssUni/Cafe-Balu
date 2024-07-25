@@ -105,7 +105,7 @@ export default function AllCategories() {
             )}
           </ScrollView>
           <SpeedDial
-            isOpen={openDial}
+            isOpen={false}
             icon={{
               name: "add",
               color: "#fff",

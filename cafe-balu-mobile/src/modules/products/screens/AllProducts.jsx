@@ -7,11 +7,13 @@ import { useNavigation } from "@react-navigation/native";
 import Loading from "../../../components/Loading";
 import CustomToast from "../../../components/CustomToast";
 import EmptyScreen from "../../../components/EmptyScreen";
+import { tokenExists } from "../../../kernel/functions";
 
 export default function AllProducts({ setReload, reload }) {
   const [products, setProducts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [showLoading, setShowLoading] = useState(true);
+  const [session, setSession] = useState(false);
   const [toastConfig, setToastConfig] = useState({
     visible: false,
     message: "",
@@ -22,10 +24,20 @@ export default function AllProducts({ setReload, reload }) {
 
   const navigation = useNavigation();
 
-  
+  const checkSession = async () => {
+    const session = await tokenExists();
+    setSession(session);
+  };
+
   useEffect(() => {
-    setShowLoading(true);
-    loadProducts();
+    const initialize = async () => {
+      setShowLoading(true);
+      await checkSession();
+      await loadProducts();
+      setShowLoading(false);
+    };
+
+    initialize();
   }, []);
 
   useEffect(() => {
@@ -34,7 +46,7 @@ export default function AllProducts({ setReload, reload }) {
       setReload(false);
     }
   }, [reload]);
-  
+
   const showToast = (message, iconName, iconColor, toastColor) => {
     setToastConfig({ visible: true, message, iconName, iconColor, toastColor });
   };
@@ -53,12 +65,13 @@ export default function AllProducts({ setReload, reload }) {
       setShowLoading(false);
     }
   };
-  
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     loadProducts().then(() => {
       setRefreshing(false);
     });
+    checkSession();
   }, []);
 
   return (
@@ -92,20 +105,22 @@ export default function AllProducts({ setReload, reload }) {
           )) : <EmptyScreen title={"Sin productos"} />}
         </ScrollView>
       )}
-      <SpeedDial
-        isOpen={false}
-        icon={{ name: "add", color: "#fff" }}
-        openIcon={{ name: "close", color: "#fff" }}
-        buttonStyle={styles.buttonStyleDial}
-        onOpen={() => navigation.navigate("newProductStack", { setReload })}
-      >
-        <SpeedDial.Action
+      {session && (
+        <SpeedDial
+          isOpen={false}
           icon={{ name: "add", color: "#fff" }}
-          title={"Nuevo producto"}
-          onPress={() => console.log("do something")}
+          openIcon={{ name: "close", color: "#fff" }}
           buttonStyle={styles.buttonStyleDial}
-        />
-      </SpeedDial>
+          onOpen={() => navigation.navigate("newProductStack", { setReload })}
+        >
+          <SpeedDial.Action
+            icon={{ name: "add", color: "#fff" }}
+            title={"Nuevo producto"}
+            onPress={() => console.log("do something")}
+            buttonStyle={styles.buttonStyleDial}
+          />
+        </SpeedDial>
+      )}
       <CustomToast {...toastConfig} onHide={handleHideToast} />
     </View>
   );

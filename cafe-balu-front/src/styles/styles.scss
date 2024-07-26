@@ -1,0 +1,60 @@
+$theme-colors: (
+    "dark": #000000,
+    "success": #95cc7b,
+    "dark-success": #53A93D,    
+    "danger": #e48a8a,
+    "warning": #d8a24a,
+    "info": #30a0cc,
+    "secondary": #cfcfcf,
+    "brown": #A77B4A,
+    "light-brown": #D2B48C,
+    "lighter-brown": #e4c9a1,
+    "more-lighter-brown": #f0d9b5,
+    "dark-brown": #6d441c,
+    "darker-brown": #4a1f1f,
+    "card-title": #4E2F11,
+    "badge-brown": #D4B698,
+    "navbar-brown": #8B4411,
+    "navbar-light-brown": #c0a27c,
+);
+
+.badge-success {
+    background-color: map-get($theme-colors, "success");
+    color: #314729 !important;
+    font-size: small !important;
+}
+
+.badge-danger {
+    background-color: map-get($theme-colors, "danger");
+    color: #4a1f1f !important;
+    font-size: small !important;
+}
+
+.badge-brown {
+    background-color: map-get($theme-colors, "badge-brown");
+    color: #4E2F11 !important;
+    font-size: medium !important;
+}
+
+.badge-light-brown {
+    background-color: map-get($theme-colors, "light-brown");
+    color: #4a1f1f !important;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: map-get($theme-colors, "brown");
+    border-color: map-get($theme-colors, "brown");
+    color: #fff;
+}
+
+.pagination .page-link {
+    color: map-get($theme-colors, "dark-brown");
+}
+
+.pagination .page-link:hover {
+    background-color: map-get($theme-colors, "light-brown");
+    border-color: map-get($theme-colors, "light-brown");
+    color: map-get($theme-colors, "dark-brown");
+}
+
+@import 'node_modules/bootstrap/scss/bootstrap.scss';

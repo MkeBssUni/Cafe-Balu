@@ -7,11 +7,19 @@
     "preview": "vite preview --port 4173"
   },
   "dependencies": {
-    "vue": "^2.7.7"
+    "bootstrap": "^5.3.3",
+    "bootstrap-vue": "^2.23.1",
+    "vue": "^2.7.16",
+    "vue-router": "^2.8.1",
+    "vuelidate": "^0.7.7",
+    "vue-sweetalert2": "^5.0.5",
+    "vue-multiselect": "^2.1.7"
   },
   "devDependencies": {
     "@vitejs/plugin-legacy": "^2.0.0",
     "@vitejs/plugin-vue2": "^1.1.2",
+    "sass": "^1.63.4",
+    "sass-loader": "^10.4.1",
     "terser": "^5.14.2",
     "vite": "^3.0.2"
   }

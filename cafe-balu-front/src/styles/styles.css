@@ -1,0 +1,133 @@
+:root {
+    --success: #95cc7b;
+    --dark-success: #53A93D;
+    --danger: #e48a8a;
+    --warning: #d8a24a;
+    --info: #30a0cc;
+    --secondary: #cfcfcf;
+    --brown: #A77B4A;
+    --light-brown: #D2B48C;
+    --lighter-brown: #e4c9a1;
+    --more-lighter-brown: #f0d9b5;
+    --dark-brown: #6d441c;
+    --darker-brown: #4a1f1f;
+    --card-title: #4E2F11;
+    --badge-brown: #D4B698;
+    --navbar-brown: #8B4411;
+}
+
+@font-face {
+    font-family: "Baloo";
+    src: url("../assets/fonts/Baloo-Regular.ttf") format("truetype");
+}
+
+label {
+    margin-bottom: 0.5rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin-bottom: 0;
+}
+
+.full-height {
+    height: 100vh;
+}
+
+.position-relative {
+    position: relative;
+}
+
+.custom-navbar-brand {
+    font-size: 1rem;
+    color: var(--navbar-brown);
+}
+
+.custom-navbar-brand h5 {
+    font-style: italic;
+    font-size: 1.3rem;
+}
+
+.custom-navbar-brand:hover {
+    color: var(--navbar-brown);
+}
+
+.custom-navbar-img {
+    width: 36px;
+    height: auto;
+}
+
+.custom-navbar-user {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+}
+
+.custom-dropdown {
+    position: absolute;
+    top: 87%;
+    right: 0;
+    z-index: 1000;
+    margin-right: 0.5rem;
+    width: 280px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(210, 180, 140, 0.6);
+}
+
+.custom-dropdown-header {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--light-brown);
+}
+
+.custom-dropdown-item {
+    padding: 0.5rem 0.8rem;
+    color: var(--dark-brown);
+    cursor: pointer;
+}
+
+.custom-dropdown-item:first-child {
+    border-radius: 4px 4px 0 0;
+    border-bottom: 1px solid var(--light-brown);
+}
+
+.custom-dropdown-item:last-child {
+    border-radius: 0 0 4px 4px;
+    border-top: 1px solid var(--light-brown);
+}
+
+.custom-dropdown-item:hover {
+    color: var(--card-title);
+    background-color: #f0d9b5af;
+}
+
+.custom-dropdown .custom-btn:hover {
+    color: var(--card-title);
+    background-color: var(--more-lighter-brown);
+}
+
+.custom-modal .modal-dialog {
+    max-width: 86%;
+    max-height: 100%;
+    margin: 0 auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    display: flex;
+    position: fixed;
+    z-index: 100000;
+}
+
+.custom-pagination-select {
+    width: 40%;
+}
+
+.custom-divider {
+    border-top: 1px solid #575757;
+}

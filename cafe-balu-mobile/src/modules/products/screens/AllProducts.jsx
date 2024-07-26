@@ -93,6 +93,7 @@ export default function AllProducts({ setReload, reload }) {
         >
           {products.length > 0 ? products.map((product, index) => (
             <ViewProducts
+              id={product.id}
               key={index}
               index={index}
               name={product.name}

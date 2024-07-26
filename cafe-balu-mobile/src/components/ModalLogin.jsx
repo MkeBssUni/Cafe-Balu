@@ -47,7 +47,7 @@ export default function ModalLogin({ visible, setVisible, setReload }) {
     if (visible) {
       Animated.timing(translateY, {
         toValue: 0,
-        duration: 800,
+        duration: 400,
         useNativeDriver: true,
       }).start();
     }
@@ -106,7 +106,7 @@ export default function ModalLogin({ visible, setVisible, setReload }) {
   const closeModal = () => {
     Animated.timing(translateY, {
       toValue: height,
-      duration: 800,
+      duration: 400,
       useNativeDriver: true,
     }).start(() => {
       setVisible(false);

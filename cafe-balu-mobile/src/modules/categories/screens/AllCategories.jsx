@@ -77,7 +77,7 @@ export default function AllCategories() {
     <View style={styles.container}>
       {showLoading ? (
         <Loading />
-      ) : session ? (
+      ) : (
         <>
           <ScrollView
             style={styles.scrollView}
@@ -91,51 +91,59 @@ export default function AllCategories() {
               />
             }
           >
-            {categories.length > 0 ? (
-              categories.map((category, index) => (
-                <List
-                  key={index}
-                  index={index}
-                  name={category.name}
-                  status={category.status}
-                />
-              ))
+            {session ? (
+              categories.length > 0 ? (
+                categories.map((category, index) => (
+                  <List
+                    key={index}
+                    index={index}
+                    name={category.name}
+                    status={category.status}
+                    id={category.id}
+                    setReload={setReload}
+                  />
+                ))
+              ) : (
+                <EmptyScreen title={"Sin categorías"} />
+              )
             ) : (
-              <EmptyScreen title={"Sin categorías"} />
+              <NoSession setReload={setReload} />
             )}
           </ScrollView>
-          <SpeedDial
-            isOpen={false}
-            icon={{
-              name: "add",
-              color: "#fff",
-            }}
-            openIcon={{
-              name: "close",
-              color: "#fff",
-            }}
-            onOpen={() => setOpenDial(!openDial)}
-            onClose={() => setOpenDial(!openDial)}
-            buttonStyle={styles.buttonStyleDial}
-          >
-            <SpeedDial.Action
-              icon={{
-                name: "add",
-                color: "#fff",
-              }}
-              title={"Nueva categoría"}
-              onPress={() => console.log("do something")}
-              buttonStyle={styles.buttonStyleDial}
-            />
-          </SpeedDial>
-          <ModalNewCateogry
-            openDial={openDial}
-            setOpenDial={setOpenDial}
-            onRefresh={onRefresh}
-          />
+          {session && (
+            <>
+              <SpeedDial
+                isOpen={false}
+                icon={{
+                  name: "add",
+                  color: "#fff",
+                }}
+                openIcon={{
+                  name: "close",
+                  color: "#fff",
+                }}
+                onOpen={() => setOpenDial(!openDial)}
+                onClose={() => setOpenDial(!openDial)}
+                buttonStyle={styles.buttonStyleDial}
+              >
+                <SpeedDial.Action
+                  icon={{
+                    name: "add",
+                    color: "#fff",
+                  }}
+                  title={"Nueva categoría"}
+                  onPress={() => console.log("do something")}
+                  buttonStyle={styles.buttonStyleDial}
+                />
+              </SpeedDial>
+              <ModalNewCateogry
+                openDial={openDial}
+                setOpenDial={setOpenDial}
+                onRefresh={onRefresh}
+              />
+            </>
+          )}
         </>
-      ) : (
-        <NoSession setReload={setReload} />
       )}
       <CustomToast {...toastConfig} onHide={handleHideToast} />
     </View>

@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
-import { Image, Card } from "@rneui/themed";
+import { Image, Card, Divider } from "@rneui/themed";
 import { cafeBase64 } from "../assets/imgs/imgs-base64";
 import ModalChangeStatus from "./ModalChangeStatus";
 import { Icon } from "@rneui/base";
@@ -14,6 +14,7 @@ export default function ViewProducts({
   index,
   stock,
   status,
+  description,
 }) {
   const [showModal, setShowModal] = useState(false);
   const [statusTag, setStatusTag] = useState(status);
@@ -30,10 +31,15 @@ export default function ViewProducts({
           />
         </View>
         <View style={styles.dataContainer}>
-          <View style={[styles.row,{
-            justifyContent: "space-between",
-            alignItems: "center",
-          }]}> 
+          <View
+            style={[
+              styles.row,
+              {
+                justifyContent: "space-between",
+                alignItems: "center",
+              },
+            ]}
+          >
             <Text style={styles.title}>{name}</Text>
             <TouchableOpacity onPress={() => setShowModal(true)}>
               <Icon
@@ -44,16 +50,22 @@ export default function ViewProducts({
               />
             </TouchableOpacity>
           </View>
-          <Card.Divider style={styles.carDivider} />
-          <View style={styles.row}>
+          <Card.Divider style={styles.cardDivider} />
+          <Text style={styles.description}>{description || 'Sin descripción disponible'}</Text>
+          <Card.Divider style={styles.cardDivider} />
+          <View style={[styles.row, styles.distributedRow]}>
             <Text style={styles.rowItem}>${price}</Text>
-            <Text style={styles.rowItem}>Stock: {stock}</Text>
-          </View>
-          <View style={styles.row}>
+            <Divider orientation="vertical" />
+            <View style={styles.rowItem}>
+              <Text style={styles.rowItem}>Stock:</Text>
+              <Text style={styles.rowItem}>{stock}</Text>
+            </View>
+            <Divider orientation="vertical" />
             <View
               style={[
                 styles.status,
                 statusTag === 1 ? styles.activeStatus : styles.inactiveStatus,
+                styles.rowItem
               ]}
             >
               <Text style={styles.statusText}>
@@ -94,11 +106,15 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   row: {
-    flex: 1,
     flexDirection: "row",
+  },
+  distributedRow: {
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   rowItem: {
     flex: 1,
+    textAlign: "center",
   },
   imgContainer: {
     position: "relative",
@@ -112,20 +128,28 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#8B4513",
-    marginBottom: 16,
   },
   dataContainer: {
     flex: 1,
     paddingLeft: 8,
   },
-  carDivider: {
+  cardDivider: {
     borderWidth: 0.5,
+    marginVertical: 8,
+  },
+  description: {
+    fontSize: 14,
+    color: "#666",
+    marginBottom: 8,
   },
   status: {
     padding: 4,
     borderRadius: 4,
     height: 30,
     marginTop: 8,
+    marginHorizontal: 4,
+    justifyContent: "center",
+    alignItems: "center",
   },
   activeStatus: {
     backgroundColor: "#DFF0D8",

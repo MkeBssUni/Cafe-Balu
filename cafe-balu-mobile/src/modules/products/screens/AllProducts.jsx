@@ -101,6 +101,7 @@ export default function AllProducts({ setReload, reload }) {
               price={product.price}
               stock={product.stock}
               status={product.status}
+              description={product.description}
               categoryName={product.category_name}
             />
           )) : <EmptyScreen title={"Sin productos"} />}

@@ -23,13 +23,24 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "pluggins":[
+    "pluggins": [
       [
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you pick from you galery"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "f4ba2141-afb6-41fa-9a41-7f5dc331f1cb"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f4ba2141-afb6-41fa-9a41-7f5dc331f1cb"
+    }
   }
 }

@@ -11,17 +11,23 @@ def decimal_to_float(obj):
     if isinstance(obj, Decimal):
         return float(obj)
     raise TypeError
+
 def lambda_handler(event, __):
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token"
+    }
     try:
         status = None
 
         if 'pathParameters' in event and 'status' in event['pathParameters']:
             status = int(event['pathParameters']['status'])
 
-
         if status != 0 and status != 1:
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "INVALID_STATUS"
                 }),
@@ -36,11 +42,13 @@ def lambda_handler(event, __):
 
         return {
             "statusCode": 200,
+            "headers": headers,
             "body": json.dumps(body, default=decimal_to_float)
         }
     except Exception as e:
         return {
             "statusCode": 500,
+            "headers": headers,
             "body": json.dumps({
                 "message": "INTERNAL_SERVER_ERROR",
                 "error": str(e)

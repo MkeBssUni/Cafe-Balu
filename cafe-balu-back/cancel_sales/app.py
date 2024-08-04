@@ -13,6 +13,11 @@ logger.setLevel(logging.INFO)
 
 
 def lambda_handler(event, __):
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token"
+    }
     try:
         claims = event['requestContext']['authorizer']['claims']
         role = claims['cognito:groups']
@@ -20,6 +25,7 @@ def lambda_handler(event, __):
         if 'admin' not in role:
             return {
                 "statusCode": 403,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "FORBIDDEN"
                 }),
@@ -32,6 +38,7 @@ def lambda_handler(event, __):
             logger.warning("Missing fields: id")
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "MISSING_FIELDS"
                 }),
@@ -42,6 +49,7 @@ def lambda_handler(event, __):
             logger.warning("Invalid characters in id")
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "INVALID_CHARACTERS"
                 }),
@@ -54,6 +62,7 @@ def lambda_handler(event, __):
             logger.warning("Invalid id: id must be an integer")
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "INVALID_ID"
                 }),
@@ -64,6 +73,7 @@ def lambda_handler(event, __):
             logger.warning("Invalid id: id must be a positive integer")
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "INVALID_ID"
                 }),
@@ -74,6 +84,7 @@ def lambda_handler(event, __):
             logger.warning("ID does not exist in database")
             return {
                 "statusCode": 404,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "ID_NOT_FOUND"
                 }),
@@ -82,6 +93,7 @@ def lambda_handler(event, __):
         cancel_sale(id)
         return {
             "statusCode": 200,
+            "headers": headers,
             "body": json.dumps({
                 "message": "SUCCESSFUL_CANCELLATION",
             }),
@@ -90,6 +102,7 @@ def lambda_handler(event, __):
         logger.error("MySQL error: %s", str(e))
         return {
             "statusCode": 500,
+            "headers": headers,
             "body": json.dumps({
                 "message": "DATABASE_ERROR",
                 "error": str(e)
@@ -98,6 +111,7 @@ def lambda_handler(event, __):
     except KeyError as e:
         return {
             "statusCode": 400,
+            "headers": headers,
             "body": json.dumps({
                 "message": "MISSING_FIELDS",
                 "error": str(e)
@@ -106,6 +120,7 @@ def lambda_handler(event, __):
     except json.JSONDecodeError:
         return {
             "statusCode": 400,
+            "headers": headers,
             "body": json.dumps({
                 "message": "INVALID_JSON_FORMAT"
             }),
@@ -113,6 +128,7 @@ def lambda_handler(event, __):
     except Exception as e:
         return {
             "statusCode": 500,
+            "headers": headers,
             "body": json.dumps({
                 "message": "INTERNAL_SERVER_ERROR",
                 "error": str(e)
@@ -144,6 +160,11 @@ def cancel_sale(id):
         logger.error("Database update error: %s", str(e))
         return {
             "statusCode": 500,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token"
+            },
             "body": json.dumps({
                 "message": "DATABASE_ERROR"
             }),

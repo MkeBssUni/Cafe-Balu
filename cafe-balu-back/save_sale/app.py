@@ -11,6 +11,11 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def lambda_handler(event, __):
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token"
+    }
     try:
         claims = event['requestContext']['authorizer']['claims']
         role = claims['cognito:groups']
@@ -18,6 +23,7 @@ def lambda_handler(event, __):
         if 'admin' not in role and 'sales' not in role:
             return {
                 "statusCode": 403,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "FORBIDDEN"
                 }),
@@ -44,6 +50,7 @@ def lambda_handler(event, __):
     except KeyError as e:
         return {
             "statusCode": 400,
+            "headers": headers,
             "body": json.dumps({
                 "message": "BAD_REQUEST",
                 "error": str(e)
@@ -52,6 +59,7 @@ def lambda_handler(event, __):
     except ValueError as e:
         return {
             "statusCode": 400,
+            "headers": headers,
             "body": json.dumps({
                 "message": str(e)
             })
@@ -60,6 +68,7 @@ def lambda_handler(event, __):
         logger.error("Unexpected error: %s", str(e), exc_info=True)
         return {
             "statusCode": 500,
+            "headers": headers,
             "body": json.dumps({
                 "message": "INTERNAL_SERVER_ERROR",
                 "error": str(e)
@@ -115,6 +124,7 @@ def save_sale(products_info, total):
 
         return {
             "statusCode": 200,
+            "headers": headers,
             "body": json.dumps({
                 "message": "SALE_SAVED",
                 "sale_id": sale_id
@@ -124,6 +134,7 @@ def save_sale(products_info, total):
         logger.error("Database transaction error: %s", str(e), exc_info=True)
         return {
             "statusCode": 500,
+            "headers": headers,
             "body": json.dumps({
                 "message": "DATABASE_ERROR",
                 "error": str(e)

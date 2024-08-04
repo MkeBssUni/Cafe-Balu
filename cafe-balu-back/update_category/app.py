@@ -12,6 +12,11 @@ logger.setLevel(logging.INFO)
 
 
 def lambda_handler(event, __):
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token"
+    }
     try:
         claims = event['requestContext']['authorizer']['claims']
         role = claims['cognito:groups']
@@ -19,6 +24,7 @@ def lambda_handler(event, __):
         if 'admin' not in role:
             return {
                 "statusCode": 403,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "FORBIDDEN"
                 }),
@@ -37,6 +43,7 @@ def lambda_handler(event, __):
             logger.warning("Missing fields: id or newName")
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "MISSING_FIELDS"
                 }),
@@ -46,6 +53,7 @@ def lambda_handler(event, __):
             logger.warning("Empty fields: id or newName")
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "EMPTY_FIELDS"
                 }),
@@ -55,6 +63,7 @@ def lambda_handler(event, __):
             logger.warning("Invalid fields: newName")
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "INVALID_FIELDS"
                 }),
@@ -67,6 +76,7 @@ def lambda_handler(event, __):
                 logger.error("Category not found for id=%s", id)
                 return {
                     "statusCode": 404,
+                    "headers": headers,
                     "body": json.dumps({
                         "message": "CATEGORY_NOT_FOUND"
                     }),
@@ -76,6 +86,7 @@ def lambda_handler(event, __):
             logger.error("Category already exists: newName=%s", newName)
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "DUPLICATED_NAME"
                 }),
@@ -87,6 +98,7 @@ def lambda_handler(event, __):
 
         return {
             "statusCode": 200,
+            "headers": headers,
             "body": json.dumps({
                 "message": "CATEGORY_UPDATED",
             }),
@@ -95,6 +107,7 @@ def lambda_handler(event, __):
         logger.error("Missing key in event: %s", str(e))
         return {
             "statusCode": 400,
+            "headers": headers,
             "body": json.dumps({
                 "message": "MISSING_KEY",
                 "error": str(e)
@@ -104,6 +117,7 @@ def lambda_handler(event, __):
         logger.error("Internal server error: %s", str(e))
         return {
             "statusCode": 500,
+            "headers": headers,
             "body": json.dumps({
                 "message": "INTERNAL_SERVER_ERROR",
                 "error": str(e)
@@ -123,6 +137,7 @@ def update_category(id, newName):
             logger.error("Database update error: %s", str(e))
             return {
                 "statusCode": 500,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "DATABASE_ERROR"
                 }),
@@ -131,6 +146,7 @@ def update_category(id, newName):
         logger.error("Database connection error: %s", str(e))
         return {
             "statusCode": 500,
+            "headers": headers,
             "body": json.dumps({
                 "message": "CONNECTION_ERROR"
             }),

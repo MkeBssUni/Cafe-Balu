@@ -7,6 +7,11 @@ rds_user = "baluroot"
 rds_password = "baluroot"
 rds_db = "cafe_balu"
 def lambda_handler(event, __):
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token"
+    }
     try:
        category = None
        if 'body' in event:
@@ -17,6 +22,7 @@ def lambda_handler(event, __):
             if not category_exists(category):
                 return {
                     "statusCode": 404,
+                    "headers": headers,
                     "body": json.dumps({
                         "message": "CATEGORY_NOT_FOUND"
                     }),
@@ -24,6 +30,7 @@ def lambda_handler(event, __):
        top_products = get_top_sold_products(category)
        return {
             "statusCode": 200,
+            "headers": headers,
             "body": json.dumps({
                 "message": "PRODUCTS_FETCHED",
                 "product": top_products
@@ -34,6 +41,7 @@ def lambda_handler(event, __):
     except Exception as e:
         return {
             "statusCode": 500,
+            "headers": headers,
             "body": json.dumps({
                 "message": "INTERNAL_SERVER_ERROR",
                 "error": str(e)

@@ -33,7 +33,12 @@ def validate_date_range(start_date, end_date):
     except ValueError:
         return False
 
-def lambda_handler(event, context):
+def lambda_handler(event, __):
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token"
+    }
     try:
         claims = event['requestContext']['authorizer']['claims']
         role = claims['cognito:groups']
@@ -41,6 +46,7 @@ def lambda_handler(event, context):
         if 'admin' not in role or 'sales' not in role:
             return {
                 "statusCode": 403,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "FORBIDDEN"
                 }),
@@ -59,6 +65,7 @@ def lambda_handler(event, context):
             logger.warning("Missing fields: startDate or endDate")
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "MISSING_FIELDS"
                 }),
@@ -68,6 +75,7 @@ def lambda_handler(event, context):
             logger.warning("Invalid date format or future date")
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "INVALID_DATE_FORMAT_OR_FUTURE_DATE"
                 }),
@@ -77,6 +85,7 @@ def lambda_handler(event, context):
             logger.warning("End date must be greater than start date")
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "END_DATE_BEFORE_START_DATE"
                 }),
@@ -105,12 +114,14 @@ def lambda_handler(event, context):
 
         return {
             "statusCode": 200,
+            "headers": headers,
             "body": json.dumps(list(grouped_sales.values()), default=decimal_to_float),
         }
     except KeyError as e:
         logger.error(f"KeyError: {str(e)}")
         return {
             "statusCode": 400,
+            "headers": headers,
             "body": json.dumps({
                 "message": "MISSING_KEY",
                 "error": str(e)
@@ -120,6 +131,7 @@ def lambda_handler(event, context):
         logger.error(f"Exception: {str(e)}", exc_info=True)
         return {
             "statusCode": 500,
+            "headers": headers,
             "body": json.dumps({
                 "message": "INTERNAL_SERVER_ERROR",
                 "error": str(e)

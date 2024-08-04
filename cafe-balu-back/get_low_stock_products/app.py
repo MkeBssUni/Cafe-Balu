@@ -7,10 +7,16 @@ rds_user = "baluroot"
 rds_password = "baluroot"
 rds_db = "cafe_balu"
 def lambda_handler(event, __):
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token"
+    }
     try:
        result = get_low_stock_products()
        return {
            "statusCode": 200,
+           "headers": headers,
            "body": json.dumps({
                "message": "PRODUCTS_FETCHED",
                "products": result
@@ -19,6 +25,7 @@ def lambda_handler(event, __):
     except Exception as e:
         return {
             "statusCode": 500,
+            "headers": headers,
             "body": json.dumps({
                 "message": "INTERNAL_SERVER_ERROR",
                 "error": str(e)

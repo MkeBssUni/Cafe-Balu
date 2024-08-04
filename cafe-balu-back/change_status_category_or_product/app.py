@@ -13,6 +13,12 @@ def decimal_to_float(obj):
     raise TypeError
 
 def lambda_handler(event, __):
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token"
+    }
+
     try:
         claims = event['requestContext']['authorizer']['claims']
         role = claims['cognito:groups']
@@ -20,6 +26,7 @@ def lambda_handler(event, __):
         if 'admin' not in role:
             return {
                 "statusCode": 403,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "FORBIDDEN"
                 }),
@@ -36,6 +43,7 @@ def lambda_handler(event, __):
         if status is None or id is None or type is None:
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "MISSING_FIELDS"
                 }),
@@ -44,6 +52,7 @@ def lambda_handler(event, __):
         if status != 0 and status != 1:
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "INVALID_STATUS"
                 }),
@@ -52,6 +61,7 @@ def lambda_handler(event, __):
         if type != 'PRODUCT' and type != 'CATEGORY':
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "INVALID_TYPE_"+type
                 }),
@@ -60,6 +70,7 @@ def lambda_handler(event, __):
         if type_exists(type, id) == False:
             return {
                 "statusCode": 404,
+                "headers": headers,
                 "body": json.dumps({
                     "message": type + "_NOT_FOUND"
                 }),

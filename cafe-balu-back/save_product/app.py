@@ -22,6 +22,11 @@ def upload_image_to_s3(base64_data):
     return s3_url
 
 def lambda_handler(event, __):
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token"
+    }
     try:
         claims = event['requestContext']['authorizer']['claims']
         role = claims['cognito:groups']
@@ -29,6 +34,7 @@ def lambda_handler(event, __):
         if 'admin' not in role:
             return {
                 "statusCode": 403,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "FORBIDDEN"
                 }),
@@ -43,6 +49,7 @@ def lambda_handler(event, __):
         except json.JSONDecodeError as e:
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "INVALID_JSON_FORMAT"
                 }),
@@ -61,6 +68,7 @@ def lambda_handler(event, __):
         if len(description) > 255:
             return {
                 "statusCode": 413,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "DESCRIPTION_TOO_LONG"
                 }),
@@ -75,6 +83,7 @@ def lambda_handler(event, __):
         if missing_fields:
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "MISSING_FIELDS",
                     "missing_fields": missing_fields
@@ -85,6 +94,7 @@ def lambda_handler(event, __):
         if not isinstance(name, str) or not name.strip() or not re.match(r'^[\w\s.-]+$', name):
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "INVALID_NAME"
                 }),
@@ -94,6 +104,7 @@ def lambda_handler(event, __):
         if not isinstance(stock, int) or stock < 0:
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "INVALID_STOCK"
                 }),
@@ -103,6 +114,7 @@ def lambda_handler(event, __):
         if not isinstance(price, (int, float)) or price <= 0:
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "INVALID_PRICE"
                 }),
@@ -113,6 +125,7 @@ def lambda_handler(event, __):
             if not isinstance(category_id, int) or category_id <= 0:
                 return {
                     "statusCode": 400,
+                    "headers": headers,
                     "body": json.dumps({
                         "message": "INVALID_CATEGORY_ID"
                     }),
@@ -120,6 +133,7 @@ def lambda_handler(event, __):
             if not category_exists(category_id):
                 return {
                     "statusCode": 400,
+                    "headers": headers,
                     "body": json.dumps({
                         "message": "CATEGORY_NOT_FOUND"
                     }),
@@ -128,6 +142,7 @@ def lambda_handler(event, __):
         if product_exists_in_category(category_id, name):
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "PRODUCT_EXISTS"
                 }),
@@ -136,6 +151,7 @@ def lambda_handler(event, __):
         if is_invalid_image(image):
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "INVALID_IMAGE"
                 }),
@@ -147,6 +163,7 @@ def lambda_handler(event, __):
         add_product(name, stock, price, category_id, image_url, description)
         return {
             "statusCode": 200,
+            "headers": headers,
             "body": json.dumps({
                 "message": "PRODUCT_ADDED",
             }),
@@ -154,6 +171,7 @@ def lambda_handler(event, __):
     except KeyError as e:
         return {
             "statusCode": 400,
+            "headers": headers,
             "body": json.dumps({
                 "message": "MISSING_KEY",
                 "error": str(e)
@@ -162,6 +180,7 @@ def lambda_handler(event, __):
     except pymysql.MySQLError as e:
         return {
             "statusCode": 500,
+            "headers": headers,
             "body": json.dumps({
                 "message": "DATABASE_ERROR",
                 "error": str(e)
@@ -170,6 +189,7 @@ def lambda_handler(event, __):
     except Exception as e:
         return {
             "statusCode": 500,
+            "headers": headers,
             "body": json.dumps({
                 "message": "INTERNAL_SERVER_ERROR",
                 "error": str(e)

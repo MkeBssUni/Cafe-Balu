@@ -13,6 +13,11 @@ logger.setLevel(logging.INFO)
 
 
 def lambda_handler(event, __):
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token"
+    }
     try:
         claims = event['requestContext']['authorizer']['claims']
         role = claims['cognito:groups']
@@ -20,6 +25,7 @@ def lambda_handler(event, __):
         if 'admin' not in role:
             return {
                 "statusCode": 403,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "FORBIDDEN"
                 }),
@@ -42,6 +48,7 @@ def lambda_handler(event, __):
         if not product_id or not name or not stock or not price or not status or not image or not category_id:
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "MISSING_FIELDS",
                 }),
@@ -50,6 +57,7 @@ def lambda_handler(event, __):
         if is_invalid_image(image):
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "INVALID_IMAGE",
                 }),
@@ -58,6 +66,7 @@ def lambda_handler(event, __):
         if not category_exists(category_id):
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "CATEGORY_NOT_FOUND",
                 }),
@@ -66,6 +75,7 @@ def lambda_handler(event, __):
         update_product(product_id, name, stock, price, status, image, category_id)
         return {
             "statusCode": 200,
+            "headers": headers,
             "body": json.dumps({
                 "message": "PRODUCT_UPDATED",
             }),
@@ -73,6 +83,7 @@ def lambda_handler(event, __):
     except KeyError as e:
         return {
             "statusCode": 400,
+            "headers": headers,
             "body": json.dumps({
                 "message": "MISSING_KEY",
                 "error": str(e)
@@ -81,6 +92,7 @@ def lambda_handler(event, __):
     except Exception as e:
         return {
             "statusCode": 500,
+            "headers": headers,
             "body": json.dumps({
                 "message": "INTERNAL_SERVER_ERROR",
                 "error": str(e)

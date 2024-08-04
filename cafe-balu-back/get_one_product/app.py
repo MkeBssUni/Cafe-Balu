@@ -8,10 +8,16 @@ rds_password = "baluroot"
 rds_db = "cafe_balu"
 
 def lambda_handler(event, __):
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token"
+    }
     try:
         if 'pathParameters' not in event or 'id' not in event['pathParameters']:
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "MISSING_PRODUCT_ID"
                 }),
@@ -24,6 +30,7 @@ def lambda_handler(event, __):
         except ValueError:
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "INVALID_PRODUCT_ID"
                 }),
@@ -32,6 +39,7 @@ def lambda_handler(event, __):
         if product_id <= 0:
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "INVALID_PRODUCT_ID"
                 }),
@@ -42,6 +50,7 @@ def lambda_handler(event, __):
         except Exception as e:
             return {
                 "statusCode": 404,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "PRODUCT_NOT_FOUND",
                     "error": str(e)
@@ -50,6 +59,7 @@ def lambda_handler(event, __):
 
         return {
             "statusCode": 200,
+            "headers": headers,
             "body": json.dumps({
                 "message": "PRODUCT_FETCHED",
                 "product": product
@@ -59,6 +69,7 @@ def lambda_handler(event, __):
     except Exception as e:
         return {
             "statusCode": 500,
+            "headers": headers,
             "body": json.dumps({
                 "message": "INTERNAL_SERVER_ERROR",
                 "error": str(e)

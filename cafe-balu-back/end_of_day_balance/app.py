@@ -9,12 +9,18 @@ rds_password = "baluroot"
 rds_db = "cafe_balu"
 
 def lambda_handler(event, __):
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token"
+    }
     try:
         if 'date' in json.loads(event['body']):
             date = json.loads(event['body']).get('date')
         else:
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "MISSING_FIELDS"
                 }),
@@ -23,6 +29,7 @@ def lambda_handler(event, __):
         if not validate_date(date):
             return {
                 "statusCode": 400,
+                "headers": headers,
                 "body": json.dumps({
                     "message": "INVALID_DATE_FORMAT_OR_FUTURE_DATE"
                 }),
@@ -32,6 +39,7 @@ def lambda_handler(event, __):
 
         return {
             "statusCode": 200,
+            "headers": headers,
             "body": json.dumps({
                 "message": "END_OF_DAY_BALANCE_FETCHED",
                 "balance": balance
@@ -42,6 +50,7 @@ def lambda_handler(event, __):
     except Exception as e:
         return {
             "statusCode": 500,
+            "headers": headers,
             "body": json.dumps({
                 "message": "INTERNAL_SERVER_ERROR",
                 "error": str(e)

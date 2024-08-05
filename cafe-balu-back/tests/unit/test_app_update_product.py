@@ -1,6 +1,6 @@
 import unittest
 import json
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from update_product import app
 
 mock_event_admin = {
@@ -78,12 +78,33 @@ mock_event_forbidden = {
     })
 }
 
+mock_event_category_not_found = {
+    "requestContext": {
+        "authorizer": {
+            "claims": {
+                "cognito:groups": ["admin"]
+            }
+        }
+    },
+    "body": json.dumps({
+        "id": 1,
+        "name": "New Product",
+        "stock": 10,
+        "price": 100,
+        "status": 1,
+        "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA",
+        "category_id": 999
+    })
+}
+
 class TestUpdateProduct(unittest.TestCase):
     # Prueba de actualización exitosa del producto
     @patch("update_product.app.update_product")
     @patch("update_product.app.category_exists")
-    def test_update_product_success(self, mock_category_exists, mock_update_product):
+    @patch("update_product.app.upload_image_to_s3")
+    def test_update_product_success(self, mock_upload_image_to_s3, mock_category_exists, mock_update_product):
         mock_category_exists.return_value = True
+        mock_upload_image_to_s3.return_value = "https://example.com/image.jpg"
         mock_event_admin["body"] = json.dumps({
             "id": 1,
             "name": "New Product",
@@ -91,7 +112,8 @@ class TestUpdateProduct(unittest.TestCase):
             "price": 100,
             "status": 1,
             "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA",
-            "category_id": 1
+            "category_id": 1,
+            "description": "A new product"
         })
 
         result = app.lambda_handler(mock_event_admin, None)
@@ -102,7 +124,7 @@ class TestUpdateProduct(unittest.TestCase):
         self.assertIn("message", body)
         self.assertEqual(body["message"], "PRODUCT_UPDATED")
 
-    #Prueba de actualización del producto con campos faltantes
+    # Prueba de actualización del producto con campos faltantes
     def test_update_product_missing_fields(self):
         result = app.lambda_handler(mock_event_missing_fields, None)
         status_code = result["statusCode"]
@@ -112,7 +134,7 @@ class TestUpdateProduct(unittest.TestCase):
         self.assertIn("message", body)
         self.assertEqual(body["message"], "MISSING_FIELDS")
 
-    #Prueba de actualización del producto con datos de imagen inválidos
+    # Prueba de actualización del producto con datos de imagen inválidos
     def test_update_product_invalid_image(self):
         result = app.lambda_handler(mock_event_invalid_image, None)
         status_code = result["statusCode"]
@@ -122,7 +144,7 @@ class TestUpdateProduct(unittest.TestCase):
         self.assertIn("message", body)
         self.assertEqual(body["message"], "INVALID_IMAGE")
 
-    #Prueba de actualización del producto con acceso prohibido
+    # Prueba de actualización del producto con acceso prohibido
     def test_update_product_forbidden(self):
         result = app.lambda_handler(mock_event_forbidden, None)
         status_code = result["statusCode"]
@@ -132,23 +154,12 @@ class TestUpdateProduct(unittest.TestCase):
         self.assertIn("message", body)
         self.assertEqual(body["message"], "FORBIDDEN")
 
-
-    #Prueba de actualización del producto cuando la categoría no se encuentra
+    # Prueba de actualización del producto cuando la categoría no se encuentra
     @patch("update_product.app.update_product")
     @patch("update_product.app.category_exists")
     def test_update_product_category_not_found(self, mock_category_exists, mock_update_product):
         mock_category_exists.return_value = False
-        mock_event_admin["body"] = json.dumps({
-            "id": 1,
-            "name": "New Product",
-            "stock": 10,
-            "price": 100,
-            "status": 1,
-            "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA",
-            "category_id": 1
-        })
-
-        result = app.lambda_handler(mock_event_admin, None)
+        result = app.lambda_handler(mock_event_category_not_found, None)
         status_code = result["statusCode"]
         self.assertEqual(status_code, 400, f"Se esperaba el código de estado 400 pero se obtuvo {status_code}. Respuesta: {result}")
 
@@ -156,7 +167,7 @@ class TestUpdateProduct(unittest.TestCase):
         self.assertIn("message", body)
         self.assertEqual(body["message"], "CATEGORY_NOT_FOUND")
 
-    #Prueba de la función de validación de imagen
+    # Prueba de la función de validación de imagen
     def test_is_invalid_image(self):
         valid_image = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
         invalid_image = "invalid_image_data"

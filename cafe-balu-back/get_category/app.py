@@ -1,12 +1,8 @@
 import json
 import pymysql
 from decimal import Decimal
-
-# Configuración de la conexión a la base de datos
-rds_host = "database-cafe-balu.cziym6ii4nn7.us-east-2.rds.amazonaws.com"
-rds_user = "baluroot"
-rds_password = "baluroot"
-rds_db = "cafe_balu"
+import boto3
+from botocore.exceptions import ClientError
 
 def decimal_to_float(obj):
     if isinstance(obj, Decimal):

@@ -2,11 +2,38 @@ import json
 import pymysql
 import logging
 import re
+import boto3
+from botocore.exceptions import ClientError
 
-rds_host = "database-cafe-balu.cziym6ii4nn7.us-east-2.rds.amazonaws.com"
-rds_user = "baluroot"
-rds_password = "baluroot"
-rds_db = "cafe_balu"
+def get_secret():
+    secret_name = "prod/Balu/RDS"
+    region_name = "us-east-2"
+
+    # Crear un cliente de Secrets Manager
+    session = boto3.session.Session()
+    client = session.client(
+        service_name='secretsmanager',
+        region_name=region_name
+    )
+
+    try:
+        get_secret_value_response = client.get_secret_value(
+            SecretId=secret_name
+        )
+    except ClientError as e:
+        # Para obtener una lista de excepciones lanzadas, vea
+        # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+        raise e
+
+    secret = get_secret_value_response['SecretString']
+    return json.loads(secret)
+
+# Obtener las credenciales desde Secrets Manager
+secrets = get_secret()
+rds_host = secrets["host"]
+rds_user = secrets["username"]
+rds_password = secrets["password"]
+rds_db = secrets["dbname"]
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)

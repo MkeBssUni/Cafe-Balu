@@ -6,7 +6,7 @@ from botocore.exceptions import ClientError
 def lambda_handler(event, __):
     headers = {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Methods": "PATCH, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token"
     }
     client = boto3.client('cognito-idp', region_name='us-east-2')

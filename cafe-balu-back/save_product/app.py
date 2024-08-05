@@ -37,6 +37,7 @@ rds_user = secrets["username"]
 rds_password = secrets["password"]
 rds_db = secrets["dbname"]
 
+bucket_name = "cafe-balu-images"
 s3 = boto3.client('s3')
 
 def upload_image_to_s3(base64_data):
@@ -51,7 +52,7 @@ def upload_image_to_s3(base64_data):
 def lambda_handler(event, __):
     headers = {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token"
     }
     try:

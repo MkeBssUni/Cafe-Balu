@@ -70,7 +70,7 @@ def lambda_handler(event, __):
 
         products_info = get_products_info(products)
 
-        response = save_sale(products_info, total)
+        response = save_sale(products_info, total, headers)
 
         return response
 
@@ -134,7 +134,7 @@ def get_products_info(products):
     finally:
         connection.close()
 
-def save_sale(products_info, total):
+def save_sale(products_info, total, headers):
     connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
     try:
         cursor = connection.cursor()

@@ -41,7 +41,7 @@ logger.setLevel(logging.INFO)
 def lambda_handler(event, __):
     headers = {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Methods": "PUT, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token"
     }
     try:
@@ -119,7 +119,7 @@ def lambda_handler(event, __):
                 }),
             }
 
-        update_category(id, newName)
+        update_category(id, newName, headers)
 
         logger.info("Category updated successfully: id=%s, newName=%s", id, newName)
 
@@ -152,7 +152,7 @@ def lambda_handler(event, __):
         }
 
 
-def update_category(id, newName):
+def update_category(id, newName, headers):
     connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
     print(connection)
     try:

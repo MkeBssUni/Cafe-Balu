@@ -38,6 +38,10 @@ Resources:
     Properties:
       StageName: Prod
       Name: ApiBaluchis
+    Cors:
+      AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      AllowOrigin: "'*'"
 
   UpdateCategoryFunction:
     Type: AWS::Serverless::Function

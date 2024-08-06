@@ -11,7 +11,7 @@ def lambda_handler(event, __):
     }
 
     client = boto3.client('cognito-idp', region_name='us-east-2')
-    client_id = "13a00gp0ti81p4m6prtdl34jpm"
+    client_id = "5d8tmde0vepcah497l9b4nuikj"
     try:
         body_parameters = json.loads(event["body"])
         username = body_parameters.get('username')

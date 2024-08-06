@@ -4,6 +4,7 @@ from decimal import Decimal
 import boto3
 from botocore.exceptions import ClientError
 
+
 def get_secret():
     secret_name = "prod/Balu/RDS"
     region_name = "us-east-2"

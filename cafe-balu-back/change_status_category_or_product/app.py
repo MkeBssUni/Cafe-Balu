@@ -107,6 +107,7 @@ def lambda_handler(event, __):
 
         return {
             "statusCode": 200,
+            "headers": headers,
             "body": json.dumps({
                 "message": "STATUS_CHANGED"
             })
@@ -114,6 +115,7 @@ def lambda_handler(event, __):
     except Exception as e:
         return {
             "statusCode": 500,
+            "headers": headers,
             "body": json.dumps({
                 "message": "INTERNAL_SERVER_ERROR_",
             }),

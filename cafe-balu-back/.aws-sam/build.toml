@@ -91,4 +91,58 @@ manifest_hash = "645bb72eb0a9740cf4a02755ed1d6772"
 packagetype = "Zip"
 functions = ["HistorySalesPerDayFunction"]
 
+[function_build_definitions.ef600d97-8a29-46cb-b188-7abcc7e88da5]
+codeuri = "D:\\School\\Desarrollo Web Integral\\Cafe-Balu\\cafe-balu-back\\login"
+runtime = "python3.12"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "645bb72eb0a9740cf4a02755ed1d6772"
+packagetype = "Zip"
+functions = ["LoginFunction"]
+
+[function_build_definitions.b8afc63e-0790-43da-b361-03bdc77b3947]
+codeuri = "D:\\School\\Desarrollo Web Integral\\Cafe-Balu\\cafe-balu-back\\newPassword"
+runtime = "python3.12"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "645bb72eb0a9740cf4a02755ed1d6772"
+packagetype = "Zip"
+functions = ["NewPasswordFunction"]
+
+[function_build_definitions.682e6c8a-6ed3-4c1d-8e8d-f60643a8c4df]
+codeuri = "D:\\School\\Desarrollo Web Integral\\Cafe-Balu\\cafe-balu-back\\get_one_product"
+runtime = "python3.12"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "645bb72eb0a9740cf4a02755ed1d6772"
+packagetype = "Zip"
+functions = ["GetOneProductFunction"]
+
+[function_build_definitions.ecc0f7d1-ddcf-4bc2-a895-4ea0a8659375]
+codeuri = "D:\\School\\Desarrollo Web Integral\\Cafe-Balu\\cafe-balu-back\\top_sold_products"
+runtime = "python3.12"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "645bb72eb0a9740cf4a02755ed1d6772"
+packagetype = "Zip"
+functions = ["GetTopSoldProductsFunction"]
+
+[function_build_definitions.e165e7cd-f1d9-4847-8646-9823bd50e79d]
+codeuri = "D:\\School\\Desarrollo Web Integral\\Cafe-Balu\\cafe-balu-back\\end_of_day_balance"
+runtime = "python3.12"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "645bb72eb0a9740cf4a02755ed1d6772"
+packagetype = "Zip"
+functions = ["GetEndOfDayBalanceFunction"]
+
+[function_build_definitions.2c9cc087-b0fa-4096-bd6d-f9267c7fd2a7]
+codeuri = "D:\\School\\Desarrollo Web Integral\\Cafe-Balu\\cafe-balu-back\\get_low_stock_products"
+runtime = "python3.12"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "645bb72eb0a9740cf4a02755ed1d6772"
+packagetype = "Zip"
+functions = ["GetLowStockProductsFunction"]
+
 [layer_build_definitions]

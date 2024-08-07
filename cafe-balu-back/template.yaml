@@ -76,6 +76,11 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_products/{status}
             Method: get
+            Cors:
+              AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+              AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              AllowOrigin: "'*'"
+
 
   ChangeStatusCategoryOrProductFunction:
     Type: AWS::Serverless::Function
@@ -93,6 +98,11 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /change_status_category_or_product
             Method: patch
+            Cors:
+              AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+              AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              AllowOrigin: "'*'"
+
 
   SaveCategoryFunction:
     Type: AWS::Serverless::Function
@@ -110,6 +120,11 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /save_category
             Method: post
+            Cors:
+              AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+              AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              AllowOrigin: "'*'"
+
 
   CancelSaleFunction:
     Type: AWS::Serverless::Function
@@ -127,6 +142,11 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /cancel_sale/{id}
             Method: patch
+            Cors:
+              AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+              AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              AllowOrigin: "'*'"
+
 
   AddProductFunction:
     Type: AWS::Serverless::Function
@@ -144,6 +164,11 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /add_product
             Method: post
+            Cors:
+              AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+              AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              AllowOrigin: "'*'"
+
 
   GetCategoriesFunction:
     Type: AWS::Serverless::Function
@@ -161,6 +186,11 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_categories/{status}
             Method: get
+            Cors:
+              AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+              AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              AllowOrigin: "'*'"
+
 
   SaveSaleFunction:
     Type: AWS::Serverless::Function
@@ -178,6 +208,11 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /save_sale
             Method: post
+            Cors:
+              AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+              AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              AllowOrigin: "'*'"
+
 
   UpdateProductFunction:
     Type: AWS::Serverless::Function
@@ -195,6 +230,11 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /update_product
             Method: put
+            Cors:
+              AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+              AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              AllowOrigin: "'*'"
+
 
   HistorySalesPerDayFunction:
     Type: AWS::Serverless::Function
@@ -212,6 +252,11 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /history_per_day
             Method: post
+            Cors:
+              AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+              AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              AllowOrigin: "'*'"
+
 
   LoginFunction:
     Type: AWS::Serverless::Function
@@ -263,6 +308,11 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_product/{id}
             Method: get
+            Cors:
+              AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+              AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              AllowOrigin: "'*'"
+
   
   GetTopSoldProductsFunction:
     Type: AWS::Serverless::Function
@@ -280,6 +330,11 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_top_sold_products
             Method: post
+            Cors:
+              AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+              AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              AllowOrigin: "'*'"
+
   
   GetEndOfDayBalanceFunction:
     Type: AWS::Serverless::Function
@@ -297,6 +352,11 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_end_of_day_balance
             Method: post
+            Cors:
+              AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+              AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              AllowOrigin: "'*'"
+
   
   GetLowStockProductsFunction:
     Type: AWS::Serverless::Function
@@ -314,6 +374,11 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_low_stock_products
             Method: get
+            Cors:
+              AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+              AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              AllowOrigin: "'*'"
+
 
 Outputs:
   UpdateCategoryApi:

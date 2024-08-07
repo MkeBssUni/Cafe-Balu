@@ -10,6 +10,47 @@ Globals:
     MemorySize: 128
 
 Resources:
+  # User Pool
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: user-pool-test
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+
+  # Roles del sistema
+  AdminGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: admin
+      UserPoolId: !Ref CognitoUserPool
+      Description: "Usuario que tiene los permisos de administrador"
+      Precedence: 1
+
+  SalesGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: sales
+      UserPoolId: !Ref CognitoUserPool
+      Description: "Usuarios que pueden gestionar ventas"
+      Precedence: 2
+
+  # Cliente de aplicación
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: user-pool-client-test
+      UserPoolId: !Ref CognitoUserPool
+      GenerateSecret: false
+      AllowedOAuthFlowsUserPoolClient: false
+
   LambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -31,12 +72,52 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: arn:aws:logs:*:*:*
+        - PolicyName: AccessGetSecretsManager
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                Resource: "*"
+        - PolicyName: PolicyForCognito_AdminInitiateAuth
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - cognito-idp:AdminInitiateAuth
+                Resource: "*"
+        - PolicyName: PolicyForS3
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                  - s3:ListBucket
+                Resource: arn:aws:s3:::my-cafe-balu-images/*
+        - PolicyName: PolicyForCognito
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - cognito-idp:AdminListGroupsForUser
+                Resource: "*"
 
   ApiBaluchis:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Prod
       Name: ApiBaluchis
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt CognitoUserPool.Arn
+            IdentitySource: method.request.header.Authorization
       Cors:
         AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
@@ -58,6 +139,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /update_category
             Method: put
+            Auth:
+              Authorizer: cognitoAuthorizer
 
   GetProductsFunction:
     Type: AWS::Serverless::Function
@@ -92,6 +175,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /change_status_category_or_product
             Method: patch
+            Auth:
+              Authorizer: cognitoAuthorizer
 
   SaveCategoryFunction:
     Type: AWS::Serverless::Function
@@ -109,6 +194,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /save_category
             Method: post
+            Auth:
+              Authorizer: cognitoAuthorizer
 
   CancelSaleFunction:
     Type: AWS::Serverless::Function
@@ -126,6 +213,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /cancel_sale/{id}
             Method: patch
+            Auth:
+              Authorizer: cognitoAuthorizer
 
   AddProductFunction:
     Type: AWS::Serverless::Function
@@ -143,6 +232,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /add_product
             Method: post
+            Auth:
+              Authorizer: cognitoAuthorizer
 
   GetCategoriesFunction:
     Type: AWS::Serverless::Function
@@ -177,6 +268,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /save_sale
             Method: post
+            Auth:
+              Authorizer: cognitoAuthorizer
 
   UpdateProductFunction:
     Type: AWS::Serverless::Function
@@ -194,6 +287,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /update_product
             Method: put
+            Auth:
+              Authorizer: cognitoAuthorizer
 
   HistorySalesPerDayFunction:
     Type: AWS::Serverless::Function
@@ -211,6 +306,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /history_per_day
             Method: post
+            Auth:
+              Authorizer: cognitoAuthorizer
 
   LoginFunction:
     Type: AWS::Serverless::Function

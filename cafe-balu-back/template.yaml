@@ -140,7 +140,7 @@ Resources:
             Path: /update_category
             Method: put
             Auth:
-              Authorizer: cognitoAuthorizer
+              Authorizer: CognitoAuthorizer
 
   GetProductsFunction:
     Type: AWS::Serverless::Function
@@ -158,6 +158,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_products/{status}
             Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
 
   ChangeStatusCategoryOrProductFunction:
     Type: AWS::Serverless::Function
@@ -176,7 +178,7 @@ Resources:
             Path: /change_status_category_or_product
             Method: patch
             Auth:
-              Authorizer: cognitoAuthorizer
+              Authorizer: CognitoAuthorizer
 
   SaveCategoryFunction:
     Type: AWS::Serverless::Function
@@ -195,7 +197,7 @@ Resources:
             Path: /save_category
             Method: post
             Auth:
-              Authorizer: cognitoAuthorizer
+              Authorizer: CognitoAuthorizer
 
   CancelSaleFunction:
     Type: AWS::Serverless::Function
@@ -214,7 +216,7 @@ Resources:
             Path: /cancel_sale/{id}
             Method: patch
             Auth:
-              Authorizer: cognitoAuthorizer
+              Authorizer: CognitoAuthorizer
 
   AddProductFunction:
     Type: AWS::Serverless::Function
@@ -233,7 +235,7 @@ Resources:
             Path: /add_product
             Method: post
             Auth:
-              Authorizer: cognitoAuthorizer
+              Authorizer: CognitoAuthorizer
 
   GetCategoriesFunction:
     Type: AWS::Serverless::Function
@@ -251,6 +253,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_categories/{status}
             Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
 
   SaveSaleFunction:
     Type: AWS::Serverless::Function
@@ -269,7 +273,7 @@ Resources:
             Path: /save_sale
             Method: post
             Auth:
-              Authorizer: cognitoAuthorizer
+              Authorizer: CognitoAuthorizer
 
   UpdateProductFunction:
     Type: AWS::Serverless::Function
@@ -288,7 +292,7 @@ Resources:
             Path: /update_product
             Method: put
             Auth:
-              Authorizer: cognitoAuthorizer
+              Authorizer: CognitoAuthorizer
 
   HistorySalesPerDayFunction:
     Type: AWS::Serverless::Function
@@ -307,7 +311,7 @@ Resources:
             Path: /history_per_day
             Method: post
             Auth:
-              Authorizer: cognitoAuthorizer
+              Authorizer: CognitoAuthorizer
 
   LoginFunction:
     Type: AWS::Serverless::Function
@@ -342,6 +346,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /new-password
             Method: patch
+            Auth:
+              Authorizer: CognitoAuthorizer
 
   GetOneProductFunction:
     Type: AWS::Serverless::Function
@@ -359,6 +365,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_product/{id}
             Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
 
   GetTopSoldProductsFunction:
     Type: AWS::Serverless::Function
@@ -376,6 +384,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_top_sold_products
             Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
 
   GetEndOfDayBalanceFunction:
     Type: AWS::Serverless::Function
@@ -393,6 +403,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_end_of_day_balance
             Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
 
   GetLowStockProductsFunction:
     Type: AWS::Serverless::Function
@@ -410,6 +422,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_low_stock_products
             Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
 
 Outputs:
   UpdateCategoryApi:

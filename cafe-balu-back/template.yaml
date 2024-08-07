@@ -50,6 +50,11 @@ Resources:
       UserPoolId: !Ref CognitoUserPool
       GenerateSecret: false
       AllowedOAuthFlowsUserPoolClient: false
+      ExplicitAuthFlows:
+        - ADMIN_NO_SRP_AUTH
+        - USER_PASSWORD_AUTH
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
 
   LambdaExecutionRole:
     Type: AWS::IAM::Role
@@ -342,6 +347,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /new-password
             Method: patch
+            Auth:
+              Authorizer: CognitoAuthorizer
 
   GetOneProductFunction:
     Type: AWS::Serverless::Function
@@ -359,6 +366,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_product/{id}
             Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
 
   GetTopSoldProductsFunction:
     Type: AWS::Serverless::Function
@@ -376,6 +385,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_top_sold_products
             Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
 
   GetEndOfDayBalanceFunction:
     Type: AWS::Serverless::Function
@@ -393,6 +404,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_end_of_day_balance
             Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
 
   GetLowStockProductsFunction:
     Type: AWS::Serverless::Function
@@ -410,6 +423,8 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_low_stock_products
             Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
 
 Outputs:
   UpdateCategoryApi:

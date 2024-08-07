@@ -17,6 +17,8 @@ Resources:
       UserPoolName: user-pool-test
       AutoVerifiedAttributes:
         - email
+      UsernameAttributes:
+        - email
       Policies:
         PasswordPolicy:
           MinimumLength: 8
@@ -24,6 +26,10 @@ Resources:
           RequireLowercase: true
           RequireNumbers: true
           RequireSymbols: true
+      UsernameConfiguration:
+        CaseSensitive: false
+      AliasAttributes:
+        - email
 
   # Roles del sistema
   AdminGroup:
@@ -49,7 +55,21 @@ Resources:
       ClientName: user-pool-client-test
       UserPoolId: !Ref CognitoUserPool
       GenerateSecret: false
-      AllowedOAuthFlowsUserPoolClient: false
+      AllowedOAuthFlows:
+        - code
+        - implicit
+      AllowedOAuthScopes:
+        - email
+        - openid
+      AllowedOAuthFlowsUserPoolClient: true
+      AccessTokenValidity: 480
+      IdTokenValidity: 480
+      RefreshTokenValidity: 480
+      ExplicitAuthFlows:
+        - ADMIN_NO_SRP_AUTH
+        - CUSTOM_AUTH_FLOW
+        - USER_PASSWORD_AUTH
+
 
   LambdaExecutionRole:
     Type: AWS::IAM::Role

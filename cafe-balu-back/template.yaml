@@ -4,6 +4,7 @@ Description: >
   cafe-balu-back
   Sample SAM Template for cafe-balu-back
 
+
 Globals:
   Function:
     Timeout: 25
@@ -17,8 +18,6 @@ Resources:
       UserPoolName: user-pool-test
       AutoVerifiedAttributes:
         - email
-      UsernameAttributes:
-        - email
       Policies:
         PasswordPolicy:
           MinimumLength: 8
@@ -26,10 +25,6 @@ Resources:
           RequireLowercase: true
           RequireNumbers: true
           RequireSymbols: true
-      UsernameConfiguration:
-        CaseSensitive: false
-      AliasAttributes:
-        - email
 
   # Roles del sistema
   AdminGroup:
@@ -55,21 +50,23 @@ Resources:
       ClientName: user-pool-client-test
       UserPoolId: !Ref CognitoUserPool
       GenerateSecret: false
+      AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthFlows:
         - code
         - implicit
       AllowedOAuthScopes:
-        - email
         - openid
-      AllowedOAuthFlowsUserPoolClient: true
-      AccessTokenValidity: 480
-      IdTokenValidity: 480
-      RefreshTokenValidity: 480
+        - email
+        - profile
       ExplicitAuthFlows:
-        - ADMIN_NO_SRP_AUTH
-        - CUSTOM_AUTH_FLOW
-        - USER_PASSWORD_AUTH
-
+        - ALLOW_ADMIN_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+      CallbackURLs:
+        - !Sub "https://${ApiBaluchis}.execute-api.${AWS::Region}.amazonaws.com/Prod/callback"
+      LogoutURLs:
+        - !Sub "https://${ApiBaluchis}.execute-api.${AWS::Region}.amazonaws.com/Prod/logout"
 
   LambdaExecutionRole:
     Type: AWS::IAM::Role
@@ -132,16 +129,15 @@ Resources:
     Properties:
       StageName: Prod
       Name: ApiBaluchis
-      Auth:
-        DefaultAuthorizer: CognitoAuthorizer
-        Authorizers:
-          CognitoAuthorizer:
-            UserPoolArn: !GetAtt CognitoUserPool.Arn
-            IdentitySource: method.request.header.Authorization
       Cors:
         AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
         AllowOrigin: "'*'"
+      Auth:
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt CognitoUserPool.Arn
+            IdentitySource: method.request.header.Authorization
 
   UpdateCategoryFunction:
     Type: AWS::Serverless::Function
@@ -160,7 +156,7 @@ Resources:
             Path: /update_category
             Method: put
             Auth:
-              Authorizer: CognitoAuthorizer
+                Authorizer: CognitoAuthorizer
 
   GetProductsFunction:
     Type: AWS::Serverless::Function
@@ -362,8 +358,6 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /new-password
             Method: patch
-            Auth:
-              Authorizer: CognitoAuthorizer
 
   GetOneProductFunction:
     Type: AWS::Serverless::Function
@@ -381,8 +375,6 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_product/{id}
             Method: get
-            Auth:
-              Authorizer: CognitoAuthorizer
 
   GetTopSoldProductsFunction:
     Type: AWS::Serverless::Function
@@ -400,8 +392,6 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_top_sold_products
             Method: post
-            Auth:
-              Authorizer: CognitoAuthorizer
 
   GetEndOfDayBalanceFunction:
     Type: AWS::Serverless::Function
@@ -419,8 +409,6 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_end_of_day_balance
             Method: post
-            Auth:
-              Authorizer: CognitoAuthorizer
 
   GetLowStockProductsFunction:
     Type: AWS::Serverless::Function
@@ -438,8 +426,6 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_low_stock_products
             Method: get
-            Auth:
-              Authorizer: CognitoAuthorizer
 
 Outputs:
   UpdateCategoryApi:

@@ -2,7 +2,6 @@ import json
 import boto3
 from botocore.exceptions import ClientError
 
-
 def lambda_handler(event, __):
     headers = {
         "Access-Control-Allow-Origin": "*",
@@ -15,21 +14,22 @@ def lambda_handler(event, __):
     try:
         body_parameters = json.loads(event["body"])
         username = body_parameters.get('username')
-        temporary_password = body_parameters.get('temporary_password')
+        current_password = body_parameters.get('current_password')
         new_password = body_parameters.get('new_password')
 
-         # Autentica al usuario con la contraseña temporal
+        # Autentica al usuario con la contraseña actual
         response = client.admin_initiate_auth(
             UserPoolId=user_pool_id,
             ClientId=client_id,
             AuthFlow='ADMIN_USER_PASSWORD_AUTH',
             AuthParameters={
                 'USERNAME': username,
-                'PASSWORD': temporary_password
+                'PASSWORD': current_password
             }
         )
 
-        if response['ChallengeName'] == 'NEW_PASSWORD_REQUIRED':
+        # Verifica si se requiere un desafío para una nueva contraseña
+        if 'ChallengeName' in response and response['ChallengeName'] == 'NEW_PASSWORD_REQUIRED':
             client.respond_to_auth_challenge(
                 ClientId=client_id,
                 ChallengeName='NEW_PASSWORD_REQUIRED',
@@ -45,11 +45,24 @@ def lambda_handler(event, __):
                 "headers": headers,
                 'body': json.dumps({"message": "Password changed successfully."})
             }
+        elif 'AuthenticationResult' in response:
+            # El usuario se autentica correctamente, ahora cambiamos la contraseña
+            access_token = response['AuthenticationResult']['AccessToken']
+            client.change_password(
+                AccessToken=access_token,
+                PreviousPassword=current_password,
+                ProposedPassword=new_password
+            )
+            return {
+                'statusCode': 200,
+                "headers": headers,
+                'body': json.dumps({"message": "Password updated successfully."})
+            }
         else:
             return {
                 'statusCode': 400,
                 "headers": headers,
-                'body': json.dumps({"error_message": "Unexpected challenge."})
+                'body': json.dumps({"error_message": "Unexpected response during authentication."})
             }
 
     except ClientError as e:

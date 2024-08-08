@@ -39,13 +39,13 @@ rds_db = secrets["dbname"]
 bucket_name = "cafe-balu-images" # en su momento cambiar acá
 s3 = boto3.client('s3')
 
-def upload_image_to_s3(base64_data):
+def upload_image_to_s3(base64_data, url):
+    name = url.split('/')[-1]
     # Remover el prefijo de la cadena base64
     base64_data = base64_data.split(",")[1]
     binary_data = base64.b64decode(base64_data)
-    file_name = f"images/{uuid.uuid4()}.jpg"
-    s3.put_object(Bucket=bucket_name, Key=file_name, Body=binary_data, ContentType='image/jpeg')
-    s3_url = f"https://{bucket_name}.s3.amazonaws.com/{file_name}"
+    s3.put_object(Bucket=bucket_name, Key=name, Body=binary_data, ContentType='image/jpeg')
+    s3_url = f"https://{bucket_name}.s3.amazonaws.com/{name}"
     return s3_url
 
 def lambda_handler(event, __):
@@ -89,6 +89,7 @@ def lambda_handler(event, __):
         image = body.get('image')
         category_id = body.get('category_id')
         description = "Sin descripción"
+        url = body.get('url')
 
         if 'description' in body:
             description = body.get('description')
@@ -106,7 +107,7 @@ def lambda_handler(event, __):
             description = "Sin descripción"
 
         # Validar campos faltantes: 'product_id', 'name', 'stock', 'price', 'status', 'image', 'category_id'
-        missing_fields = [field for field in ['id', 'name', 'stock', 'price', 'status', 'image', 'category_id'] if body.get(field) is None]
+        missing_fields = [field for field in ['id', 'name', 'stock', 'price', 'status', 'image', 'category_id', 'url'] if body.get(field) is None]
 
         if missing_fields:
             return {
@@ -185,7 +186,7 @@ def lambda_handler(event, __):
             }
 
         # Subir imagen a S3 y obtener la URL
-        image_url = upload_image_to_s3(image)
+        image_url = upload_image_to_s3(image, url)
 
         update_product(product_id, name, stock, price, status, image_url, category_id, description)
         return {

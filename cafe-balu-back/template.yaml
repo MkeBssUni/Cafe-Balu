@@ -114,7 +114,7 @@ Resources:
                   - s3:PutObject
                   - s3:GetObject
                   - s3:ListBucket
-                Resource: arn:aws:s3:::my-cafe-balu-images/*
+                Resource: arn:aws:s3:::cafe-balu-images/*
         - PolicyName: PolicyForCognito
           PolicyDocument:
             Version: '2012-10-17'

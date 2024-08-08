@@ -36,7 +36,7 @@ rds_user = secrets["username"]
 rds_password = secrets["password"]
 rds_db = secrets["dbname"]
 
-bucket_name = "cafe-balu-images"
+bucket_name = "cafe-balu-images" # en su momento cambiar acá
 s3 = boto3.client('s3')
 
 def upload_image_to_s3(base64_data):

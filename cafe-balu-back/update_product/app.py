@@ -41,11 +41,12 @@ s3 = boto3.client('s3')
 
 def upload_image_to_s3(base64_data, url):
     name = url.split('/')[-1]
+    file_name = f"images/{name}"
     # Remover el prefijo de la cadena base64
     base64_data = base64_data.split(",")[1]
     binary_data = base64.b64decode(base64_data)
-    s3.put_object(Bucket=bucket_name, Key=name, Body=binary_data, ContentType='image/jpeg')
-    s3_url = f"https://{bucket_name}.s3.amazonaws.com/{name}"
+    s3.put_object(Bucket=bucket_name, Key=file_name, Body=binary_data, ContentType='image/jpeg')
+    s3_url = f"https://{bucket_name}.s3.amazonaws.com/{file_name}"
     return s3_url
 
 def lambda_handler(event, __):

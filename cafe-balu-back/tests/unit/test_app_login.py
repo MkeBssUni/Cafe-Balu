@@ -4,14 +4,14 @@ from login import app
 
 mock_success = {
     "body": json.dumps({
-        "username": "marianne",
-        "password": "Marianne1568481."
+        "username": "balu",
+        "password": "Admin123."
     })
 }
 
 mock_wrong_password = {
     "body": json.dumps({
-        "username": "marianne",
+        "username": "balu",
         "password": "oasindoasidnsd"
     })
 }

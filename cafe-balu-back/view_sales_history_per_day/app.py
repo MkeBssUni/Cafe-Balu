@@ -70,7 +70,7 @@ def lambda_handler(event, __):
         claims = event['requestContext']['authorizer']['claims']
         role = claims['cognito:groups']
 
-        if 'admin' not in role or 'sales' not in role:
+        if 'admin' not in role and 'sales' not in role:
             return {
                 "statusCode": 403,
                 "headers": headers,

@@ -109,12 +109,18 @@ Resources:
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
-              - Effect: Allow
-                Action:
-                  - s3:PutObject
-                  - s3:GetObject
-                  - s3:ListBucket
-                Resource: arn:aws:s3:::cafe-balu-images/*
+              - Sid: PublicReadGetObject
+                Effect: Allow
+                Action: s3:GetObject
+                Resource: !Sub arn:aws:s3:::${S3Bucket}/*
+              - Sid: PublicReadPutObject
+                Effect: Allow
+                Action: s3:PutObject
+                Resource: !Sub arn:aws:s3:::${S3Bucket}/*
+              - Sid: PublicReadListBucket
+                Effect: Allow
+                Action: s3:ListBucket
+                Resource: !Sub arn:aws:s3:::${S3Bucket}
         - PolicyName: PolicyForCognito
           PolicyDocument:
             Version: '2012-10-17'
@@ -426,6 +432,49 @@ Resources:
             RestApiId: !Ref ApiBaluchis
             Path: /get_low_stock_products
             Method: get
+
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: cafe-balu
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        IgnorePublicAcls: false
+        BlockPublicPolicy: false
+        RestrictPublicBuckets: false
+      CorsConfiguration:
+        CorsRules:
+          - AllowedOrigins:
+              - "*"
+            AllowedMethods:
+              - GET
+              - HEAD
+            AllowedHeaders:
+              - "*"
+            ExposedHeaders:
+              - "ETag"
+  S3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref S3Bucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: PublicReadGetObject
+            Effect: Allow
+            Principal: "*"
+            Action: s3:GetObject
+            Resource: !Sub arn:aws:s3:::cafe-balu/*
+          - Sid: PublicReadPutObject
+            Effect: Allow
+            Principal: "*"
+            Action: s3:PutObject
+            Resource: !Sub arn:aws:s3:::cafe-balu/*
+          - Sid: PublicReadListBucket
+            Effect: Allow
+            Principal: "*"
+            Action: s3:ListBucket
+            Resource: !Sub arn:aws:s3:::cafe-balu
 
 Outputs:
   UpdateCategoryApi:

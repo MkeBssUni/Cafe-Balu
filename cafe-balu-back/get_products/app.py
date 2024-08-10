@@ -3,11 +3,9 @@ import pymysql
 from decimal import Decimal
 import boto3
 from botocore.exceptions import ClientError
-import boto3
-from botocore.exceptions import ClientError
 
 def get_secret():
-    secret_name = "prod/Balu/RDS"
+    secret_name = "secretsForBalu"
     region_name = "us-east-2"
 
     # Crear un cliente de Secrets Manager
@@ -40,36 +38,6 @@ def decimal_to_float(obj):
     if isinstance(obj, Decimal):
         return float(obj)
     raise TypeError
-
-def get_secret():
-    secret_name = "prod/Balu/RDS"
-    region_name = "us-east-2"
-
-    # Crear un cliente de Secrets Manager
-    session = boto3.session.Session()
-    client = session.client(
-        service_name='secretsmanager',
-        region_name=region_name
-    )
-
-    try:
-        get_secret_value_response = client.get_secret_value(
-            SecretId=secret_name
-        )
-    except ClientError as e:
-        # Para obtener una lista de excepciones lanzadas, vea
-        # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
-        raise e
-
-    secret = get_secret_value_response['SecretString']
-    return json.loads(secret)
-
-# Obtener las credenciales desde Secrets Manager
-secrets = get_secret()
-rds_host = secrets["host"]
-rds_user = secrets["username"]
-rds_password = secrets["password"]
-rds_db = secrets["dbname"]
 
 def lambda_handler(event, __):
     headers = {

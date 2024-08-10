@@ -489,6 +489,7 @@ Resources:
         - !GetAtt DBSecurityGroup.GroupId
       PubliclyAccessible: true
       MultiAZ: false
+      AvailabilityZone: us-east-2a
 
   DBSecurityGroup:
     Type: AWS::EC2::SecurityGroup

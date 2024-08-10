@@ -6,7 +6,7 @@ import boto3
 from botocore.exceptions import ClientError
 
 def get_secret():
-    secret_name = "prod/Balu/RDS"
+    secret_name = "secretsForBalu"
     region_name = "us-east-2"
 
     # Crear un cliente de Secrets Manager

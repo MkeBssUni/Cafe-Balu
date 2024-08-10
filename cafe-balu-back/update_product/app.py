@@ -6,7 +6,7 @@ import base64
 from botocore.exceptions import ClientError
 
 def get_secret():
-    secret_name = "prod/Balu/RDS"
+    secret_name = "secretsForBalu"
     region_name = "us-east-2"
 
     # Crear un cliente de Secrets Manager
@@ -35,7 +35,7 @@ rds_user = secrets["username"]
 rds_password = secrets["password"]
 rds_db = secrets["dbname"]
 
-bucket_name = "cafe-balu-test-template" # en su momento cambiar acá
+bucket_name = secrets["bucketName"] # en su momento cambiar acá
 s3 = boto3.client('s3')
 
 def upload_image_to_s3(base64_data, url):

@@ -476,6 +476,31 @@ Resources:
             Action: s3:ListBucket
             Resource: !Sub arn:aws:s3:::cafe-balu
 
+  RDSInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBName: cafe_balu
+      AllocatedStorage: 20
+      DBInstanceClass: db.t3.micro
+      Engine: MySQL
+      MasterUsername: !Sub "{{resolve:secretsmanager:secretsForBalu:SecretString:username}}"
+      MasterUserPassword: !Sub "{{resolve:secretsmanager:secretsForBalu:SecretString:password}}"
+      VPCSecurityGroups:
+        - !GetAtt DBSecurityGroup.GroupId
+      PubliclyAccessible: true
+      MultiAZ: false
+
+  DBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Allow access to RDS"
+      VpcId: "vpc-0892c04cc6d3da369"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 0.0.0.0/0
+
 Outputs:
   UpdateCategoryApi:
     Description: "API Gateway endpoint URL for Prod stage for UpdateCategory function"

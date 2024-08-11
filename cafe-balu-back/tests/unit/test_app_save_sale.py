@@ -1,6 +1,9 @@
 import unittest
 import json
 from unittest.mock import patch
+
+from botocore.exceptions import ClientError
+
 from save_sale import app
 
 mock_event_valid = {
@@ -218,3 +221,78 @@ class TestSaveSale(unittest.TestCase):
         body = json.loads(result["body"])
         self.assertIn("message", body)
         self.assertEqual(body["message"], "BAD_REQUEST")
+
+    @patch("save_sale.app.boto3.session.Session.client")
+    def test_get_secret_client_error(self, mock_client):
+        mock_client_instance = mock_client.return_value
+        mock_client_instance.get_secret_value.side_effect = ClientError(
+            error_response={'Error': {'Code': 'ResourceNotFoundException', 'Message': 'Secret not found'}},
+            operation_name='GetSecretValue'
+        )
+
+        with self.assertRaises(ClientError):
+            app.get_secret()
+
+    @patch("save_sale.app.pymysql.connect")
+    def test_get_products_info_success(self, mock_connect):
+        mock_connection = mock_connect.return_value
+        mock_cursor = mock_connection.cursor.return_value
+
+        mock_cursor.fetchone.side_effect = [
+            (1, 100.0, 10),
+            (2, 50.0, 20)
+        ]
+
+        products = [
+            {"id": 1, "quantity": 5},
+            {"id": 2, "quantity": 10}
+        ]
+
+        result = app.get_products_info(products)
+
+        expected_result = [
+            {"id": 1, "price": 100.0, "quantity": 5},
+            {"id": 2, "price": 50.0, "quantity": 10}
+        ]
+
+        self.assertEqual(result, expected_result)
+        mock_cursor.execute.assert_called()
+        mock_connection.close.assert_called_once()
+
+    @patch("save_sale.app.pymysql.connect")
+    def test_get_products_info_exception(self, mock_connect):
+        mock_connection = mock_connect.return_value
+        mock_cursor = mock_connection.cursor.return_value
+
+        mock_cursor.execute.side_effect = Exception("Database error")
+
+        products = [
+            {"id": 1, "quantity": 5},
+            {"id": 2, "quantity": 10}
+        ]
+
+        with self.assertRaises(Exception):
+            app.get_products_info(products)
+
+        mock_connection.close.assert_called_once()
+
+    @patch("get_category.app.pymysql.connect")
+    def test_get_products_info_insufficient_stock(self, mock_connect):
+        mock_connection = mock_connect.return_value
+        mock_cursor = mock_connection.cursor.return_value
+
+        mock_cursor.fetchone.side_effect = [
+            (1, 100.0, 10),  # Producto 1 con suficiente stock
+            (2, 50.0, 5)     # Producto 2 con stock insuficiente
+        ]
+
+        products = [
+            {"id": 1, "quantity": 5},
+            {"id": 2, "quantity": 10}
+        ]
+
+        with self.assertRaises(ValueError) as context:
+            app.get_products_info(products)
+
+        self.assertEqual(str(context.exception), "Product with id 2 does not have enough stock")
+        mock_connection.close.assert_called_once()  # Verifica que la conexión se cierre

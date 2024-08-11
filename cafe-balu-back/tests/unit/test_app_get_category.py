@@ -1,6 +1,9 @@
 import unittest
 import json
 from unittest.mock import patch
+from decimal import Decimal
+from botocore.exceptions import ClientError
+
 from get_category import app
 
 
@@ -102,3 +105,35 @@ class TestGetCategory(unittest.TestCase):
         self.assertEqual(body["message"], "CATEGORIES_FETCHED")
         self.assertIn("categories", body)
         self.assertEqual(len(body["categories"]), 0)
+
+    @patch("get_category.app.get_secret")
+    def test_get_all_categories_secrets_error(self, mock_get_secret):
+        mock_get_secret.side_effect = Exception('Error')
+        result = app.lambda_handler(mock_success_all, None)
+        status_code = result["statusCode"]
+        self.assertEqual(status_code, 200)
+
+    @patch("get_category.app.boto3.session.Session.client")
+    def test_get_secret_client_error(self, mock_client):
+        # Simula la excepción ClientError
+        mock_client_instance = mock_client.return_value
+        mock_client_instance.get_secret_value.side_effect = ClientError(
+            error_response={'Error': {'Code': 'ResourceNotFoundException', 'Message': 'Secret not found'}},
+            operation_name='GetSecretValue'
+        )
+
+        with self.assertRaises(ClientError):
+            app.get_secret()
+
+    def test_get_active_categories(self):
+        result = app.lambda_handler(mock_success_active, None)
+        status_code = result["statusCode"]
+        self.assertEqual(status_code, 200)
+        body = json.loads(result["body"])
+        self.assertIn("message", body)
+        self.assertEqual(body["message"], "CATEGORIES_FETCHED")
+        self.assertIn("categories", body)
+
+    def test_decimal_to_float_conversion(self):
+        result = app.decimal_to_float(Decimal('10.5'))
+        self.assertEqual(result, 10.5)

@@ -154,7 +154,6 @@ def lambda_handler(event, __):
 
 def update_category(id, newName, headers):
     connection = pymysql.connect(host=rds_host, user=rds_user, password=rds_password, db=rds_db)
-    print(connection)
     try:
         try:
             cursor = connection.cursor()
@@ -210,8 +209,6 @@ def duplicated_name(newName):
             cursor = connection.cursor()
             cursor.execute("SELECT * FROM categories WHERE lower(name) = %s", (newName.lower()))
             result = cursor.fetchone()
-            print("result", result)
-
             if result is None:
                 return False
 

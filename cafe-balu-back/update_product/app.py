@@ -105,7 +105,6 @@ def lambda_handler(event, __):
 
         if description is None:
             description = "Sin descripción"
-
         # Validar campos faltantes: 'product_id', 'name', 'stock', 'price', 'status', 'image', 'category_id'
         missing_fields = [field for field in ['id', 'name', 'stock', 'price', 'status', 'image', 'category_id', 'url'] if body.get(field) is None]
 
@@ -128,7 +127,6 @@ def lambda_handler(event, __):
                     "message": "INVALID_NAME"
                 }),
             }
-
         # Validar 'stock': debe ser un entero mayor o igual a cero
         if not isinstance(stock, int) or stock < 0:
             return {

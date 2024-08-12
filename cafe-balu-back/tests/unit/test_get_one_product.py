@@ -1,6 +1,8 @@
 import unittest
 import json
 import pymysql
+from botocore.exceptions import ClientError
+
 from get_one_product import app
 from unittest.mock import patch
 
@@ -104,3 +106,18 @@ class TestGetOneProduct(unittest.TestCase):
         body = json.loads(result["body"])
         self.assertEqual(body["message"], "INTERNAL_SERVER_ERROR")
         self.assertIn("Simulated internal error", body["error"])
+
+    @patch("get_one_product.app.boto3.session.Session.client")
+    def test_get_secret_client_error(self, mock_client):
+        # Simula la excepción ClientError
+        mock_client_instance = mock_client.return_value
+        mock_client_instance.get_secret_value.side_effect = ClientError(
+            error_response={'Error': {'Code': 'ResourceNotFoundException', 'Message': 'Secret not found'}},
+            operation_name='GetSecretValue'
+        )
+
+        with self.assertRaises(ClientError):
+            app.get_secret()
+    def test_decimal_to_float_invalid_type(self):
+        with self.assertRaises(TypeError):
+            app.decimal_to_float("string")

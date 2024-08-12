@@ -104,6 +104,8 @@ Resources:
               - Effect: Allow
                 Action:
                   - cognito-idp:AdminInitiateAuth
+                  - cognito-idp:RespondToAuthChallenge
+                  - cognito-idp:ChangePassword
                 Resource: "*"
         - PolicyName: PolicyForS3
           PolicyDocument:

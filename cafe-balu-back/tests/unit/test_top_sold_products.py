@@ -1,6 +1,10 @@
 import unittest
 import json
 from unittest.mock import patch
+
+import pymysql
+from botocore.exceptions import ClientError
+
 from top_sold_products import app
 
 mock_no_category = {
@@ -47,3 +51,31 @@ class TestTopSoldProducts(unittest.TestCase):
         self.assertEqual(result["statusCode"], 500)
         body = json.loads(result["body"])
         self.assertEqual(body["message"], "INTERNAL_SERVER_ERROR")
+
+    def test_decimal_to_float_invalid_type(self):
+        with self.assertRaises(TypeError):
+            app.decimal_to_float("string")
+
+    @patch("top_sold_products.app.boto3.session.Session.client")
+    def test_get_secret_client_error(self, mock_client):
+        # Simula la excepción ClientError
+        mock_client_instance = mock_client.return_value
+        mock_client_instance.get_secret_value.side_effect = ClientError(
+            error_response={'Error': {'Code': 'ResourceNotFoundException', 'Message': 'Secret not found'}},
+            operation_name='GetSecretValue'
+        )
+
+        with self.assertRaises(ClientError):
+            app.get_secret()
+
+    @patch("top_sold_products.app.pymysql.connect")
+    def test_connect_to_database_mysql_exception(self, mock_connect):
+        # Simula una excepción MySQLError cuando se intenta conectar a la base de datos
+        mock_connect.side_effect = pymysql.MySQLError("Simulated MySQL connection error")
+
+        with self.assertRaises(Exception) as context:
+            app.connect_to_database()
+
+        # Verifica que la excepción levantada contiene el mensaje esperado
+        self.assertIn("ERROR CONNECTING TO DATABASE", str(context.exception))
+        self.assertIn("Simulated MySQL connection error", str(context.exception))

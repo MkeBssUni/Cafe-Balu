@@ -107,16 +107,45 @@ class TestSaveProduct(unittest.TestCase):
     # Prueba de guardado exitoso del producto
     @patch("save_product.app.upload_image_to_s3")
     @patch("save_product.app.category_exists")
-    @patch("save_product.app.add_product")
-    def test_save_product_success(self, mock_add_product, mock_category_exists, mock_upload_image_to_s3):
+    @patch("save_product.app.product_exists_in_category")
+    @patch("save_product.app.pymysql.connect")
+    def test_save_product_success(self, mock_connect, mock_product_exists, mock_category_exists,mock_upload_image_to_s3):
+        mock_product_exists.return_value = False
         mock_category_exists.return_value = True
         mock_upload_image_to_s3.return_value = "https://example.com/image.jpg"
+
+        # Configurar el mock para la conexión a la base de datos
+        mock_connection = mock_connect.return_value
+        mock_cursor = mock_connection.cursor.return_value
+
+        # Convertir la cadena JSON en un diccionario
+        body_dict = json.loads(mock_event_admin['body'])
+
+        # Llamar a la función lambda_handler
         result = app.lambda_handler(mock_event_admin, None)
+
+        # Verificar el código de estado y el cuerpo de la respuesta
         status_code = result["statusCode"]
         self.assertEqual(status_code, 200, f"Se esperaba el código de estado 200 pero se obtuvo {status_code}. Respuesta: {result}")
         body = json.loads(result["body"])
         self.assertIn("message", body)
-        self.assertEqual(body["message"], "PRODUCT_SAVED")
+        self.assertEqual(body["message"], "PRODUCT_ADDED")
+
+        # Verificar que se llamó a cursor.execute con los parámetros correctos
+        mock_cursor.execute.assert_called_once_with(
+            "INSERT INTO products (name, stock, price, category_id, status, image, description) VALUES (%s, %s, %s, %s, true, %s, %s)",
+            (
+                body_dict['name'],
+                body_dict['stock'],
+                body_dict['price'],
+                body_dict['category_id'],
+                mock_upload_image_to_s3.return_value,
+                "Sin descripción"
+            )
+        )
+
+        # Verificar que se llamó a connection.commit
+        mock_connection.commit.assert_called_once()
 
     # Prueba de guardado del producto con campos faltantes
     def test_save_product_missing_fields(self):
@@ -219,7 +248,7 @@ class TestSaveProduct(unittest.TestCase):
     def test_save_product_success_db(self, mock_connect):
         mock_connection = mock_connect.return_value
         mock_cursor = mock_connection.cursor.return_value
-        app.save_product('New Product', 10, 100, 1, 'https://example.com/image.jpg', 1, 'Description')
+        app.add_product('New Product', 10, 100, 1, 'https://example.com/image.jpg', 1, 'Description')
         mock_cursor.execute.assert_called_once_with("INSERT INTO products (name, stock, price, status, image_url, category_id, description) VALUES (%s, %s, %s, %s, %s, %s, %s)",('New Product', 10, 100, 1, 'https://example.com/image.jpg', 1, 'Description'))
 
     # Prueba de guardado del producto con un nombre inválido

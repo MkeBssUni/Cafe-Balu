@@ -107,8 +107,8 @@ class TestSaveProduct(unittest.TestCase):
     # Prueba de guardado exitoso del producto
     @patch("save_product.app.upload_image_to_s3")
     @patch("save_product.app.category_exists")
-    @patch("save_product.app.save_product")
-    def test_save_product_success(self, mock_save_product, mock_category_exists, mock_upload_image_to_s3):
+    @patch("save_product.app.add_product")
+    def test_save_product_success(self, mock_add_product, mock_category_exists, mock_upload_image_to_s3):
         mock_category_exists.return_value = True
         mock_upload_image_to_s3.return_value = "https://example.com/image.jpg"
         result = app.lambda_handler(mock_event_admin, None)

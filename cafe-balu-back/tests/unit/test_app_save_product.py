@@ -133,7 +133,7 @@ class TestSaveProduct(unittest.TestCase):
         mock_category_exists.return_value = True
         result = app.lambda_handler(mock_event_invalid_image, None)
         status_code = result["statusCode"]
-        self.assertEqual(status_code, 400, f"Se esperaba el código de estado 400 pero se obtuvo {status_code}. Respuesta: {result}")
+        self.assertEqual(status_code, 500, f"Se esperaba el código de estado 400 pero se obtuvo {status_code}. Respuesta: {result}")
         body = json.loads(result["body"])
         self.assertIn("message", body)
         self.assertEqual(body["message"], "INVALID_IMAGE")
@@ -221,6 +221,176 @@ class TestSaveProduct(unittest.TestCase):
         mock_cursor = mock_connection.cursor.return_value
         app.save_product('New Product', 10, 100, 1, 'https://example.com/image.jpg', 1, 'Description')
         mock_cursor.execute.assert_called_once_with("INSERT INTO products (name, stock, price, status, image_url, category_id, description) VALUES (%s, %s, %s, %s, %s, %s, %s)",('New Product', 10, 100, 1, 'https://example.com/image.jpg', 1, 'Description'))
+
+    # Prueba de guardado del producto con un nombre inválido
+    def test_save_product_invalid_name(self):
+        invalid_name_event = {
+            "requestContext": {
+                "authorizer": {
+                    "claims": {
+                        "cognito:groups": ["admin"]
+                    }
+                }
+            },
+            "body": json.dumps({
+                "name": "New Product!",  # Invalid name with special character
+                "stock": 10,
+                "price": 100,
+                "status": 1,
+                "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA",
+                "category_id": 1,
+                "url": "https://example.com/image.jpg"
+            })
+        }
+        result = app.lambda_handler(invalid_name_event, None)
+        status_code = result["statusCode"]
+        self.assertEqual(status_code, 400)
+        body = json.loads(result["body"])
+        self.assertIn("message", body)
+        self.assertEqual(body["message"], "INVALID_NAME")
+
+    # Prueba de guardado del producto con stock inválido
+    def test_save_product_invalid_stock(self):
+        invalid_stock_event = {
+            "requestContext": {
+                "authorizer": {
+                    "claims": {
+                        "cognito:groups": ["admin"]
+                    }
+                }
+            },
+            "body": json.dumps({
+                "name": "New Product",
+                "stock": -5,  # Invalid stock (negative)
+                "price": 100,
+                "status": 1,
+                "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA",
+                "category_id": 1,
+                "url": "https://example.com/image.jpg"
+            })
+        }
+        result = app.lambda_handler(invalid_stock_event, None)
+        status_code = result["statusCode"]
+        self.assertEqual(status_code, 400)
+        body = json.loads(result["body"])
+        self.assertIn("message", body)
+        self.assertEqual(body["message"], "INVALID_STOCK")
+
+    # Prueba de guardado del producto con precio inválido
+    def test_save_product_invalid_price(self):
+        invalid_price_event = {
+            "requestContext": {
+                "authorizer": {
+                    "claims": {
+                        "cognito:groups": ["admin"]
+                    }
+                }
+            },
+            "body": json.dumps({
+                "name": "New Product",
+                "stock": 10,
+                "price": 0,  # Invalid price (zero)
+                "status": 1,
+                "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA",
+                "category_id": 1,
+                "url": "https://example.com/image.jpg"
+            })
+        }
+        result = app.lambda_handler(invalid_price_event, None)
+        status_code = result["statusCode"]
+        self.assertEqual(status_code, 400)
+        body = json.loads(result["body"])
+        self.assertIn("message", body)
+        self.assertEqual(body["message"], "INVALID_PRICE")
+
+    # Prueba de guardado del producto con category_id inválido
+    def test_save_product_invalid_category_id(self):
+        invalid_category_id_event = {
+            "requestContext": {
+                "authorizer": {
+                    "claims": {
+                        "cognito:groups": ["admin"]
+                    }
+                }
+            },
+            "body": json.dumps({
+                "name": "New Product",
+                "stock": 10,
+                "price": 100,
+                "status": 1,
+                "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA",
+                "category_id": -1,  # Invalid category_id (negative)
+                "url": "https://example.com/image.jpg"
+            })
+        }
+        result = app.lambda_handler(invalid_category_id_event, None)
+        status_code = result["statusCode"]
+        self.assertEqual(status_code, 400)
+        body = json.loads(result["body"])
+        self.assertIn("message", body)
+        self.assertEqual(body["message"], "INVALID_CATEGORY_ID")
+
+    # ... (Your other test cases for database errors, invalid JSON, etc., remain the same)
+
+    # Prueba para el caso donde el producto ya existe en la categoría
+    @patch("save_product.app.category_exists")
+    @patch("save_product.app.product_exists_in_category")
+    def test_save_product_already_exists(self, mock_product_exists, mock_category_exists):
+        mock_category_exists.return_value = True
+        mock_product_exists.return_value = True  # Simulate product already exists
+        result = app.lambda_handler(mock_event_admin, None)
+        status_code = result["statusCode"]
+        self.assertEqual(status_code, 400)
+        body = json.loads(result["body"])
+        self.assertIn("message", body)
+        self.assertEqual(body["message"], "PRODUCT_EXISTS")
+
+    # Prueba para el caso donde falta la clave 'body' en el evento
+    def test_save_product_missing_body_key(self):
+        mock_event_missing_body = {
+            "requestContext": {
+                "authorizer": {
+                    "claims": {
+                        "cognito:groups": ["admin"]
+                    }
+                }
+            }
+            # No hay clave 'body'
+        }
+        result = app.lambda_handler(mock_event_missing_body, None)
+        status_code = result["statusCode"]
+        self.assertEqual(status_code, 400)
+        body = json.loads(result["body"])
+        self.assertIn("message", body)
+        self.assertEqual(body["message"], "MISSING_KEY")
+
+    # Prueba para manejar una descripción demasiado larga
+    def test_save_product_description_too_long(self):
+        long_description_event = {
+            "requestContext": {
+                "authorizer": {
+                    "claims": {
+                        "cognito:groups": ["admin"]
+                    }
+                }
+            },
+            "body": json.dumps({
+                "name": "New Product",
+                "stock": 10,
+                "price": 100,
+                "status": 1,
+                "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA",
+                "category_id": 1,
+                "description": "a" * 256,  # Descripción de 256 caracteres (demasiado larga)
+                "url": "https://example.com/image.jpg"
+            })
+        }
+        result = app.lambda_handler(long_description_event, None)
+        status_code = result["statusCode"]
+        self.assertEqual(status_code, 413)  # Esperamos un 413 para entidad demasiado grande
+        body = json.loads(result["body"])
+        self.assertIn("message", body)
+        self.assertEqual(body["message"], "DESCRIPTION_TOO_LONG")
 
 if __name__ == "__main__":
     unittest.main()

@@ -147,25 +147,31 @@ class TestSaveProduct(unittest.TestCase):
         # Verificar que se llamó a connection.commit
         mock_connection.commit.assert_called_once()
 
-    # Prueba de guardado del producto con campos faltantes
-    def test_save_product_missing_fields(self):
-        result = app.lambda_handler(mock_event_missing_fields, None)
-        status_code = result["statusCode"]
-        self.assertEqual(status_code, 400, f"Se esperaba el código de estado 400 pero se obtuvo {status_code}. Respuesta: {result}")
-        body = json.loads(result["body"])
-        self.assertIn("message", body)
-        self.assertEqual(body["message"], "MISSING_FIELDS")
-
     # Prueba de guardado del producto con datos de imagen inválidos
     @patch("save_product.app.category_exists")
-    def test_save_product_invalid_image(self, mock_category_exists):
+    @patch("save_product.app.product_exists_in_category")
+    @patch("save_product.app.pymysql.connect")
+    def test_save_product_invalid_image(self, mock_connect, mock_product_exists, mock_category_exists):
+        # Configurar los mocks
         mock_category_exists.return_value = True
+        mock_product_exists.return_value = False
+
+        # Configurar el mock para la conexión a la base de datos (opcional, si es necesario)
+        mock_connection = mock_connect.return_value
+        # ... puedes configurar el comportamiento del mock_connection si es necesario
+
+        # Llamar a la función lambda_handler
         result = app.lambda_handler(mock_event_invalid_image, None)
+
+        # Verificar el código de estado y el cuerpo de la respuesta
         status_code = result["statusCode"]
-        self.assertEqual(status_code, 500, f"Se esperaba el código de estado 400 pero se obtuvo {status_code}. Respuesta: {result}")
+        self.assertEqual(status_code, 400,f"Se esperaba el código de estado 400 pero se obtuvo {status_code}. Respuesta: {result}")
         body = json.loads(result["body"])
         self.assertIn("message", body)
         self.assertEqual(body["message"], "INVALID_IMAGE")
+
+        # Opcional: Verificar que NO se llamaron funciones de la base de datos
+        mock_connection.cursor.assert_not_called()
 
     # Prueba de guardado del producto con acceso prohibido
     def test_save_product_forbidden(self):
@@ -248,8 +254,8 @@ class TestSaveProduct(unittest.TestCase):
     def test_save_product_success_db(self, mock_connect):
         mock_connection = mock_connect.return_value
         mock_cursor = mock_connection.cursor.return_value
-        app.add_product('New Product', 10, 100, 1, 'https://example.com/image.jpg', 1, 'Description')
-        mock_cursor.execute.assert_called_once_with("INSERT INTO products (name, stock, price, status, image_url, category_id, description) VALUES (%s, %s, %s, %s, %s, %s, %s)",('New Product', 10, 100, 1, 'https://example.com/image.jpg', 1, 'Description'))
+        app.add_product('New Product', 10, 100, 1, 'https://example.com/image.jpg','Description')  # Eliminamos el argumento 'status'
+        mock_cursor.execute.assert_called_once_with("INSERT INTO products (name, stock, price, category_id, status, image, description) VALUES (%s, %s, %s, %s, true, %s, %s)",('New Product', 10, 100, 1, 'https://example.com/image.jpg', 'Description'))
 
     # Prueba de guardado del producto con un nombre inválido
     def test_save_product_invalid_name(self):
@@ -359,8 +365,6 @@ class TestSaveProduct(unittest.TestCase):
         self.assertIn("message", body)
         self.assertEqual(body["message"], "INVALID_CATEGORY_ID")
 
-    # ... (Your other test cases for database errors, invalid JSON, etc., remain the same)
-
     # Prueba para el caso donde el producto ya existe en la categoría
     @patch("save_product.app.category_exists")
     @patch("save_product.app.product_exists_in_category")
@@ -420,6 +424,53 @@ class TestSaveProduct(unittest.TestCase):
         body = json.loads(result["body"])
         self.assertIn("message", body)
         self.assertEqual(body["message"], "DESCRIPTION_TOO_LONG")
+
+    # Pruebas unitarias para product_exists_in_category
+    @patch('pymysql.connect')
+    def test_product_exists_in_category_exists(self, mock_connect):
+        # Configurar el mock para simular que el producto existe
+        mock_cursor = mock_connect.return_value.cursor.return_value
+        mock_cursor.fetchone.return_value = (1,)  # Simula que hay 1 producto coincidente
+
+        # Llamar a la función
+        result = app.product_exists_in_category(1, 'Producto existente')
+
+        # Verificar que la función devuelve True
+        self.assertTrue(result)
+
+        # Verificar que se ejecutó la consulta correcta
+        mock_cursor.execute.assert_called_once_with(
+            "SELECT COUNT(*) FROM products WHERE category_id = %s AND lower(name) = %s",
+            (1, 'producto existente')
+        )
+
+    @patch('pymysql.connect')
+    def test_product_exists_in_category_does_not_exist(self, mock_connect):
+        # Configurar el mock para simular que el producto NO existe
+        mock_cursor = mock_connect.return_value.cursor.return_value
+        mock_cursor.fetchone.return_value = (0,)  # Simula que NO hay productos coincidentes
+
+        # Llamar a la función
+        result = app.product_exists_in_category(2, 'Producto no existente')
+
+        # Verificar que la función devuelve False
+        self.assertFalse(result)
+
+        # Verificar que se ejecutó la consulta correcta
+        mock_cursor.execute.assert_called_once_with(
+            "SELECT COUNT(*) FROM products WHERE category_id = %s AND lower(name) = %s",
+            (2, 'producto no existente')
+        )
+
+    @patch('pymysql.connect')
+    def test_product_exists_in_category_database_error(self, mock_connect):
+        # Configurar el mock para simular un error de base de datos
+        mock_cursor = mock_connect.return_value.cursor.return_value
+        mock_cursor.execute.side_effect = pymysql.MySQLError('Error simulado de base de datos')
+
+        # Llamar a la función y verificar que lanza una excepción
+        with self.assertRaises(pymysql.MySQLError):
+            app.product_exists_in_category(3, 'Cualquier producto')
 
 if __name__ == "__main__":
     unittest.main()

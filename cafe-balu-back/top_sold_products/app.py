@@ -84,6 +84,9 @@ def get_top_sold_products(category):
         cursor.execute("""
         SELECT
             p.name AS product_name,
+            p.image as product_image,
+            p.description as product_description,
+            p.price as product_price,
             c.name AS category_name,
             SUM(sp.quantity) AS total_quantity_sold
             FROM
@@ -105,6 +108,9 @@ def get_top_sold_products(category):
         cursor.execute("""
         SELECT
             p.name AS product_name,
+            p.image as product_image,
+            p.description as product_description,
+            p.price as product_price,
             c.name AS category_name,
             SUM(sp.quantity) AS total_quantity_sold
             FROM

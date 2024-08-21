@@ -27,7 +27,7 @@ export default function List({ name, status, index, id, setReload }) {
       </View>
       <TouchableOpacity onPress={() => setShowModal(true)}>
         <Icon
-          name={"dots-horizontal"}
+          name={"dots-vertical"}
           color={"#8B4513"}
           size={20}
           type="material-community"

@@ -137,8 +137,8 @@ export default function ModalLogin({ visible, setVisible, setReload }) {
           >
             <View>
               <Input
-                label="Email"
-                placeholder="ej: usuario@correo.com"
+                label="Usuario"
+                placeholder="ej: usuarioBalu13"
                 labelStyle={styles.label}
                 keyboardType="email-address"
                 containerStyle={styles.inputContainer}

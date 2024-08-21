@@ -23,7 +23,7 @@ export default function Navigation({setReload}) {
             borderTopWidth: 1
           },
         })}
-        initialRouteName="sales"
+        initialRouteName="products"
       >
         <Tab.Screen
           name="sales"

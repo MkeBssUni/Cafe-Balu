@@ -58,7 +58,9 @@ export default function AllProducts({ setReload, reload }) {
   const loadProducts = async () => {
     try {
       const productList = await getAllProducts();
-      setProducts(productList.reverse());
+      //ordenar productos por id, el id más alto que se muestre primero
+      productList.sort((a, b) => b.id - a.id);
+      setProducts(productList);
     } catch (error) {
       showToast("Error al cargar los productos", "alert-circle", "#fff", "#FF3232");
     } finally {

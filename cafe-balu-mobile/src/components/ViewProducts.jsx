@@ -40,10 +40,19 @@ export default function ViewProducts({
               },
             ]}
           >
-            <Text style={styles.title}>{name}</Text>
+            <Text
+              style={[
+                styles.title,
+                {
+                  flex: 1,
+                },
+              ]}
+            >
+              {name}
+            </Text>
             <TouchableOpacity onPress={() => setShowModal(true)}>
               <Icon
-                name={"dots-horizontal"}
+                name={"dots-vertical"}
                 color={"#8B4513"}
                 size={20}
                 type="material-community"
@@ -51,30 +60,36 @@ export default function ViewProducts({
             </TouchableOpacity>
           </View>
           <Card.Divider style={styles.cardDivider} />
-          <Text style={styles.description}>{description || 'Sin descripción disponible'}</Text>
-          <Card.Divider style={styles.cardDivider} />
           <View style={[styles.row, styles.distributedRow]}>
-            <Text style={styles.rowItem}>${price}</Text>
+            <View style={styles.rowItem}>
+              <Text style={styles.rowItem}>Precio:</Text>
+              <Text style={styles.rowItem}>${price}</Text>
+            </View>
             <Divider orientation="vertical" />
             <View style={styles.rowItem}>
               <Text style={styles.rowItem}>Stock:</Text>
               <Text style={styles.rowItem}>{stock}</Text>
             </View>
             <Divider orientation="vertical" />
-            <View
-              style={[
-                styles.status,
-                statusTag === 1 ? styles.activeStatus : styles.inactiveStatus,
-                styles.rowItem
-              ]}
-            >
-              <Text style={styles.statusText}>
-                {statusTag === 1 ? "Activo" : "Inactivo"}
-              </Text>
+            <View style={styles.rowItem}>
+              <Text style={styles.rowItem}>Estado:</Text>
+              <View
+                style={[
+                  styles.status,
+                  statusTag === 1 ? styles.activeStatus : styles.inactiveStatus,
+                  styles.rowItem,
+                ]}
+              >
+                <Text style={styles.statusText}>
+                  {statusTag === 1 ? "Activo" : "Inactivo"}
+                </Text>
+              </View>
             </View>
           </View>
         </View>
       </View>
+      <Card.Divider style={styles.cardDivider} />
+      <Text style={styles.description}>{description}</Text>
       <ModalChangeStatus
         type="PRODUCT"
         id={id}
@@ -110,7 +125,9 @@ const styles = StyleSheet.create({
   },
   distributedRow: {
     justifyContent: "space-between",
+    textAlign: "center",
     alignItems: "center",
+    marginTop: 8,
   },
   rowItem: {
     flex: 1,
@@ -140,7 +157,6 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 14,
     color: "#666",
-    marginBottom: 8,
   },
   status: {
     padding: 4,
@@ -158,7 +174,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F2DEDE",
   },
   statusText: {
-    fontSize: 14,
+    fontSize: 12,
     color: "#000",
   },
 });
